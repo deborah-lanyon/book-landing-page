@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Section - Admin Panel</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .header { background: #2c3e50; color: white; padding: 20px 0; margin-bottom: 30px; }
+    .header h1 { margin: 0; font-size: 24px; }
+    .btn { display: inline-block; padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; font-size: 14px; }
+    .btn:hover { background: #2980b9; }
+    .btn-secondary { background: #95a5a6; }
+    .btn-secondary:hover { background: #7f8c8d; }
+    .card { background: white; padding: 20px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+    textarea.form-control { min-height: 150px; resize: vertical; }
+    .checkbox-group { display: flex; align-items: center; }
+    .checkbox-group input { width: auto; margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Book Landing Page - Admin Panel</h1>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="/" class="btn" style="padding: 8px 16px;">View Public Page</a>
+        <form method="POST" action="/logout" style="margin: 0;">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <button type="submit" class="btn btn-secondary" style="padding: 8px 16px;">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="card">
+      <h2 style="margin-top: 0;">Edit Accordion Section</h2>
+      <form method="POST" action="/admin/sections/{{ section.id }}">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="_method" value="PUT">
+        <div class="form-group">
+          <label for="title">Section Title *</label>
+          <input type="text" id="title" name="title" class="form-control" value="{{ section.title }}" required placeholder="e.g., Introduction, Chapter 1, About the Author">
+        </div>
+        <div class="form-group">
+          <label for="content">Section Content *</label>
+          <textarea id="content" name="content" class="form-control" required placeholder="Enter the content that will be displayed when this section is expanded...">{{ section.content }}</textarea>
+        </div>
+        <div class="form-group">
+          <label for="displayOrder">Display Order</label>
+          <input type="number" id="displayOrder" name="displayOrder" class="form-control" value="{{ section.displayOrder }}" min="0">
+          <small style="color: #666;">Lower numbers appear first. Use 0, 10, 20, etc. to leave room for reordering.</small>
+        </div>
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" id="isPublished" name="isPublished" value="true" @if(section.isPublished) checked @end>
+            <label for="isPublished" style="margin-bottom: 0; font-weight: normal;">Publish this section (visible on public page)</label>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn">Update Section</button>
+          <a href="/admin/sections" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+@layout('layouts/admin')
+
+@set('title', 'Create New Section')
+
+@section('content')
+  <div class="card">
+    <h2 style="margin-top: 0;">Create New Accordion Section</h2>
+
+    <form method="POST" action="{{ route('admin.sections.store') }}">
+      {{ csrfField() }}
+
+      <div class="form-group">
+        <label for="title">Section Title *</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          class="form-control"
+          required
+          placeholder="e.g., Introduction, Chapter 1, About the Author"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="content">Section Content *</label>
+        <textarea
+          id="content"
+          name="content"
+          class="form-control"
+          required
+          placeholder="Enter the content that will be displayed when this section is expanded..."
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="displayOrder">Display Order</label>
+        <input
+          type="number"
+          id="displayOrder"
+          name="displayOrder"
+          class="form-control"
+          value="0"
+          min="0"
+        >
+        <small style="color: #666;">Lower numbers appear first. Use 0, 10, 20, etc. to leave room for reordering.</small>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input
+            type="checkbox"
+            id="isPublished"
+            name="isPublished"
+            value="true"
+          >
+          <label for="isPublished" style="margin-bottom: 0; font-weight: normal;">Publish this section (visible on public page)</label>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="submit" class="btn">Create Section</button>
+        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+@end

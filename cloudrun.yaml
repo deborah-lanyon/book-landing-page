@@ -1,0 +1,37 @@
+# Google Cloud Run service configuration
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: book-landing-page
+spec:
+  template:
+    metadata:
+      annotations:
+        # Allow up to 80 concurrent requests per instance
+        autoscaling.knative.dev/maxScale: '5'
+        autoscaling.knative.dev/minScale: '1'
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+      - image: gcr.io/PROJECT_ID/book-landing-page:latest
+        ports:
+        - name: http1
+          containerPort: 8080
+        env:
+        - name: NODE_ENV
+          value: production
+        - name: PORT
+          value: '8080'
+        - name: HOST
+          value: 0.0.0.0
+        # Add these environment variables via Secret Manager in production
+        # - name: APP_KEY
+        # - name: DB_HOST
+        # - name: DB_USER
+        # - name: DB_PASSWORD
+        # - name: DB_DATABASE
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
