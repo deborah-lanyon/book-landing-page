@@ -29,7 +29,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare updatedAt: DateTime | null
 
   @beforeSave()
-  static async hashPassword(user: User) {
+  static async hashPassword<T extends typeof User>(this: T, user: InstanceType<T>) {
     if (user.$dirty.password) {
       user.password = await hash.make(user.password)
     }
