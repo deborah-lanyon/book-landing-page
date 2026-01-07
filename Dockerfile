@@ -28,8 +28,6 @@ RUN npm ci --only=production
 
 # Copy built application from builder
 COPY --from=builder /app/build ./build
-COPY --from=builder /app/ace.js ./ace.js
-COPY --from=builder /app/adonisrc.ts ./adonisrc.ts
 
 # Expose port (Cloud Run will override with PORT env var)
 EXPOSE 8080
