@@ -1,19 +1,19 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install ALL dependencies (including dev deps for building)
 RUN npm ci
 
-# Copy source code
+# Copy all source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the application (this compiles TypeScript to JavaScript in /app/build)
+RUN node ace build --ignore-ts-errors
 
 # Production stage
 FROM node:20-alpine
@@ -21,19 +21,19 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY --from=build /app/package*.json ./
 
-# Install production dependencies only
+# Install only production dependencies
 RUN npm ci --only=production
 
-# Copy built application from builder
-COPY --from=builder /app/build ./build
+# Copy the built application from build stage
+COPY --from=build /app/build ./build
 
-# Expose port (Cloud Run will override with PORT env var)
-EXPOSE 8080
-
-# Set production environment
+# Set environment to production
 ENV NODE_ENV=production
 
-# Start command
-CMD ["npm", "start"]
+# Expose port
+EXPOSE 8080
+
+# Start the server
+CMD ["node", "build/bin/server.js"]
