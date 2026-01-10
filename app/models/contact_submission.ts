@@ -1,30 +1,36 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-export default class Section extends BaseModel {
+export default class ContactSubmission extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  declare title: string
+  declare firstName: string
 
   @column()
-  declare reflectiveQuestion: string | null
+  declare lastName: string | null
 
   @column()
-  declare reflectiveQuestion2: string | null
+  declare town: string
 
   @column()
-  declare reflectiveQuestion3: string | null
+  declare email: string
 
   @column()
-  declare content: string
+  declare wantFollowJesus: boolean
 
   @column()
-  declare displayOrder: number
+  declare wantBible: boolean
 
   @column()
-  declare isPublished: boolean
+  declare wantPrayerRequest: boolean
+
+  @column()
+  declare wantAskQuestion: boolean
+
+  @column()
+  declare message: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Section - Admin Panel</title>
+  <title>Site Settings - Admin Panel</title>
   <script src="https://cdn.tiny.cloud/1/wogn0yqjl4fxgrix10q3xfhojxskfvu2yrz0to24d6v4ke9i/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
@@ -18,11 +18,8 @@
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
     .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
-    textarea.form-control { min-height: 150px; resize: vertical; }
-    .checkbox-group { display: flex; align-items: center; }
-    .checkbox-group input { width: auto; margin-right: 8px; }
     .alert { padding: 15px; margin-bottom: 20px; border-radius: 4px; }
-    .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
   </style>
 </head>
 <body>
@@ -31,7 +28,6 @@
       <h1>Miriam's Home - Admin Panel</h1>
       <div style="display: flex; gap: 10px; align-items: center;">
         <a href="/" class="btn" style="padding: 8px 16px;" target="_blank">View Public Page</a>
-        <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary" style="padding: 8px 16px;" target="_blank">Site Settings</a>
         <a href="{{ route('admin.password.edit') }}" class="btn btn-secondary" style="padding: 8px 16px;" target="_blank">Change Password</a>
         <form method="POST" action="/logout" style="margin: 0;">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -41,50 +37,35 @@
     </div>
   </div>
   <div class="container">
-    @if(flashMessages.has('errors'))
-      <div class="alert alert-error">
-        <strong>Validation errors:</strong>
-        <ul style="margin: 10px 0 0 0; padding-left: 20px;">
-          @each(error in flashMessages.get('errors'))
-            <li>{{ error.message }}</li>
-          @end
-        </ul>
+    @if(flashMessages.has('success'))
+      <div class="alert alert-success">
+        {{ flashMessages.get('success') }}
       </div>
     @end
 
     <div class="card">
-      <h2 style="margin-top: 0;">Create New Accordion Section</h2>
-      <form id="section-form" method="POST" action="/admin/sections">
+      <h2 style="margin-top: 0;">Site Settings</h2>
+      <p style="color: #666; margin-bottom: 20px;">Configure the content displayed on the public page.</p>
+
+      <form id="settings-form" method="POST" action="{{ route('admin.settings.update') }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="_method" value="PUT">
+
+        <h3 style="margin-top: 0; margin-bottom: 15px; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">Header Section</h3>
+
         <div class="form-group">
-          <label for="title">Section Heading *</label>
-          <input type="text" id="title" name="title" class="form-control" required placeholder="e.g., Introduction, Chapter 1, About the Author">
+          <label for="welcome_title">Title</label>
+          <input type="text" id="welcome_title" name="welcome_title" class="form-control" value="{{ welcomeTitle }}" required placeholder="e.g., Welcome, Hello, About Miriam">
         </div>
+
         <div class="form-group">
-          <label for="reflectiveQuestion">Reflective Question 1</label>
-          <input type="text" id="reflectiveQuestion" name="reflectiveQuestion" class="form-control" placeholder="e.g., What does this mean to you?">
+          <label for="welcome_subtitle">Subtitle</label>
+          <textarea id="welcome_subtitle" name="welcome_subtitle" class="form-control" placeholder="e.g., Tap any section below to learn more">{{ welcomeSubtitle }}</textarea>
         </div>
-        <div class="form-group">
-          <label for="reflectiveQuestion2">Reflective Question 2</label>
-          <input type="text" id="reflectiveQuestion2" name="reflectiveQuestion2" class="form-control" placeholder="Optional second reflective question">
-        </div>
-        <div class="form-group">
-          <label for="reflectiveQuestion3">Reflective Question 3</label>
-          <input type="text" id="reflectiveQuestion3" name="reflectiveQuestion3" class="form-control" placeholder="Optional third reflective question">
-        </div>
-        <div class="form-group">
-          <label for="content">Section Content *</label>
-          <textarea id="content" name="content" class="form-control" required placeholder="Enter the content that will be displayed when this section is expanded..."></textarea>
-        </div>
-        <div class="form-group">
-          <div class="checkbox-group">
-            <input type="checkbox" id="isPublished" name="isPublished" value="true">
-            <label for="isPublished" style="margin-bottom: 0; font-weight: normal;">Publish this section (visible on public page)</label>
-          </div>
-        </div>
+
         <div style="display: flex; gap: 10px;">
-          <button type="submit" class="btn">Create Section</button>
-          <a href="/admin/sections" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn">Save Settings</button>
+          <a href="/admin/sections" class="btn btn-secondary">Back to Sections</a>
         </div>
       </form>
     </div>
@@ -92,8 +73,8 @@
 
   <script>
     tinymce.init({
-      selector: '#content',
-      height: 400,
+      selector: '#welcome_subtitle',
+      height: 300,
       plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
       toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
       menubar: 'file edit view insert format tools table',
@@ -121,7 +102,7 @@
     });
 
     // Sync TinyMCE content before form submit
-    document.getElementById('section-form').addEventListener('submit', function () {
+    document.getElementById('settings-form').addEventListener('submit', function () {
       tinymce.triggerSave();
     });
   </script>

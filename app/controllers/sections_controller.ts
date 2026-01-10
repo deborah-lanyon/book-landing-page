@@ -1,6 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Section from '#models/section'
+import Setting from '#models/setting'
 import { createSectionValidator, updateSectionValidator } from '#validators/section_validator'
+import { errors } from '@vinejs/vine'
 
 export default class SectionsController {
   /**
@@ -8,7 +10,35 @@ export default class SectionsController {
    */
   async index({ view }: HttpContext) {
     const sections = await Section.query().orderBy('display_order', 'asc')
-    return view.render('admin/sections/index', { sections })
+    const lessonTitle = await Setting.get('lesson_title', '')
+    const lessonIntroduction = await Setting.get('lesson_introduction', '')
+    return view.render('admin/sections/index', { sections, lessonTitle, lessonIntroduction })
+  }
+
+  /**
+   * Update lesson settings from the sections page
+   */
+  async updateLesson({ request, response, session }: HttpContext) {
+    const { lesson_title, lesson_introduction } = request.only(['lesson_title', 'lesson_introduction'])
+    await Setting.set('lesson_title', lesson_title || '')
+    await Setting.set('lesson_introduction', lesson_introduction || '')
+    session.flash('success', 'Lesson settings updated successfully')
+    return response.redirect().toRoute('admin.sections.index')
+  }
+
+  /**
+   * Reorder sections via drag-and-drop
+   */
+  async reorder({ request, response }: HttpContext) {
+    const { order } = request.only(['order'])
+
+    if (Array.isArray(order)) {
+      for (let i = 0; i < order.length; i++) {
+        await Section.query().where('id', order[i]).update({ display_order: i })
+      }
+    }
+
+    return response.json({ success: true })
   }
 
   /**
@@ -22,17 +52,32 @@ export default class SectionsController {
    * Handle the form submission to create a new section
    */
   async store({ request, response, session }: HttpContext) {
-    const data = await request.validateUsing(createSectionValidator)
+    try {
+      const data = await request.validateUsing(createSectionValidator)
 
-    await Section.create({
-      title: data.title,
-      content: data.content,
-      displayOrder: data.displayOrder ?? 0,
-      isPublished: data.isPublished ?? false,
-    })
+      // Get the max display order to place new section at the end
+      const maxOrderResult = await Section.query().max('display_order as max')
+      const maxOrder = maxOrderResult[0]?.$extras?.max ?? -1
 
-    session.flash('success', 'Section created successfully')
-    return response.redirect().toRoute('admin.sections.index')
+      await Section.create({
+        title: data.title,
+        reflectiveQuestion: data.reflectiveQuestion ?? null,
+        reflectiveQuestion2: data.reflectiveQuestion2 ?? null,
+        reflectiveQuestion3: data.reflectiveQuestion3 ?? null,
+        content: data.content,
+        displayOrder: maxOrder + 1,
+        isPublished: data.isPublished ?? false,
+      })
+
+      session.flash('success', 'Section created successfully')
+      return response.redirect().toRoute('admin.sections.index')
+    } catch (error) {
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        session.flash('errors', error.messages)
+        return response.redirect().back()
+      }
+      throw error
+    }
   }
 
   /**
@@ -48,17 +93,28 @@ export default class SectionsController {
    */
   async update({ params, request, response, session }: HttpContext) {
     const section = await Section.findOrFail(params.id)
-    const data = await request.validateUsing(updateSectionValidator)
 
-    section.title = data.title
-    section.content = data.content
-    section.displayOrder = data.displayOrder ?? 0
-    section.isPublished = data.isPublished ?? false
+    try {
+      const data = await request.validateUsing(updateSectionValidator)
 
-    await section.save()
+      section.title = data.title
+      section.reflectiveQuestion = data.reflectiveQuestion ?? null
+      section.reflectiveQuestion2 = data.reflectiveQuestion2 ?? null
+      section.reflectiveQuestion3 = data.reflectiveQuestion3 ?? null
+      section.content = data.content
+      section.isPublished = data.isPublished ?? false
 
-    session.flash('success', 'Section updated successfully')
-    return response.redirect().toRoute('admin.sections.index')
+      await section.save()
+
+      session.flash('success', 'Section updated successfully')
+      return response.redirect().toRoute('admin.sections.index')
+    } catch (error) {
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        session.flash('errors', error.messages)
+        return response.redirect().back()
+      }
+      throw error
+    }
   }
 
   /**

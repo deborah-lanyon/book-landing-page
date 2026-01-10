@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book Landing Page</title>
+  <title>Miriam's Home</title>
   <style>
     * {
       margin: 0;
@@ -19,7 +19,7 @@
     }
 
     .container {
-      max-width: 600px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
@@ -41,11 +41,25 @@
       opacity: 0.9;
     }
 
+    .header .subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .header .subtitle p {
+      margin: 0;
+    }
+
+    .header .subtitle a {
+      color: white;
+    }
+
     .accordion {
       background: white;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 20px;
     }
 
     .accordion-item {
@@ -76,12 +90,22 @@
       background: #e9ecef;
     }
 
-    .accordion-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #2c3e50;
+    .accordion-header-text {
       flex: 1;
       padding-right: 15px;
+    }
+
+    .accordion-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .accordion-question {
+      font-size: 17px;
+      color: #667eea;
+      font-style: italic;
+      margin-top: 5px;
     }
 
     .accordion-icon {
@@ -114,10 +138,50 @@
     }
 
     .accordion-body {
-      color: #495057;
-      line-height: 1.6;
-      font-size: 15px;
-      white-space: pre-wrap;
+      color: #495057 !important;
+      line-height: 1.6 !important;
+      font-size: 15px !important;
+    }
+
+    .accordion-body h1,
+    .accordion-body h2,
+    .accordion-body h3,
+    .accordion-body h4,
+    .accordion-body h5,
+    .accordion-body h6 {
+      color: #2c3e50 !important;
+      margin-top: 0 !important;
+      margin-bottom: 0.5em !important;
+    }
+
+    .accordion-body p,
+    .accordion-body p.MsoNormal,
+    .accordion-body .MsoNormal {
+      margin-bottom: 15px !important;
+      margin-top: 0 !important;
+    }
+
+    .accordion-body p:last-child,
+    .accordion-body p.MsoNormal:last-child,
+    .accordion-body .MsoNormal:last-child {
+      margin-bottom: 0 !important;
+    }
+
+    .accordion-body img {
+      max-width: 100% !important;
+      height: auto !important;
+      border-radius: 8px !important;
+      margin: 10px 0 !important;
+    }
+
+    .accordion-body ul,
+    .accordion-body ol {
+      margin-left: 20px !important;
+      margin-bottom: 1em !important;
+    }
+
+    .accordion-body a {
+      color: #667eea !important;
     }
 
     .empty-state {
@@ -166,9 +230,18 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>Welcome</h1>
-      <p>Tap any section below to learn more</p>
+      <h1>{{ welcomeTitle }}</h1>
+      <div class="subtitle">{{{ welcomeSubtitle }}}</div>
     </div>
+
+    @if(lessonTitle)
+      <div style="margin-bottom: 30px; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+        <h2 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 22px;">{{ lessonTitle }}</h2>
+        @if(lessonIntroduction)
+          <div style="color: #495057; line-height: 1.6; font-size: 15px;">{{{ lessonIntroduction }}}</div>
+        @end
+      </div>
+    @end
 
     @if(sections.length === 0)
       <div class="empty-state">
@@ -180,14 +253,109 @@
         @each(section in sections)
           <div class="accordion-item" data-section-id="{{ section.id }}">
             <div class="accordion-header">
-              <div class="accordion-title">{{ section.title }}</div>
+              <div class="accordion-header-text">
+                <div class="accordion-title">{{ section.title }}</div>
+                @if(section.reflectiveQuestion)
+                  <div class="accordion-question">{{ section.reflectiveQuestion }}</div>
+                @end
+                @if(section.reflectiveQuestion2)
+                  <div class="accordion-question">{{ section.reflectiveQuestion2 }}</div>
+                @end
+                @if(section.reflectiveQuestion3)
+                  <div class="accordion-question">{{ section.reflectiveQuestion3 }}</div>
+                @end
+              </div>
               <div class="accordion-icon">+</div>
             </div>
             <div class="accordion-content">
-              <div class="accordion-body">{{ section.content }}</div>
+              <div class="accordion-body">{{{ section.content }}}</div>
             </div>
           </div>
         @end
+      </div>
+
+      <!-- About Us & Contact Form Section -->
+      <div style="margin-top: 40px; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">About Us</h3>
+        <p style="color: #495057; margin-bottom: 25px; font-size: 15px; line-height: 1.6;">
+          Reading God's Word is a devotional expository Bible study series that explains books of the Bible verse-by-verse. The series is put together by a team of Sydney based Christian leaders, Dr Alan & Alayne Thompson, David Glinatsis, Peter & Louise Knight and Phillip Jensen, and launched in 2026.
+        </p>
+
+        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">Get In Touch</h3>
+
+        @if(flashMessages.has('contactSuccess'))
+          <div style="padding: 15px; margin-bottom: 20px; border-radius: 4px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
+            {{ flashMessages.get('contactSuccess') }}
+          </div>
+        @end
+
+        @if(flashMessages.has('contactErrors'))
+          <div style="padding: 15px; margin-bottom: 20px; border-radius: 4px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
+            <strong>Please correct the following:</strong>
+            <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+              @each(error in flashMessages.get('contactErrors'))
+                <li>{{ error.message }}</li>
+              @end
+            </ul>
+          </div>
+        @end
+
+        <form method="POST" action="/contact">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+              <label for="firstName" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">First Name *</label>
+              <input type="text" id="firstName" name="firstName" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div>
+              <label for="lastName" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Last Name</label>
+              <input type="text" id="lastName" name="lastName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+              <label for="town" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Town *</label>
+              <input type="text" id="town" name="town" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div>
+              <label for="email" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Email *</label>
+              <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50; font-size: 14px;">Would you like</label>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="display: flex; align-items: center; font-weight: normal; color: #495057; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" name="wantFollowJesus" value="true" style="margin-right: 10px;">
+                Further information on how to become a follower of Jesus Christ
+              </label>
+              <label style="display: flex; align-items: center; font-weight: normal; color: #495057; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" name="wantBible" value="true" style="margin-right: 10px;">
+                A Bible in your own language
+              </label>
+              <label style="display: flex; align-items: center; font-weight: normal; color: #495057; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" name="wantPrayerRequest" value="true" style="margin-right: 10px;">
+                Share a prayer request
+              </label>
+              <label style="display: flex; align-items: center; font-weight: normal; color: #495057; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" name="wantAskQuestion" value="true" style="margin-right: 10px;">
+                Ask a question
+              </label>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label for="message" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Your Question or Feedback</label>
+            <textarea id="message" name="message" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
+          </div>
+
+          <button type="submit" style="display: inline-block; padding: 12px 30px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: 600;">
+            Send Message
+          </button>
+        </form>
       </div>
 
       <!-- QR Code Section -->

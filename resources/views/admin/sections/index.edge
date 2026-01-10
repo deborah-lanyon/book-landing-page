@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Sections - Admin Panel</title>
+  <script src="https://cdn.tiny.cloud/1/wogn0yqjl4fxgrix10q3xfhojxskfvu2yrz0to24d6v4ke9i/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -86,14 +88,55 @@
       display: flex;
       gap: 10px;
     }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .drag-handle {
+      cursor: grab;
+      color: #95a5a6;
+      font-size: 18px;
+      padding: 0 8px;
+    }
+    .drag-handle:hover {
+      color: #667eea;
+    }
+    .sortable-ghost {
+      opacity: 0.4;
+      background: #f0f0f0;
+    }
+    .sortable-chosen {
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    #sections-tbody tr {
+      cursor: grab;
+    }
+    #sections-tbody tr:active {
+      cursor: grabbing;
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-      <h1>Book Landing Page - Admin Panel</h1>
+      <h1>Miriam's Home - Admin Panel</h1>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <a href="/" class="btn" style="padding: 8px 16px;">View Public Page</a>
+        <a href="/" class="btn" style="padding: 8px 16px;" target="_blank">View Public Page</a>
+        <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary" style="padding: 8px 16px;" target="_blank">Site Settings</a>
+        <a href="{{ route('admin.password.edit') }}" class="btn btn-secondary" style="padding: 8px 16px;" target="_blank">Change Password</a>
         <form method="POST" action="/logout" style="margin: 0;">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           <button type="submit" class="btn btn-secondary" style="padding: 8px 16px;">Logout</button>
@@ -109,6 +152,30 @@
       </div>
     @end
 
+    <!-- Lesson Section -->
+    <div class="card" style="margin-bottom: 20px;">
+      <h2 style="margin-top: 0; margin-bottom: 15px;">Lesson Overview</h2>
+      <p style="color: #666; margin-bottom: 20px;">This content appears at the top of the public page, before the accordion sections.</p>
+
+      <form id="lesson-form" method="POST" action="{{ route('admin.sections.updateLesson') }}">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="_method" value="PUT">
+
+        <div class="form-group">
+          <label for="lesson_title">Lesson Title</label>
+          <input type="text" id="lesson_title" name="lesson_title" class="form-control" value="{{ lessonTitle }}" placeholder="e.g., Lesson 1: Introduction to Jude">
+        </div>
+
+        <div class="form-group">
+          <label for="lesson_introduction">Introduction</label>
+          <textarea id="lesson_introduction" name="lesson_introduction" class="form-control" placeholder="Enter the lesson introduction...">{{ lessonIntroduction }}</textarea>
+        </div>
+
+        <button type="submit" class="btn">Save Lesson</button>
+      </form>
+    </div>
+
+    <!-- Accordion Sections -->
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="margin: 0;">Accordion Sections</h2>
@@ -120,19 +187,20 @@
           No sections yet. Click "Add New Section" to create your first accordion section.
         </p>
       @else
+        <p style="color: #666; margin-bottom: 10px; font-size: 13px;">Drag rows to reorder sections</p>
         <table>
           <thead>
             <tr>
-              <th style="width: 80px;">Order</th>
+              <th style="width: 50px;"></th>
               <th>Title</th>
               <th style="width: 120px;">Status</th>
               <th style="width: 200px;">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="sections-tbody">
             @each(section in sections)
-              <tr>
-                <td>{{ section.displayOrder }}</td>
+              <tr data-id="{{ section.id }}">
+                <td><span class="drag-handle">&#9776;</span></td>
                 <td>{{ section.title }}</td>
                 <td>
                   @if(section.isPublished)
@@ -158,5 +226,83 @@
       @end
     </div>
   </div>
+
+  <script>
+    tinymce.init({
+      selector: '#lesson_introduction',
+      height: 300,
+      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+      menubar: 'file edit view insert format tools table',
+      content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; }',
+      image_title: true,
+      automatic_uploads: false,
+      file_picker_types: 'image',
+      images_upload_handler: function (blobInfo, progress) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function () {
+            resolve(reader.result);
+          };
+          reader.onerror = function () {
+            reject('Failed to read file');
+          };
+          reader.readAsDataURL(blobInfo.blob());
+        });
+      },
+      setup: function (editor) {
+        editor.on('change', function () {
+          tinymce.triggerSave();
+        });
+      }
+    });
+
+    // Sync TinyMCE content before form submit
+    document.getElementById('lesson-form').addEventListener('submit', function () {
+      tinymce.triggerSave();
+    });
+
+    // Initialize drag-and-drop sorting
+    var sectionsTable = document.getElementById('sections-tbody');
+    if (sectionsTable) {
+      new Sortable(sectionsTable, {
+        animation: 150,
+        handle: '.drag-handle',
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        onEnd: function (evt) {
+          // Get new order of section IDs
+          var rows = sectionsTable.querySelectorAll('tr');
+          var order = [];
+          rows.forEach(function (row) {
+            order.push(row.dataset.id);
+          });
+
+          // Send to server
+          fetch('{{ route("admin.sections.reorder") }}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': '{{ csrfToken }}'
+            },
+            body: JSON.stringify({ order: order })
+          })
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error('Failed to save order');
+            }
+            return response.json();
+          })
+          .then(function (data) {
+            // Optionally show success feedback
+          })
+          .catch(function (error) {
+            console.error('Error saving order:', error);
+            alert('Failed to save order. Please try again.');
+          });
+        }
+      });
+    }
+  </script>
 </body>
 </html>

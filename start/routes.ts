@@ -13,9 +13,14 @@ import { middleware } from './kernel.js'
 const HomeController = () => import('#controllers/home_controller')
 const SectionsController = () => import('#controllers/sections_controller')
 const AuthController = () => import('#controllers/auth_controller')
+const SettingsController = () => import('#controllers/settings_controller')
+const ContactsController = () => import('#controllers/contacts_controller')
 
 // Public landing page
 router.get('/', [HomeController, 'index'])
+
+// Contact form submission
+router.post('/contact', [ContactsController, 'store']).as('contact.store')
 
 // Auth routes
 router.get('/login', [AuthController, 'showLogin']).as('login').use(middleware.guest())
@@ -26,11 +31,21 @@ router.post('/logout', [AuthController, 'logout']).as('logout').use(middleware.a
 router
   .group(() => {
     router.get('/sections', [SectionsController, 'index']).as('admin.sections.index')
+    router.put('/sections/lesson', [SectionsController, 'updateLesson']).as('admin.sections.updateLesson')
+    router.post('/sections/reorder', [SectionsController, 'reorder']).as('admin.sections.reorder')
     router.get('/sections/create', [SectionsController, 'create']).as('admin.sections.create')
     router.post('/sections', [SectionsController, 'store']).as('admin.sections.store')
     router.get('/sections/:id/edit', [SectionsController, 'edit']).as('admin.sections.edit')
     router.put('/sections/:id', [SectionsController, 'update']).as('admin.sections.update')
     router.delete('/sections/:id', [SectionsController, 'destroy']).as('admin.sections.destroy')
+
+    // Password change
+    router.get('/password', [AuthController, 'showChangePassword']).as('admin.password.edit')
+    router.put('/password', [AuthController, 'changePassword']).as('admin.password.update')
+
+    // Settings
+    router.get('/settings', [SettingsController, 'edit']).as('admin.settings.edit')
+    router.put('/settings', [SettingsController, 'update']).as('admin.settings.update')
   })
   .prefix('/admin')
   .use(middleware.auth())
