@@ -1,4 +1,4 @@
-# Build stage
+# Build stage - force cache bust 2026-01-11
 FROM node:20-alpine AS build
 
 WORKDIR /app
