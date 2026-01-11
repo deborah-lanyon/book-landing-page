@@ -1,0 +1,32 @@
+# Ignore everything in .gitignore
+#!include:.gitignore
+
+# Node modules - critical to exclude
+node_modules/
+
+# Build output
+build/
+tmp/
+
+# Git
+.git/
+.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+.fleet/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Test coverage
+coverage/
