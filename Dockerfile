@@ -13,7 +13,7 @@ RUN npm ci
 COPY . .
 
 # Build the application (this compiles TypeScript to JavaScript in /app/build)
-RUN node ace build --ignore-ts-errors
+RUN node ace.js build --ignore-ts-errors
 
 # Production stage
 FROM node:20-alpine
