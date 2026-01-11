@@ -58,8 +58,8 @@
       background: white;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      padding: 20px;
+      box-shadow: none;
+      padding: 40px 30px;
     }
 
     .accordion-item {
@@ -74,7 +74,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px;
+      padding: 30px 20px;
       cursor: pointer;
       background: white;
       transition: background 0.2s ease;
@@ -99,6 +99,7 @@
       font-size: 17px;
       font-weight: 600;
       color: #2c3e50;
+      margin-bottom: 10px;
     }
 
     .accordion-question {
@@ -200,7 +201,7 @@
       font-size: 16px;
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 600px) {
       body {
         padding: 15px;
       }
@@ -224,6 +225,10 @@
       .accordion-item.active .accordion-content {
         padding: 16px;
       }
+
+      .form-grid {
+        grid-template-columns: 1fr !important;
+      }
     }
   </style>
 </head>
@@ -235,7 +240,7 @@
     </div>
 
     @if(lessonTitle)
-      <div style="margin-bottom: 30px; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+      <div style="margin-bottom: 30px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
         <h2 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 22px;">{{ lessonTitle }}</h2>
         @if(lessonIntroduction)
           <div style="color: #495057; line-height: 1.6; font-size: 15px;">{{{ lessonIntroduction }}}</div>
@@ -275,7 +280,7 @@
       </div>
 
       <!-- About Us & Contact Form Section -->
-      <div style="margin-top: 40px; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+      <div style="margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
         <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">About Us</h3>
         <p style="color: #495057; margin-bottom: 25px; font-size: 15px; line-height: 1.6;">
           Reading God's Word is a devotional expository Bible study series that explains books of the Bible verse-by-verse. The series is put together by a team of Sydney based Christian leaders, Dr Alan & Alayne Thompson, David Glinatsis, Peter & Louise Knight and Phillip Jensen, and launched in 2026.
@@ -303,7 +308,7 @@
         <form method="POST" action="/contact">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
             <div>
               <label for="firstName" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">First Name *</label>
               <input type="text" id="firstName" name="firstName" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
@@ -314,7 +319,7 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
             <div>
               <label for="town" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Town *</label>
               <input type="text" id="town" name="town" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
@@ -359,7 +364,7 @@
       </div>
 
       <!-- QR Code Section -->
-      <div style="text-align: center; margin-top: 40px; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+      <div style="text-align: center; margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
         <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">Share this page</h3>
         <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Scan the QR code to open on your phone</p>
         <div id="qrcode" style="display: inline-block;"></div>
