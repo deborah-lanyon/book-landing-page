@@ -4,15 +4,18 @@ import Section from '#models/section'
 
 export default class extends BaseSeeder {
   async run() {
-    // Create admin user
-    await User.firstOrCreate(
-      { email: 'admin@example.com' },
-      {
+    // Create admin user only if it doesn't exist
+    const existingUser = await User.findBy('email', 'admin@example.com')
+    if (!existingUser) {
+      await User.create({
         fullName: 'Admin User',
         email: 'admin@example.com',
         password: 'password123',
-      }
-    )
+      })
+      console.log('✅ Created admin user (admin@example.com / password123)')
+    } else {
+      console.log('ℹ️ Admin user already exists, skipping')
+    }
 
     // Create sample accordion sections
     const sections = [
@@ -57,7 +60,6 @@ export default class extends BaseSeeder {
       await Section.firstOrCreate({ title: section.title }, section)
     }
 
-    console.log('✅ Seeded admin user (admin@example.com / password123)')
-    console.log('✅ Seeded 5 accordion sections (4 published, 1 draft)')
+    console.log('✅ Seeded sample accordion sections')
   }
 }
