@@ -85,7 +85,23 @@ export default class AuthController {
     const { email, password } = request.only(['email', 'password'])
 
     try {
-      const user = await User.verifyCredentials(email, password)
+      // Find user by email
+      const user = await User.findBy('email', email)
+
+      if (!user) {
+        session.flash('error', 'Invalid credentials')
+        return response.redirect().back()
+      }
+
+      // Manually verify password using hash.verify(hash, plaintext)
+      const isValid = await hash.verify(user.password, password)
+
+      if (!isValid) {
+        session.flash('error', 'Invalid credentials')
+        return response.redirect().back()
+      }
+
+      // Login the user
       await auth.use('web').login(user)
 
       return response.redirect().toRoute('admin.sections.index')
