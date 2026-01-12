@@ -31,6 +31,12 @@ router.get('/login', [AuthController, 'showLogin']).as('login').use(middleware.g
 router.post('/login', [AuthController, 'login']).as('login.store')
 router.post('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
 
+// Forgot password routes
+router.get('/forgot-password', [AuthController, 'showForgotPassword']).as('password.forgot')
+router.post('/forgot-password', [AuthController, 'forgotPassword']).as('password.forgot.store')
+router.get('/reset-password/:token', [AuthController, 'showResetPassword']).as('password.reset')
+router.post('/reset-password/:token', [AuthController, 'resetPassword']).as('password.reset.store')
+
 // Admin routes (protected by auth middleware)
 router
   .group(() => {

@@ -1,6 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import hash from '@adonisjs/core/services/hash'
+import { DateTime } from 'luxon'
+import { randomBytes } from 'node:crypto'
 
 export default class AuthController {
   /**
@@ -145,5 +147,103 @@ export default class AuthController {
 
     session.flash('success', 'Password updated successfully')
     return response.redirect().toRoute('admin.sections.index')
+  }
+
+  /**
+   * Show forgot password form
+   */
+  async showForgotPassword({ view }: HttpContext) {
+    return view.render('auth/forgot-password')
+  }
+
+  /**
+   * Handle forgot password request - generates reset token
+   */
+  async forgotPassword({ request, response, session }: HttpContext) {
+    const { email } = request.only(['email'])
+
+    const user = await User.findBy('email', email)
+
+    if (!user) {
+      // Don't reveal if email exists or not for security
+      session.flash('success', 'If an account with that email exists, a reset link has been generated. Check the server logs.')
+      return response.redirect().back()
+    }
+
+    // Generate a secure random token
+    const token = randomBytes(32).toString('hex')
+
+    // Save token with 1 hour expiry
+    user.resetToken = token
+    user.resetTokenExpiresAt = DateTime.now().plus({ hours: 1 })
+    await user.save()
+
+    // Log the reset URL to console (visible in Cloud Run logs)
+    const resetUrl = `/reset-password/${token}`
+    console.log('========================================')
+    console.log('PASSWORD RESET REQUESTED')
+    console.log(`Email: ${email}`)
+    console.log(`Reset URL: ${resetUrl}`)
+    console.log(`Expires: ${user.resetTokenExpiresAt.toISO()}`)
+    console.log('========================================')
+
+    session.flash('success', 'If an account with that email exists, a reset link has been generated. Check the server logs.')
+    return response.redirect().back()
+  }
+
+  /**
+   * Show reset password form
+   */
+  async showResetPassword({ view, params, response, session }: HttpContext) {
+    const { token } = params
+
+    const user = await User.query()
+      .where('reset_token', token)
+      .where('reset_token_expires_at', '>', DateTime.now().toSQL())
+      .first()
+
+    if (!user) {
+      session.flash('error', 'Invalid or expired reset link')
+      return response.redirect().toRoute('password.forgot')
+    }
+
+    return view.render('auth/reset-password', { token })
+  }
+
+  /**
+   * Handle password reset
+   */
+  async resetPassword({ request, params, response, session }: HttpContext) {
+    const { token } = params
+    const { password, confirm_password } = request.only(['password', 'confirm_password'])
+
+    const user = await User.query()
+      .where('reset_token', token)
+      .where('reset_token_expires_at', '>', DateTime.now().toSQL())
+      .first()
+
+    if (!user) {
+      session.flash('error', 'Invalid or expired reset link')
+      return response.redirect().toRoute('password.forgot')
+    }
+
+    if (password !== confirm_password) {
+      session.flash('error', 'Passwords do not match')
+      return response.redirect().back()
+    }
+
+    if (password.length < 8) {
+      session.flash('error', 'Password must be at least 8 characters')
+      return response.redirect().back()
+    }
+
+    // Update password and clear reset token
+    user.password = password
+    user.resetToken = null
+    user.resetTokenExpiresAt = null
+    await user.save()
+
+    session.flash('success', 'Password reset successfully! Please log in.')
+    return response.redirect().toRoute('login')
   }
 }
