@@ -12,16 +12,22 @@ export default class SectionsController {
     const sections = await Section.query().orderBy('display_order', 'asc')
     const lessonTitle = await Setting.get('lesson_title', '')
     const lessonIntroduction = await Setting.get('lesson_introduction', '')
-    return view.render('admin/sections/index', { sections, lessonTitle, lessonIntroduction })
+    const lessonImage = await Setting.get('lesson_image', '')
+    return view.render('admin/sections/index', { sections, lessonTitle, lessonIntroduction, lessonImage })
   }
 
   /**
    * Update lesson settings from the sections page
    */
   async updateLesson({ request, response, session }: HttpContext) {
-    const { lesson_title, lesson_introduction } = request.only(['lesson_title', 'lesson_introduction'])
+    const { lesson_title, lesson_introduction, lesson_image } = request.only([
+      'lesson_title',
+      'lesson_introduction',
+      'lesson_image',
+    ])
     await Setting.set('lesson_title', lesson_title || '')
     await Setting.set('lesson_introduction', lesson_introduction || '')
+    await Setting.set('lesson_image', lesson_image || '')
     session.flash('success', 'Lesson settings updated successfully')
     return response.redirect().toRoute('admin.sections.index')
   }
@@ -65,6 +71,7 @@ export default class SectionsController {
         reflectiveQuestion2: data.reflectiveQuestion2 ?? null,
         reflectiveQuestion3: data.reflectiveQuestion3 ?? null,
         content: data.content,
+        imageUrl: data.imageUrl ?? null,
         displayOrder: maxOrder + 1,
         isPublished: data.isPublished ?? false,
       })
@@ -102,6 +109,7 @@ export default class SectionsController {
       section.reflectiveQuestion2 = data.reflectiveQuestion2 ?? null
       section.reflectiveQuestion3 = data.reflectiveQuestion3 ?? null
       section.content = data.content
+      section.imageUrl = data.imageUrl ?? null
       section.isPublished = data.isPublished ?? false
 
       await section.save()

@@ -245,6 +245,9 @@
         @if(lessonIntroduction)
           <div style="color: #495057; line-height: 1.6; font-size: 15px;">{{{ lessonIntroduction }}}</div>
         @end
+        @if(lessonImage)
+          <img src="{{ lessonImage }}" alt="Lesson image" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 20px;">
+        @end
       </div>
     @end
 
@@ -274,6 +277,9 @@
             </div>
             <div class="accordion-content">
               <div class="accordion-body">{{{ section.content }}}</div>
+              @if(section.imageUrl)
+                <img src="{{ section.imageUrl }}" alt="Section image" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 15px;">
+              @end
             </div>
           </div>
         @end

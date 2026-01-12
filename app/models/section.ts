@@ -21,6 +21,9 @@ export default class Section extends BaseModel {
   declare content: string
 
   @column()
+  declare imageUrl: string | null
+
+  @column()
   declare displayOrder: number
 
   @column()
