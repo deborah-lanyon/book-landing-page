@@ -1,15 +1,9 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import Section from '#models/section'
-import User from '#models/user'
 
 export default class extends BaseSeeder {
   async run() {
-    // TEMPORARY: Delete all users to fix double-hashed password issue
-    // Remove this block after the fix is deployed and a new user is created
-    await User.query().delete()
-    console.log('🗑️ Deleted all users (temporary fix for password hashing)')
-
-    // Note: Admin user is now created via the /setup page on first visit
+    // Note: Admin user is created via the /setup page on first visit
     // This allows users to set their own credentials instead of using defaults
 
     // Create sample accordion sections

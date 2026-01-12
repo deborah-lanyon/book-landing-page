@@ -84,30 +84,17 @@ export default class AuthController {
   async login({ request, response, auth, session }: HttpContext) {
     const { email, password } = request.only(['email', 'password'])
 
-    console.log('========================================')
-    console.log('LOGIN ATTEMPT')
-    console.log(`Email: ${email}`)
-    console.log(`Password length: ${password?.length || 0}`)
-
     try {
       // Find user by email
       const user = await User.findBy('email', email)
 
       if (!user) {
-        console.log('User not found')
-        console.log('========================================')
         session.flash('error', 'Invalid credentials')
         return response.redirect().back()
       }
 
-      console.log(`User found: ${user.email}`)
-      console.log(`Stored hash: ${user.password.substring(0, 30)}...`)
-      console.log(`Hash length: ${user.password.length}`)
-
-      // Manually verify password using scrypt hasher
+      // Verify password using scrypt hasher
       const isValid = await hash.use('scrypt').verify(user.password, password)
-      console.log(`Password verification result: ${isValid}`)
-      console.log('========================================')
 
       if (!isValid) {
         session.flash('error', 'Invalid credentials')
@@ -118,9 +105,7 @@ export default class AuthController {
       await auth.use('web').login(user)
 
       return response.redirect().toRoute('admin.sections.index')
-    } catch (error) {
-      console.log(`Login error: ${error}`)
-      console.log('========================================')
+    } catch {
       session.flash('error', 'Invalid credentials')
       return response.redirect().back()
     }
