@@ -4,9 +4,75 @@ import hash from '@adonisjs/core/services/hash'
 
 export default class AuthController {
   /**
+   * Show setup form (only if no users exist)
+   */
+  async showSetup({ view, response }: HttpContext) {
+    const userCount = await User.query().count('* as total')
+    const hasUsers = Number(userCount[0].$extras.total) > 0
+
+    if (hasUsers) {
+      return response.redirect().toRoute('login')
+    }
+
+    return view.render('auth/setup')
+  }
+
+  /**
+   * Handle initial admin setup
+   */
+  async setup({ request, response, session }: HttpContext) {
+    const userCount = await User.query().count('* as total')
+    const hasUsers = Number(userCount[0].$extras.total) > 0
+
+    if (hasUsers) {
+      session.flash('error', 'Setup already completed')
+      return response.redirect().toRoute('login')
+    }
+
+    const { full_name, email, password, confirm_password } = request.only([
+      'full_name',
+      'email',
+      'password',
+      'confirm_password',
+    ])
+
+    if (!full_name || !email || !password) {
+      session.flash('error', 'All fields are required')
+      return response.redirect().back()
+    }
+
+    if (password !== confirm_password) {
+      session.flash('error', 'Passwords do not match')
+      return response.redirect().back()
+    }
+
+    if (password.length < 8) {
+      session.flash('error', 'Password must be at least 8 characters')
+      return response.redirect().back()
+    }
+
+    await User.create({
+      fullName: full_name,
+      email: email,
+      password: password,
+    })
+
+    session.flash('success', 'Admin account created! Please log in.')
+    return response.redirect().toRoute('login')
+  }
+
+  /**
    * Show login form
    */
-  async showLogin({ view }: HttpContext) {
+  async showLogin({ view, response }: HttpContext) {
+    // Check if any users exist, if not redirect to setup
+    const userCount = await User.query().count('* as total')
+    const hasUsers = Number(userCount[0].$extras.total) > 0
+
+    if (!hasUsers) {
+      return response.redirect().toRoute('setup')
+    }
+
     return view.render('auth/login')
   }
 

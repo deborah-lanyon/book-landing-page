@@ -22,6 +22,10 @@ router.get('/', [HomeController, 'index'])
 // Contact form submission
 router.post('/contact', [ContactsController, 'store']).as('contact.store')
 
+// Setup route (only works when no users exist)
+router.get('/setup', [AuthController, 'showSetup']).as('setup')
+router.post('/setup', [AuthController, 'setup']).as('setup.store')
+
 // Auth routes
 router.get('/login', [AuthController, 'showLogin']).as('login').use(middleware.guest())
 router.post('/login', [AuthController, 'login']).as('login.store')

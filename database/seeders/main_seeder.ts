@@ -1,21 +1,10 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
-import User from '#models/user'
 import Section from '#models/section'
 
 export default class extends BaseSeeder {
   async run() {
-    // Create admin user only if it doesn't exist
-    const existingUser = await User.findBy('email', 'admin@example.com')
-    if (!existingUser) {
-      await User.create({
-        fullName: 'Admin User',
-        email: 'admin@example.com',
-        password: 'password123',
-      })
-      console.log('✅ Created admin user (admin@example.com / password123)')
-    } else {
-      console.log('ℹ️ Admin user already exists, skipping')
-    }
+    // Note: Admin user is now created via the /setup page on first visit
+    // This allows users to set their own credentials instead of using defaults
 
     // Create sample accordion sections
     const sections = [
