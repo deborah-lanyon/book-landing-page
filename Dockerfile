@@ -35,7 +35,7 @@ ENV NODE_ENV=production
 # Expose port
 EXPOSE 8080
 
-# Start script: run migrations, delete ALL users (one-time reset), seed sections, then start server
-# This forces the /setup page to appear so you can create your own admin account
+# Start script: run migrations, seed sections, delete ALL users (one-time reset), then start server
+# Delete happens AFTER seed to ensure no users exist
 # IMPORTANT: After first successful setup, remove the user:delete-all command from this line!
-CMD ["sh", "-c", "node build/ace migration:run --force && node build/ace user:delete-all || true && node build/ace db:seed && node build/bin/server.js"]
+CMD ["sh", "-c", "node build/ace migration:run --force && node build/ace db:seed && node build/ace user:delete-all || true && node build/bin/server.js"]
