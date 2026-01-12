@@ -56,6 +56,12 @@ router
     // Settings
     router.get('/settings', [SettingsController, 'edit']).as('admin.settings.edit')
     router.put('/settings', [SettingsController, 'update']).as('admin.settings.update')
+
+    // User management
+    router.get('/users', [AuthController, 'listUsers']).as('admin.users.index')
+    router.get('/users/create', [AuthController, 'showCreateUser']).as('admin.users.create')
+    router.post('/users', [AuthController, 'createUser']).as('admin.users.store')
+    router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy')
   })
   .prefix('/admin')
   .use(middleware.auth())

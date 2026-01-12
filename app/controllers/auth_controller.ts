@@ -262,4 +262,92 @@ export default class AuthController {
     session.flash('success', 'Password reset successfully! Please log in.')
     return response.redirect().toRoute('login')
   }
+
+  /**
+   * List all admin users
+   */
+  async listUsers({ view }: HttpContext) {
+    const users = await User.query().orderBy('created_at', 'asc')
+    return view.render('admin/users/index', { users })
+  }
+
+  /**
+   * Show create user form
+   */
+  async showCreateUser({ view }: HttpContext) {
+    return view.render('admin/users/create')
+  }
+
+  /**
+   * Create a new admin user
+   */
+  async createUser({ request, response, session }: HttpContext) {
+    const { full_name, email, password, confirm_password } = request.only([
+      'full_name',
+      'email',
+      'password',
+      'confirm_password',
+    ])
+
+    if (!full_name || !email || !password) {
+      session.flash('error', 'All fields are required')
+      return response.redirect().back()
+    }
+
+    // Check if email already exists
+    const existingUser = await User.findBy('email', email)
+    if (existingUser) {
+      session.flash('error', 'A user with this email already exists')
+      return response.redirect().back()
+    }
+
+    if (password !== confirm_password) {
+      session.flash('error', 'Passwords do not match')
+      return response.redirect().back()
+    }
+
+    if (password.length < 8) {
+      session.flash('error', 'Password must be at least 8 characters')
+      return response.redirect().back()
+    }
+
+    await User.create({
+      fullName: full_name,
+      email: email,
+      password: password,
+    })
+
+    session.flash('success', 'Admin user created successfully')
+    return response.redirect().toRoute('admin.users.index')
+  }
+
+  /**
+   * Delete an admin user
+   */
+  async deleteUser({ params, response, session, auth }: HttpContext) {
+    const user = await User.find(params.id)
+
+    if (!user) {
+      session.flash('error', 'User not found')
+      return response.redirect().toRoute('admin.users.index')
+    }
+
+    // Prevent deleting yourself
+    if (user.id === auth.user!.id) {
+      session.flash('error', 'You cannot delete your own account')
+      return response.redirect().toRoute('admin.users.index')
+    }
+
+    // Prevent deleting the last user
+    const userCount = await User.query().count('* as total')
+    if (Number(userCount[0].$extras.total) <= 1) {
+      session.flash('error', 'Cannot delete the last admin user')
+      return response.redirect().toRoute('admin.users.index')
+    }
+
+    await user.delete()
+
+    session.flash('success', 'User deleted successfully')
+    return response.redirect().toRoute('admin.users.index')
+  }
 }
