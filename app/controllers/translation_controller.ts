@@ -83,9 +83,19 @@ export default class TranslationController {
         textsToTranslate.push(lessonIntroSetting.value)
       }
 
+      // Track which sections have which reflective questions
+      const sectionQuestions: { id: number; hasQ1: boolean; hasQ2: boolean; hasQ3: boolean }[] = []
+
       for (const section of sections) {
         textsToTranslate.push(section.title)
         textsToTranslate.push(section.content)
+        const hasQ1 = !!section.reflectiveQuestion
+        const hasQ2 = !!section.reflectiveQuestion2
+        const hasQ3 = !!section.reflectiveQuestion3
+        sectionQuestions.push({ id: section.id, hasQ1, hasQ2, hasQ3 })
+        if (hasQ1) textsToTranslate.push(section.reflectiveQuestion!)
+        if (hasQ2) textsToTranslate.push(section.reflectiveQuestion2!)
+        if (hasQ3) textsToTranslate.push(section.reflectiveQuestion3!)
       }
 
       // Translate all at once for efficiency
@@ -96,7 +106,14 @@ export default class TranslationController {
       const result: {
         lessonTitle?: string
         lessonIntroduction?: string
-        sections: { id: number; title: string; content: string }[]
+        sections: {
+          id: number
+          title: string
+          content: string
+          reflectiveQuestion?: string
+          reflectiveQuestion2?: string
+          reflectiveQuestion3?: string
+        }[]
       } = {
         sections: [],
       }
@@ -108,12 +125,23 @@ export default class TranslationController {
         result.lessonIntroduction = translations[index++]
       }
 
-      for (const section of sections) {
-        result.sections.push({
-          id: section.id,
+      for (const sq of sectionQuestions) {
+        const sectionResult: {
+          id: number
+          title: string
+          content: string
+          reflectiveQuestion?: string
+          reflectiveQuestion2?: string
+          reflectiveQuestion3?: string
+        } = {
+          id: sq.id,
           title: translations[index++],
           content: translations[index++],
-        })
+        }
+        if (sq.hasQ1) sectionResult.reflectiveQuestion = translations[index++]
+        if (sq.hasQ2) sectionResult.reflectiveQuestion2 = translations[index++]
+        if (sq.hasQ3) sectionResult.reflectiveQuestion3 = translations[index++]
+        result.sections.push(sectionResult)
       }
 
       return response.json({

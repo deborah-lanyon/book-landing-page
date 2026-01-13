@@ -622,10 +622,12 @@
         };
 
         document.querySelectorAll('.accordion-item').forEach(item => {
+          const questions = item.querySelectorAll('.accordion-question');
           originalContent.sections.push({
             id: item.dataset.sectionId,
             title: item.querySelector('.accordion-title')?.innerHTML,
-            content: item.querySelector('.accordion-body')?.innerHTML
+            content: item.querySelector('.accordion-body')?.innerHTML,
+            questions: Array.from(questions).map(q => q.innerHTML)
           });
         });
       }
@@ -649,8 +651,14 @@
           if (original) {
             const titleEl = item.querySelector('.accordion-title');
             const contentEl = item.querySelector('.accordion-body');
+            const questionEls = item.querySelectorAll('.accordion-question');
             if (titleEl && original.title) titleEl.innerHTML = original.title;
             if (contentEl && original.content) contentEl.innerHTML = original.content;
+            if (original.questions) {
+              questionEls.forEach((q, i) => {
+                if (original.questions[i]) q.innerHTML = original.questions[i];
+              });
+            }
           }
         });
       }
@@ -673,8 +681,22 @@
             if (item) {
               const titleEl = item.querySelector('.accordion-title');
               const contentEl = item.querySelector('.accordion-body');
+              const questionEls = item.querySelectorAll('.accordion-question');
               if (titleEl) titleEl.innerHTML = section.title;
               if (contentEl) contentEl.innerHTML = section.content;
+              // Apply translated questions
+              let qIndex = 0;
+              if (section.reflectiveQuestion && questionEls[qIndex]) {
+                questionEls[qIndex].innerHTML = section.reflectiveQuestion;
+                qIndex++;
+              }
+              if (section.reflectiveQuestion2 && questionEls[qIndex]) {
+                questionEls[qIndex].innerHTML = section.reflectiveQuestion2;
+                qIndex++;
+              }
+              if (section.reflectiveQuestion3 && questionEls[qIndex]) {
+                questionEls[qIndex].innerHTML = section.reflectiveQuestion3;
+              }
             }
           });
         }
