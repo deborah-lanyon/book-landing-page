@@ -356,10 +356,10 @@
     </div>
 
     @if(lessonTitle)
-      <div style="margin-bottom: 30px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
-        <h2 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 22px;">{{ lessonTitle }}</h2>
+      <div id="lessonOverview" style="margin-bottom: 30px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
+        <h2 id="lessonTitle" style="color: #2c3e50; margin: 0 0 15px 0; font-size: 22px;">{{ lessonTitle }}</h2>
         @if(lessonIntroduction)
-          <div style="color: #495057; line-height: 1.6; font-size: 15px;">{{{ lessonIntroduction }}}</div>
+          <div id="lessonIntro" style="color: #495057; line-height: 1.6; font-size: 15px;">{{{ lessonIntroduction }}}</div>
         @end
         @if(lessonImage)
           <img src="{{ lessonImage }}" alt="Lesson image" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 20px;">
@@ -616,8 +616,8 @@
 
       function saveOriginalContent() {
         originalContent = {
-          lessonTitle: document.querySelector('.container > div:first-of-type h2')?.innerHTML,
-          lessonIntro: document.querySelector('.container > div:first-of-type > div')?.innerHTML,
+          lessonTitle: document.getElementById('lessonTitle')?.innerHTML,
+          lessonIntro: document.getElementById('lessonIntro')?.innerHTML,
           sections: []
         };
 
@@ -633,14 +633,14 @@
       function restoreOriginalContent() {
         if (!originalContent) return;
 
-        const lessonTitle = document.querySelector('.container > div:first-of-type h2');
-        const lessonIntro = document.querySelector('.container > div:first-of-type > div');
+        const lessonTitleEl = document.getElementById('lessonTitle');
+        const lessonIntroEl = document.getElementById('lessonIntro');
 
-        if (lessonTitle && originalContent.lessonTitle) {
-          lessonTitle.innerHTML = originalContent.lessonTitle;
+        if (lessonTitleEl && originalContent.lessonTitle) {
+          lessonTitleEl.innerHTML = originalContent.lessonTitle;
         }
-        if (lessonIntro && originalContent.lessonIntro) {
-          lessonIntro.innerHTML = originalContent.lessonIntro;
+        if (lessonIntroEl && originalContent.lessonIntro) {
+          lessonIntroEl.innerHTML = originalContent.lessonIntro;
         }
 
         document.querySelectorAll('.accordion-item').forEach(item => {
@@ -658,12 +658,12 @@
       function applyTranslations(data) {
         // Apply lesson translations
         if (data.lessonTitle) {
-          const lessonTitle = document.querySelector('.container > div:first-of-type h2');
-          if (lessonTitle) lessonTitle.innerHTML = data.lessonTitle;
+          const lessonTitleEl = document.getElementById('lessonTitle');
+          if (lessonTitleEl) lessonTitleEl.innerHTML = data.lessonTitle;
         }
         if (data.lessonIntroduction) {
-          const lessonIntro = document.querySelector('.container > div:first-of-type > div');
-          if (lessonIntro) lessonIntro.innerHTML = data.lessonIntroduction;
+          const lessonIntroEl = document.getElementById('lessonIntro');
+          if (lessonIntroEl) lessonIntroEl.innerHTML = data.lessonIntroduction;
         }
 
         // Apply section translations
