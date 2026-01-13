@@ -15,6 +15,7 @@ const SectionsController = () => import('#controllers/sections_controller')
 const AuthController = () => import('#controllers/auth_controller')
 const SettingsController = () => import('#controllers/settings_controller')
 const ContactsController = () => import('#controllers/contacts_controller')
+const TranslationController = () => import('#controllers/translation_controller')
 
 // Public landing page
 router.get('/', [HomeController, 'index'])
@@ -62,6 +63,14 @@ router
     router.get('/users/create', [AuthController, 'showCreateUser']).as('admin.users.create')
     router.post('/users', [AuthController, 'createUser']).as('admin.users.store')
     router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy')
+
+    // Translation (admin)
+    router.post('/translate/section/:id', [TranslationController, 'translateSection']).as('admin.translate.section')
+    router.post('/translate/text', [TranslationController, 'translateText']).as('admin.translate.text')
   })
   .prefix('/admin')
   .use(middleware.auth())
+
+// Public translation API
+router.get('/api/translate/languages', [TranslationController, 'languages']).as('api.translate.languages')
+router.post('/api/translate/page', [TranslationController, 'translatePage']).as('api.translate.page')

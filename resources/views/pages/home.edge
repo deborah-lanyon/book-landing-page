@@ -201,6 +201,94 @@
       font-size: 16px;
     }
 
+    .language-selector {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .language-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: white;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
+      font-size: 14px;
+      color: #2c3e50;
+      font-weight: 500;
+    }
+
+    .language-btn:hover {
+      background: #f8f9fa;
+    }
+
+    .language-btn.loading {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .language-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      min-width: 180px;
+      display: none;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .language-dropdown.show {
+      display: block;
+    }
+
+    .language-option {
+      display: block;
+      width: 100%;
+      padding: 12px 16px;
+      text-align: left;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #495057;
+    }
+
+    .language-option:hover {
+      background: #f8f9fa;
+    }
+
+    .language-option:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+
+    .language-option:last-child {
+      border-radius: 0 0 8px 8px;
+    }
+
+    .language-option.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .translate-notice {
+      text-align: center;
+      padding: 10px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+
     @media (max-width: 600px) {
       body {
         padding: 15px;
@@ -233,6 +321,33 @@
   </style>
 </head>
 <body>
+  <!-- Language Selector -->
+  <div class="language-selector">
+    <button class="language-btn" id="languageBtn">
+      <span id="currentLang">English</span>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="language-dropdown" id="languageDropdown">
+      <button class="language-option active" data-lang="en" data-name="English">English (Original)</button>
+      <button class="language-option" data-lang="es" data-name="Spanish">Spanish</button>
+      <button class="language-option" data-lang="fr" data-name="French">French</button>
+      <button class="language-option" data-lang="de" data-name="German">German</button>
+      <button class="language-option" data-lang="pt" data-name="Portuguese">Portuguese</button>
+      <button class="language-option" data-lang="zh" data-name="Chinese">Chinese</button>
+      <button class="language-option" data-lang="ja" data-name="Japanese">Japanese</button>
+      <button class="language-option" data-lang="ko" data-name="Korean">Korean</button>
+      <button class="language-option" data-lang="ar" data-name="Arabic">Arabic</button>
+      <button class="language-option" data-lang="hi" data-name="Hindi">Hindi</button>
+      <button class="language-option" data-lang="ru" data-name="Russian">Russian</button>
+      <button class="language-option" data-lang="vi" data-name="Vietnamese">Vietnamese</button>
+      <button class="language-option" data-lang="th" data-name="Thai">Thai</button>
+    </div>
+  </div>
+
+  <div id="translateNotice" class="translate-notice" style="display: none;"></div>
+
   <div class="container">
     <div class="header">
       <h1>{{ welcomeTitle }}</h1>
@@ -412,6 +527,157 @@
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
       });
+
+      // Language selector functionality
+      const languageBtn = document.getElementById('languageBtn');
+      const languageDropdown = document.getElementById('languageDropdown');
+      const currentLangSpan = document.getElementById('currentLang');
+      const translateNotice = document.getElementById('translateNotice');
+      const languageOptions = document.querySelectorAll('.language-option');
+
+      // Store original content for reverting
+      let originalContent = null;
+
+      // Toggle dropdown
+      languageBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        languageDropdown.classList.toggle('show');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function() {
+        languageDropdown.classList.remove('show');
+      });
+
+      // Handle language selection
+      languageOptions.forEach(option => {
+        option.addEventListener('click', async function() {
+          const lang = this.dataset.lang;
+          const langName = this.dataset.name;
+
+          // Update active state
+          languageOptions.forEach(opt => opt.classList.remove('active'));
+          this.classList.add('active');
+          languageDropdown.classList.remove('show');
+
+          if (lang === 'en') {
+            // Revert to original
+            if (originalContent) {
+              restoreOriginalContent();
+            }
+            currentLangSpan.textContent = 'English';
+            translateNotice.style.display = 'none';
+            return;
+          }
+
+          // Save original content if not saved
+          if (!originalContent) {
+            saveOriginalContent();
+          }
+
+          // Show loading state
+          languageBtn.classList.add('loading');
+          currentLangSpan.textContent = 'Translating...';
+
+          try {
+            const response = await fetch('/api/translate/page', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ targetLanguage: lang })
+            });
+
+            if (!response.ok) {
+              throw new Error('Translation failed');
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+              applyTranslations(result.data);
+              currentLangSpan.textContent = langName;
+              translateNotice.textContent = 'Translated to ' + langName + ' using Google Translate. Click "English" to see original.';
+              translateNotice.style.display = 'block';
+            } else {
+              throw new Error(result.error || 'Translation failed');
+            }
+          } catch (error) {
+            console.error('Translation error:', error);
+            alert('Translation failed. Please try again.');
+            currentLangSpan.textContent = 'English';
+            restoreOriginalContent();
+          } finally {
+            languageBtn.classList.remove('loading');
+          }
+        });
+      });
+
+      function saveOriginalContent() {
+        originalContent = {
+          lessonTitle: document.querySelector('.container > div:first-of-type h2')?.innerHTML,
+          lessonIntro: document.querySelector('.container > div:first-of-type > div')?.innerHTML,
+          sections: []
+        };
+
+        document.querySelectorAll('.accordion-item').forEach(item => {
+          originalContent.sections.push({
+            id: item.dataset.sectionId,
+            title: item.querySelector('.accordion-title')?.innerHTML,
+            content: item.querySelector('.accordion-body')?.innerHTML
+          });
+        });
+      }
+
+      function restoreOriginalContent() {
+        if (!originalContent) return;
+
+        const lessonTitle = document.querySelector('.container > div:first-of-type h2');
+        const lessonIntro = document.querySelector('.container > div:first-of-type > div');
+
+        if (lessonTitle && originalContent.lessonTitle) {
+          lessonTitle.innerHTML = originalContent.lessonTitle;
+        }
+        if (lessonIntro && originalContent.lessonIntro) {
+          lessonIntro.innerHTML = originalContent.lessonIntro;
+        }
+
+        document.querySelectorAll('.accordion-item').forEach(item => {
+          const sectionId = item.dataset.sectionId;
+          const original = originalContent.sections.find(s => s.id === sectionId);
+          if (original) {
+            const titleEl = item.querySelector('.accordion-title');
+            const contentEl = item.querySelector('.accordion-body');
+            if (titleEl && original.title) titleEl.innerHTML = original.title;
+            if (contentEl && original.content) contentEl.innerHTML = original.content;
+          }
+        });
+      }
+
+      function applyTranslations(data) {
+        // Apply lesson translations
+        if (data.lessonTitle) {
+          const lessonTitle = document.querySelector('.container > div:first-of-type h2');
+          if (lessonTitle) lessonTitle.innerHTML = data.lessonTitle;
+        }
+        if (data.lessonIntroduction) {
+          const lessonIntro = document.querySelector('.container > div:first-of-type > div');
+          if (lessonIntro) lessonIntro.innerHTML = data.lessonIntroduction;
+        }
+
+        // Apply section translations
+        if (data.sections) {
+          data.sections.forEach(section => {
+            const item = document.querySelector(`.accordion-item[data-section-id="${section.id}"]`);
+            if (item) {
+              const titleEl = item.querySelector('.accordion-title');
+              const contentEl = item.querySelector('.accordion-body');
+              if (titleEl) titleEl.innerHTML = section.title;
+              if (contentEl) contentEl.innerHTML = section.content;
+            }
+          });
+        }
+      }
     });
   </script>
 </body>
