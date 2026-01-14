@@ -43,7 +43,8 @@
       <h1>Miriam's Home - Admin Panel</h1>
       <div class="header-buttons">
         <a href="/" class="btn" target="_blank">View Public Page</a>
-        <a href="{{ route('admin.password.edit') }}" class="btn btn-secondary" target="_blank">Change Password</a>
+        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary">Manage Sections</a>
+        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Manage Users</a>
         <form method="POST" action="/logout" style="margin: 0;">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           <button type="submit" class="btn btn-secondary">Logout</button>
@@ -79,6 +80,19 @@
           <input type="hidden" id="welcome_subtitle" name="welcome_subtitle">
         </div>
 
+        <h3 style="margin-top: 30px; margin-bottom: 15px; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">About Us Section</h3>
+
+        <div class="form-group">
+          <label for="about_us_title">Title</label>
+          <input type="text" id="about_us_title" name="about_us_title" class="form-control" value="{{ aboutUsTitle }}" placeholder="e.g., About Us">
+        </div>
+
+        <div class="form-group">
+          <label>Content</label>
+          <div id="about-us-editor" style="height: 200px; background: white;">{{{ aboutUsContent }}}</div>
+          <input type="hidden" id="about_us_content" name="about_us_content">
+        </div>
+
         <div style="display: flex; gap: 10px;">
           <button type="submit" class="btn">Save Settings</button>
           <a href="/admin/sections" class="btn btn-secondary">Back to Sections</a>
@@ -102,7 +116,20 @@
       placeholder: 'e.g., Tap any section below to learn more'
     });
 
-    // Custom image handler for file upload
+    var aboutUsQuill = new Quill('#about-us-editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['link', 'image'],
+          ['clean']
+        ]
+      },
+      placeholder: 'Enter About Us content here...'
+    });
+
+    // Custom image handler for subtitle editor
     quill.getModule('toolbar').addHandler('image', function() {
       var input = document.createElement('input');
       input.setAttribute('type', 'file');
@@ -121,9 +148,29 @@
       };
     });
 
+    // Custom image handler for about us editor
+    aboutUsQuill.getModule('toolbar').addHandler('image', function() {
+      var input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+      input.click();
+      input.onchange = function() {
+        var file = input.files[0];
+        if (file) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            var range = aboutUsQuill.getSelection(true);
+            aboutUsQuill.insertEmbed(range.index, 'image', e.target.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+    });
+
     // Sync Quill content before form submit
     document.getElementById('settings-form').addEventListener('submit', function () {
       document.getElementById('welcome_subtitle').value = quill.root.innerHTML;
+      document.getElementById('about_us_content').value = aboutUsQuill.root.innerHTML;
     });
   </script>
 </body>

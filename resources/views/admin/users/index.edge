@@ -148,9 +148,11 @@
 <body>
   <div class="header">
     <div class="container header-content">
-      <h1>Manage Admin Users</h1>
+      <h1>Miriam's Home - Admin Panel</h1>
       <div class="header-buttons">
-        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary">Back to Sections</a>
+        <a href="/" class="btn" target="_blank">View Public Page</a>
+        <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
+        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary">Manage Sections</a>
         <form method="POST" action="/logout" style="margin: 0;">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           <button type="submit" class="btn btn-secondary">Logout</button>

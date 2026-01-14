@@ -16,7 +16,9 @@ export default class HomeController {
     const lessonTitle = await Setting.get('lesson_title', '')
     const lessonIntroduction = await Setting.get('lesson_introduction', '')
     const lessonImage = await Setting.get('lesson_image', '')
+    const aboutUsTitle = await Setting.get('about_us_title', 'About Us')
+    const aboutUsContent = await Setting.get('about_us_content', '')
 
-    return view.render('pages/home', { sections, welcomeTitle, welcomeSubtitle, lessonTitle, lessonIntroduction, lessonImage })
+    return view.render('pages/home', { sections, welcomeTitle, welcomeSubtitle, lessonTitle, lessonIntroduction, lessonImage, aboutUsTitle, aboutUsContent })
   }
 }

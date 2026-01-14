@@ -401,13 +401,14 @@
         @end
       </div>
 
-      <!-- About Us & Contact Form Section -->
+      <!-- About Us Section -->
       <div style="margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
-        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">About Us</h3>
-        <p style="color: #495057; margin-bottom: 25px; font-size: 15px; line-height: 1.6;">
-          Reading God's Word is a devotional expository Bible study series that explains books of the Bible verse-by-verse. The series is put together by a team of Sydney based Christian leaders, Dr Alan & Alayne Thompson, David Glinatsis, Peter & Louise Knight and Phillip Jensen, and launched in 2026.
-        </p>
+        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ aboutUsTitle }}</h3>
+        <div style="color: #495057; font-size: 15px; line-height: 1.6;">{{{ aboutUsContent }}}</div>
+      </div>
 
+      <!-- Get In Touch Section -->
+      <div style="margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
         <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">Get In Touch</h3>
 
         @if(flashMessages.has('contactSuccess'))

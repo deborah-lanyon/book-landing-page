@@ -195,7 +195,6 @@
         <a href="/" class="btn" target="_blank">View Public Page</a>
         <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
         <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Manage Users</a>
-        <a href="{{ route('admin.password.edit') }}" class="btn btn-secondary">Change Password</a>
         <form method="POST" action="/logout" style="margin: 0;">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           <button type="submit" class="btn btn-secondary">Logout</button>

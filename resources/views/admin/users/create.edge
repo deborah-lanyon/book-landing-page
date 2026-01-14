@@ -92,9 +92,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 600px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
+    }
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
     }
     .form-actions {
       display: flex;
@@ -106,6 +112,9 @@
         flex-direction: column;
         gap: 15px;
         text-align: center;
+      }
+      .header-buttons {
+        justify-content: center;
       }
       .header h1 {
         font-size: 20px;
@@ -121,13 +130,35 @@
         padding: 20px;
       }
     }
+    @media (max-width: 480px) {
+      .header-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+      .header-buttons .btn,
+      .header-buttons form {
+        width: 100%;
+      }
+      .header-buttons form button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="header-content">
-      <h1>Add New Admin User</h1>
-      <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancel</a>
+      <h1>Miriam's Home - Admin Panel</h1>
+      <div class="header-buttons">
+        <a href="/" class="btn" target="_blank">View Public Page</a>
+        <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
+        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary">Manage Sections</a>
+        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Manage Users</a>
+        <form method="POST" action="/logout" style="margin: 0;">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+      </div>
     </div>
   </div>
 
