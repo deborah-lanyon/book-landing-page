@@ -324,26 +324,55 @@
   <!-- Language Selector -->
   <div class="language-selector">
     <button class="language-btn" id="languageBtn">
-      <span id="currentLang">English</span>
+      <span id="currentLang">{{ defaultLanguageName }}</span>
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
         <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
     </button>
     <div class="language-dropdown" id="languageDropdown">
-      <button class="language-option active" data-lang="en" data-name="English">English (Original)</button>
-      <button class="language-option" data-lang="es" data-name="Spanish">Spanish</button>
-      <button class="language-option" data-lang="fr" data-name="French">French</button>
-      <button class="language-option" data-lang="de" data-name="German">German</button>
-      <button class="language-option" data-lang="pt" data-name="Portuguese">Portuguese</button>
-      <button class="language-option" data-lang="zh" data-name="Chinese">Chinese</button>
-      <button class="language-option" data-lang="ja" data-name="Japanese">Japanese</button>
-      <button class="language-option" data-lang="ko" data-name="Korean">Korean</button>
-      <button class="language-option" data-lang="ar" data-name="Arabic">Arabic</button>
-      <button class="language-option" data-lang="hi" data-name="Hindi">Hindi</button>
-      <button class="language-option" data-lang="id" data-name="Indonesian">Indonesian</button>
-      <button class="language-option" data-lang="ru" data-name="Russian">Russian</button>
-      <button class="language-option" data-lang="vi" data-name="Vietnamese">Vietnamese</button>
-      <button class="language-option" data-lang="th" data-name="Thai">Thai</button>
+      <button class="language-option active" data-lang="{{ defaultLanguage }}" data-name="{{ defaultLanguageName }}">{{ defaultLanguageName }} (Original)</button>
+      @if(defaultLanguage !== 'en')
+        <button class="language-option" data-lang="en" data-name="English">English</button>
+      @end
+      @if(defaultLanguage !== 'id')
+        <button class="language-option" data-lang="id" data-name="Indonesian">Indonesian</button>
+      @end
+      @if(defaultLanguage !== 'es')
+        <button class="language-option" data-lang="es" data-name="Spanish">Spanish</button>
+      @end
+      @if(defaultLanguage !== 'fr')
+        <button class="language-option" data-lang="fr" data-name="French">French</button>
+      @end
+      @if(defaultLanguage !== 'de')
+        <button class="language-option" data-lang="de" data-name="German">German</button>
+      @end
+      @if(defaultLanguage !== 'pt')
+        <button class="language-option" data-lang="pt" data-name="Portuguese">Portuguese</button>
+      @end
+      @if(defaultLanguage !== 'zh')
+        <button class="language-option" data-lang="zh" data-name="Chinese">Chinese</button>
+      @end
+      @if(defaultLanguage !== 'ja')
+        <button class="language-option" data-lang="ja" data-name="Japanese">Japanese</button>
+      @end
+      @if(defaultLanguage !== 'ko')
+        <button class="language-option" data-lang="ko" data-name="Korean">Korean</button>
+      @end
+      @if(defaultLanguage !== 'ar')
+        <button class="language-option" data-lang="ar" data-name="Arabic">Arabic</button>
+      @end
+      @if(defaultLanguage !== 'hi')
+        <button class="language-option" data-lang="hi" data-name="Hindi">Hindi</button>
+      @end
+      @if(defaultLanguage !== 'ru')
+        <button class="language-option" data-lang="ru" data-name="Russian">Russian</button>
+      @end
+      @if(defaultLanguage !== 'vi')
+        <button class="language-option" data-lang="vi" data-name="Vietnamese">Vietnamese</button>
+      @end
+      @if(defaultLanguage !== 'th')
+        <button class="language-option" data-lang="th" data-name="Thai">Thai</button>
+      @end
     </div>
   </div>
 
@@ -551,6 +580,10 @@
         languageDropdown.classList.remove('show');
       });
 
+      // Get the default language from the server
+      const defaultLanguage = '{{ defaultLanguage }}';
+      const defaultLanguageName = '{{ defaultLanguageName }}';
+
       // Handle language selection
       languageOptions.forEach(option => {
         option.addEventListener('click', async function() {
@@ -562,12 +595,12 @@
           this.classList.add('active');
           languageDropdown.classList.remove('show');
 
-          if (lang === 'en') {
-            // Revert to original
+          if (lang === defaultLanguage) {
+            // Revert to original (default language)
             if (originalContent) {
               restoreOriginalContent();
             }
-            currentLangSpan.textContent = 'English';
+            currentLangSpan.textContent = defaultLanguageName;
             translateNotice.style.display = 'none';
             return;
           }
@@ -599,7 +632,7 @@
             if (result.success) {
               applyTranslations(result.data);
               currentLangSpan.textContent = langName;
-              translateNotice.textContent = 'Translated to ' + langName + ' using Google Translate. Click "English" to see original.';
+              translateNotice.textContent = 'Translated to ' + langName + ' using Google Translate. Click "' + defaultLanguageName + '" to see original.';
               translateNotice.style.display = 'block';
             } else {
               throw new Error(result.error || 'Translation failed');
@@ -607,7 +640,7 @@
           } catch (error) {
             console.error('Translation error:', error);
             alert('Translation failed. Please try again.');
-            currentLangSpan.textContent = 'English';
+            currentLangSpan.textContent = defaultLanguageName;
             restoreOriginalContent();
           } finally {
             languageBtn.classList.remove('loading');
