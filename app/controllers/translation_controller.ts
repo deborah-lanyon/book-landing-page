@@ -63,6 +63,58 @@ export default class TranslationController {
       return response.status(400).json({ error: 'Target language is required' })
     }
 
+    // If target language is English, return original content without translation
+    // (source content is always in English)
+    if (targetLanguage === 'en') {
+      // Get lesson settings
+      const lessonTitleSetting = await Setting.findBy('key', 'lesson_title')
+      const lessonIntroSetting = await Setting.findBy('key', 'lesson_introduction')
+
+      // Get all published sections
+      const sections = await Section.query()
+        .where('is_published', true)
+        .orderBy('display_order', 'asc')
+
+      const result: {
+        lessonTitle?: string
+        lessonIntroduction?: string
+        sections: {
+          id: number
+          title: string
+          content: string
+          reflectiveQuestion?: string
+          reflectiveQuestion2?: string
+          reflectiveQuestion3?: string
+        }[]
+      } = {
+        sections: [],
+      }
+
+      if (lessonTitleSetting?.value) {
+        result.lessonTitle = lessonTitleSetting.value
+      }
+      if (lessonIntroSetting?.value) {
+        result.lessonIntroduction = lessonIntroSetting.value
+      }
+
+      for (const section of sections) {
+        result.sections.push({
+          id: section.id,
+          title: section.title,
+          content: section.content,
+          reflectiveQuestion: section.reflectiveQuestion || undefined,
+          reflectiveQuestion2: section.reflectiveQuestion2 || undefined,
+          reflectiveQuestion3: section.reflectiveQuestion3 || undefined,
+        })
+      }
+
+      return response.json({
+        success: true,
+        targetLanguage,
+        data: result,
+      })
+    }
+
     try {
       // Get lesson settings
       const lessonTitleSetting = await Setting.findBy('key', 'lesson_title')
