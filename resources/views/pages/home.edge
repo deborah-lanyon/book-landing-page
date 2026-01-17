@@ -584,6 +584,10 @@
       const defaultLanguage = '{{ defaultLanguage }}';
       const defaultLanguageName = '{{ defaultLanguageName }}';
 
+      // Save original content immediately on page load
+      // (this captures the server-rendered content in the default language)
+      saveOriginalContent();
+
       // Handle language selection
       languageOptions.forEach(option => {
         option.addEventListener('click', async function() {
@@ -603,11 +607,6 @@
             currentLangSpan.textContent = defaultLanguageName;
             translateNotice.style.display = 'none';
             return;
-          }
-
-          // Save original content if not saved
-          if (!originalContent) {
-            saveOriginalContent();
           }
 
           // Show loading state
