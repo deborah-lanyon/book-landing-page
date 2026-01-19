@@ -286,9 +286,6 @@
     }
 
     .accordion-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -297,6 +294,7 @@
     .accordion-header-row {
       display: flex;
       gap: 0;
+      width: 100%;
     }
 
     .accordion-header-col {
@@ -309,10 +307,20 @@
 
     .accordion-header-col-left {
       background: #a5d6a7;
+      border-radius: 12px 0 0 12px;
     }
 
     .accordion-header-col-right {
       background: #90caf9;
+      border-radius: 0 12px 12px 0;
+    }
+
+    .accordion-section.active .accordion-header-col-left {
+      border-radius: 12px 0 0 0;
+    }
+
+    .accordion-section.active .accordion-header-col-right {
+      border-radius: 0 12px 0 0;
     }
 
     .accordion-header h3 {
@@ -327,6 +335,8 @@
       font-weight: 300;
       color: #667eea;
       transition: transform 0.3s ease;
+      flex-shrink: 0;
+      margin-left: 15px;
     }
 
     .accordion-section.active .accordion-icon {
@@ -345,11 +355,28 @@
 
     .accordion-content .bilingual-row {
       border-radius: 0 0 12px 12px;
+      margin: 0;
     }
 
     @media (max-width: 900px) {
       .accordion-header-row {
         flex-direction: column;
+      }
+
+      .accordion-header-col-left {
+        border-radius: 12px 12px 0 0;
+      }
+
+      .accordion-header-col-right {
+        border-radius: 0 0 12px 12px;
+      }
+
+      .accordion-section.active .accordion-header-col-left {
+        border-radius: 12px 12px 0 0;
+      }
+
+      .accordion-section.active .accordion-header-col-right {
+        border-radius: 0;
       }
     }
 
