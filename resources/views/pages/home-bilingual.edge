@@ -278,6 +278,81 @@
       border-left: 3px solid #667eea;
     }
 
+    /* Accordion styles */
+    .accordion-section {
+      margin-bottom: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .accordion-header-row {
+      display: flex;
+      gap: 0;
+    }
+
+    .accordion-header-col {
+      flex: 1;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .accordion-header-col-left {
+      background: #a5d6a7;
+    }
+
+    .accordion-header-col-right {
+      background: #90caf9;
+    }
+
+    .accordion-header h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .accordion-icon {
+      font-size: 24px;
+      font-weight: 300;
+      color: #667eea;
+      transition: transform 0.3s ease;
+    }
+
+    .accordion-section.active .accordion-icon {
+      transform: rotate(45deg);
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .accordion-section.active .accordion-content {
+      max-height: 5000px;
+    }
+
+    .accordion-content .bilingual-row {
+      border-radius: 0 0 12px 12px;
+    }
+
+    @media (max-width: 900px) {
+      .accordion-header-row {
+        flex-direction: column;
+      }
+    }
+
     /* Contact form section - full width */
     .full-width-section {
       background: white;
@@ -404,45 +479,53 @@
         </div>
       @end
 
-      <!-- Sections -->
+      <!-- Sections (Accordion) -->
       @each((section, index) in sections)
-        <div class="bilingual-section" data-section-id="{{ section.id }}">
-          <div class="bilingual-headers">
-            <div class="column-header column-header-left">Indonesian</div>
-            <div class="column-header column-header-right"><span class="right-col-lang-label">English</span></div>
-          </div>
-          <div class="bilingual-row">
-            <div class="bilingual-col bilingual-col-left">
-              <h3><span class="section-number">{{ index + 1 }}</span> {{ section.titleTranslated }}</h3>
-              <div class="content-body">{{{ section.contentTranslated }}}</div>
-              @if(section.reflectiveQuestionTranslated)
-                <div class="reflective-question">{{ section.reflectiveQuestionTranslated }}</div>
-              @end
-              @if(section.reflectiveQuestion2Translated)
-                <div class="reflective-question">{{ section.reflectiveQuestion2Translated }}</div>
-              @end
-              @if(section.reflectiveQuestion3Translated)
-                <div class="reflective-question">{{ section.reflectiveQuestion3Translated }}</div>
-              @end
-              @if(section.imageUrl)
-                <img src="{{ section.imageUrl }}" alt="Section image">
-              @end
+        <div class="accordion-section" data-section-id="{{ section.id }}">
+          <div class="accordion-header">
+            <div class="accordion-header-row">
+              <div class="accordion-header-col accordion-header-col-left">
+                <h3><span class="section-number">{{ index + 1 }}</span> {{ section.titleTranslated }}</h3>
+                <span class="accordion-icon">+</span>
+              </div>
+              <div class="accordion-header-col accordion-header-col-right">
+                <h3 class="section-title-right-header"><span class="section-number">{{ index + 1 }}</span> {{ section.title }}</h3>
+                <span class="accordion-icon">+</span>
+              </div>
             </div>
-            <div class="bilingual-col bilingual-col-right">
-              <h3 class="section-title-right"><span class="section-number">{{ index + 1 }}</span> {{ section.title }}</h3>
-              <div class="content-body section-content-right">{{{ section.content }}}</div>
-              @if(section.reflectiveQuestion)
-                <div class="reflective-question section-q1-right">{{ section.reflectiveQuestion }}</div>
-              @end
-              @if(section.reflectiveQuestion2)
-                <div class="reflective-question section-q2-right">{{ section.reflectiveQuestion2 }}</div>
-              @end
-              @if(section.reflectiveQuestion3)
-                <div class="reflective-question section-q3-right">{{ section.reflectiveQuestion3 }}</div>
-              @end
-              @if(section.imageUrl)
-                <img src="{{ section.imageUrl }}" alt="Section image">
-              @end
+          </div>
+          <div class="accordion-content">
+            <div class="bilingual-row">
+              <div class="bilingual-col bilingual-col-left">
+                <div class="content-body">{{{ section.contentTranslated }}}</div>
+                @if(section.reflectiveQuestionTranslated)
+                  <div class="reflective-question">{{ section.reflectiveQuestionTranslated }}</div>
+                @end
+                @if(section.reflectiveQuestion2Translated)
+                  <div class="reflective-question">{{ section.reflectiveQuestion2Translated }}</div>
+                @end
+                @if(section.reflectiveQuestion3Translated)
+                  <div class="reflective-question">{{ section.reflectiveQuestion3Translated }}</div>
+                @end
+                @if(section.imageUrl)
+                  <img src="{{ section.imageUrl }}" alt="Section image">
+                @end
+              </div>
+              <div class="bilingual-col bilingual-col-right">
+                <div class="content-body section-content-right">{{{ section.content }}}</div>
+                @if(section.reflectiveQuestion)
+                  <div class="reflective-question section-q1-right">{{ section.reflectiveQuestion }}</div>
+                @end
+                @if(section.reflectiveQuestion2)
+                  <div class="reflective-question section-q2-right">{{ section.reflectiveQuestion2 }}</div>
+                @end
+                @if(section.reflectiveQuestion3)
+                  <div class="reflective-question section-q3-right">{{ section.reflectiveQuestion3 }}</div>
+                @end
+                @if(section.imageUrl)
+                  <img src="{{ section.imageUrl }}" alt="Section image">
+                @end
+              </div>
             </div>
           </div>
         </div>
@@ -560,6 +643,22 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Accordion functionality
+      const accordionSections = document.querySelectorAll('.accordion-section');
+      accordionSections.forEach(section => {
+        const header = section.querySelector('.accordion-header');
+        header.addEventListener('click', function() {
+          // Close all other accordion sections
+          accordionSections.forEach(otherSection => {
+            if (otherSection !== section && otherSection.classList.contains('active')) {
+              otherSection.classList.remove('active');
+            }
+          });
+          // Toggle current section
+          section.classList.toggle('active');
+        });
+      });
+
       // Generate QR Code
       const currentUrl = window.location.href;
       const qrContainer = document.getElementById('qrcode');
@@ -589,11 +688,11 @@
         sections: []
       };
 
-      document.querySelectorAll('.bilingual-section[data-section-id]').forEach(section => {
+      document.querySelectorAll('.accordion-section[data-section-id]').forEach(section => {
         const sectionId = section.dataset.sectionId;
         originalContent.sections.push({
           id: sectionId,
-          title: section.querySelector('.section-title-right')?.innerHTML,
+          titleHeader: section.querySelector('.section-title-right-header')?.innerHTML,
           content: section.querySelector('.section-content-right')?.innerHTML,
           q1: section.querySelector('.section-q1-right')?.innerHTML,
           q2: section.querySelector('.section-q2-right')?.innerHTML,
@@ -692,15 +791,15 @@
         }
 
         originalContent.sections.forEach(section => {
-          const sectionEl = document.querySelector(`.bilingual-section[data-section-id="${section.id}"]`);
+          const sectionEl = document.querySelector(`.accordion-section[data-section-id="${section.id}"]`);
           if (sectionEl) {
-            const titleEl = sectionEl.querySelector('.section-title-right');
+            const titleHeaderEl = sectionEl.querySelector('.section-title-right-header');
             const contentEl = sectionEl.querySelector('.section-content-right');
             const q1El = sectionEl.querySelector('.section-q1-right');
             const q2El = sectionEl.querySelector('.section-q2-right');
             const q3El = sectionEl.querySelector('.section-q3-right');
 
-            if (titleEl && section.title) titleEl.innerHTML = section.title;
+            if (titleHeaderEl && section.titleHeader) titleHeaderEl.innerHTML = section.titleHeader;
             if (contentEl && section.content) contentEl.innerHTML = section.content;
             if (q1El && section.q1) q1El.innerHTML = section.q1;
             if (q2El && section.q2) q2El.innerHTML = section.q2;
@@ -723,19 +822,19 @@
         // Apply section translations
         if (data.sections) {
           data.sections.forEach(section => {
-            const sectionEl = document.querySelector(`.bilingual-section[data-section-id="${section.id}"]`);
+            const sectionEl = document.querySelector(`.accordion-section[data-section-id="${section.id}"]`);
             if (sectionEl) {
-              const titleEl = sectionEl.querySelector('.section-title-right');
+              const titleHeaderEl = sectionEl.querySelector('.section-title-right-header');
               const contentEl = sectionEl.querySelector('.section-content-right');
               const q1El = sectionEl.querySelector('.section-q1-right');
               const q2El = sectionEl.querySelector('.section-q2-right');
               const q3El = sectionEl.querySelector('.section-q3-right');
 
-              // Preserve section number when updating title
-              if (titleEl) {
-                const numberSpan = titleEl.querySelector('.section-number');
+              // Preserve section number when updating title header
+              if (titleHeaderEl) {
+                const numberSpan = titleHeaderEl.querySelector('.section-number');
                 const number = numberSpan ? numberSpan.outerHTML : '';
-                titleEl.innerHTML = number + ' ' + section.title;
+                titleHeaderEl.innerHTML = number + ' ' + section.title;
               }
               if (contentEl) contentEl.innerHTML = section.content;
               if (q1El && section.reflectiveQuestion) q1El.innerHTML = section.reflectiveQuestion;
