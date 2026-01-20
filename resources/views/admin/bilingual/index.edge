@@ -515,7 +515,15 @@
 <!-- Quill JS -->
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 
+<!-- Pass data to JavaScript -->
+<script id="pageData" type="application/json">
+  {{{ JSON.stringify({ welcomeSubtitle, lessonIntroduction, aboutUsContent, sections: sections.map(s => ({ id: s.id, content: s.content })) }) }}}
+</script>
+
 <script>
+  // Parse page data
+  const pageData = JSON.parse(document.getElementById('pageData').textContent);
+
   // Quill toolbar configuration
   const toolbarOptions = [
     ['bold', 'italic', 'underline'],
@@ -530,32 +538,35 @@
     modules: { toolbar: toolbarOptions },
     placeholder: 'Enter welcome subtitle...'
   });
-  welcomeSubtitleEditor.root.innerHTML = {{{ JSON.stringify(welcomeSubtitle) }}};
+  welcomeSubtitleEditor.root.innerHTML = pageData.welcomeSubtitle || '';
 
   const lessonIntroEditor = new Quill('#lessonIntroEditor', {
     theme: 'snow',
     modules: { toolbar: toolbarOptions },
     placeholder: 'Enter lesson introduction...'
   });
-  lessonIntroEditor.root.innerHTML = {{{ JSON.stringify(lessonIntroduction) }}};
+  lessonIntroEditor.root.innerHTML = pageData.lessonIntroduction || '';
 
   const aboutUsEditor = new Quill('#aboutUsEditor', {
     theme: 'snow',
     modules: { toolbar: toolbarOptions },
     placeholder: 'Enter about us content...'
   });
-  aboutUsEditor.root.innerHTML = {{{ JSON.stringify(aboutUsContent) }}};
+  aboutUsEditor.root.innerHTML = pageData.aboutUsContent || '';
 
   // Initialize Quill editors for existing sections
   const sectionEditors = {};
-  @each(section in sections)
-    sectionEditors[{{ section.id }}] = new Quill('#sectionEditor_{{ section.id }}', {
-      theme: 'snow',
-      modules: { toolbar: toolbarOptions },
-      placeholder: 'Enter section content...'
-    });
-    sectionEditors[{{ section.id }}].root.innerHTML = {{{ JSON.stringify(section.content) }}};
-  @end
+  pageData.sections.forEach(function(section) {
+    const editorEl = document.getElementById('sectionEditor_' + section.id);
+    if (editorEl) {
+      sectionEditors[section.id] = new Quill('#sectionEditor_' + section.id, {
+        theme: 'snow',
+        modules: { toolbar: toolbarOptions },
+        placeholder: 'Enter section content...'
+      });
+      sectionEditors[section.id].root.innerHTML = section.content || '';
+    }
+  });
 
   // Initialize Quill for new section
   const newSectionEditor = new Quill('#newSectionEditor', {
