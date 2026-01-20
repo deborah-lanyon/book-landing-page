@@ -1,639 +1,716 @@
-@layout('layouts/admin')
-
-@section('content')
-<style>
-  .bilingual-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  .editor-column {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  .column-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid #e0e0e0;
-    font-weight: 600;
-    font-size: 16px;
-  }
-  .editor-column.english .column-header {
-    background: #3498db;
-    color: white;
-    border-radius: 8px 8px 0 0;
-  }
-  .editor-column.indonesian .column-header {
-    background: #27ae60;
-    color: white;
-    border-radius: 8px 8px 0 0;
-  }
-  .column-content {
-    padding: 20px;
-  }
-  .section-block {
-    background: #f8f9fa;
-    border-radius: 6px;
-    padding: 15px;
-    margin-bottom: 15px;
-    border: 1px solid #e0e0e0;
-  }
-  .section-block h4 {
-    margin: 0 0 10px 0;
-    color: #2c3e50;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .translation-text {
-    background: white;
-    padding: 12px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-    line-height: 1.6;
-    min-height: 40px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .translation-text:hover {
-    background: #f0fff4;
-    border-color: #27ae60;
-  }
-  .translation-text.copied {
-    background: #d4edda;
-    border-color: #27ae60;
-  }
-  .translation-text p {
-    margin: 0 0 10px 0;
-  }
-  .translation-text p:last-child {
-    margin-bottom: 0;
-  }
-  .translation-label {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .copy-hint {
-    font-size: 11px;
-    color: #999;
-  }
-  .form-group-small {
-    margin-bottom: 12px;
-  }
-  .form-group-small label {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 500;
-    font-size: 13px;
-    color: #555;
-  }
-  .form-control-small {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-  }
-  .quill-container {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  .quill-container .ql-container {
-    min-height: 100px;
-    font-size: 14px;
-  }
-  .quill-container .ql-editor {
-    min-height: 100px;
-  }
-  .btn-small {
-    padding: 6px 12px;
-    font-size: 13px;
-  }
-  .btn-success {
-    background: #27ae60;
-  }
-  .btn-success:hover {
-    background: #219a52;
-  }
-  .section-divider {
-    border-top: 2px solid #e0e0e0;
-    margin: 25px 0;
-    padding-top: 25px;
-  }
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  .section-header h3 {
-    margin: 0;
-    color: #2c3e50;
-  }
-  .accordion-section {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    overflow: hidden;
-  }
-  .accordion-header {
-    background: #f8f9fa;
-    padding: 12px 15px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-  }
-  .accordion-header:hover {
-    background: #e9ecef;
-  }
-  .accordion-header h4 {
-    margin: 0;
-    font-size: 15px;
-    color: #2c3e50;
-  }
-  .accordion-header .status {
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 3px;
-  }
-  .accordion-header .status.published {
-    background: #d4edda;
-    color: #155724;
-  }
-  .accordion-header .status.draft {
-    background: #fff3cd;
-    color: #856404;
-  }
-  .accordion-body {
-    padding: 15px;
-    display: none;
-  }
-  .accordion-section.open .accordion-body {
-    display: block;
-  }
-  .accordion-section.open .accordion-header {
-    background: #e9ecef;
-  }
-  .nav-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  .alert-error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-  }
-  .refresh-btn {
-    background: #9b59b6;
-    margin-left: auto;
-  }
-  .refresh-btn:hover {
-    background: #8e44ad;
-  }
-  @media (max-width: 1200px) {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilingual Editor - Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 0;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn:hover {
+      background: #2980b9;
+    }
+    .btn-secondary {
+      background: #95a5a6;
+    }
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+    .btn-success {
+      background: #27ae60;
+    }
+    .btn-success:hover {
+      background: #219a52;
+    }
+    .btn-danger {
+      background: #e74c3c;
+    }
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
     .bilingual-container {
-      grid-template-columns: 1fr;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
-    .editor-column.indonesian {
-      position: sticky;
-      top: 20px;
+    .editor-column {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-  }
-</style>
-
-<!-- Quill CSS -->
-<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
-
-<div class="nav-buttons">
-  <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary">Back to Sections</a>
-  <a href="/" target="_blank" class="btn btn-secondary">View Public Page</a>
-  <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
-  <button type="button" class="btn refresh-btn" onclick="location.reload()">Refresh Translations</button>
-</div>
-
-@if(translationError)
-  <div class="alert-error">
-    <strong>Translation Error:</strong> {{ translationError }}
-    <br><small>The Indonesian translations may not be available. Please check your Google Cloud Translation API configuration.</small>
-  </div>
-@end
-
-@if(flashMessages.has('error'))
-  <div class="alert-error">
-    {{ flashMessages.get('error') }}
-  </div>
-@end
-
-<h2 style="margin-bottom: 20px;">Bilingual Content Editor</h2>
-<p style="color: #666; margin-bottom: 20px;">Edit English content on the left. Indonesian translations appear on the right (click to copy).</p>
-
-<div class="bilingual-container">
-  <!-- English Editor Column -->
-  <div class="editor-column english">
-    <div class="column-header">English (Edit)</div>
-    <div class="column-content">
-
-      <!-- Settings Section -->
-      <form method="POST" action="{{ route('admin.bilingual.updateSettings') }}" id="settingsForm">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        <input type="hidden" name="_method" value="PUT">
-
-        <div class="section-block">
-          <h4>Welcome Section</h4>
-          <div class="form-group-small">
-            <label for="welcome_title">Welcome Title</label>
-            <input type="text" id="welcome_title" name="welcome_title" class="form-control-small" value="{{ welcomeTitle }}">
-          </div>
-          <div class="form-group-small">
-            <label for="welcome_subtitle">Welcome Subtitle</label>
-            <div id="welcomeSubtitleEditor" class="quill-container"></div>
-            <input type="hidden" name="welcome_subtitle" id="welcome_subtitle_hidden">
-          </div>
-        </div>
-
-        <div class="section-block">
-          <h4>Lesson Overview</h4>
-          <div class="form-group-small">
-            <label for="lesson_title">Lesson Title</label>
-            <input type="text" id="lesson_title" name="lesson_title" class="form-control-small" value="{{ lessonTitle }}">
-          </div>
-          <div class="form-group-small">
-            <label for="lesson_introduction">Lesson Introduction</label>
-            <div id="lessonIntroEditor" class="quill-container"></div>
-            <input type="hidden" name="lesson_introduction" id="lesson_introduction_hidden">
-          </div>
-        </div>
-
-        <div class="section-block">
-          <h4>About Us</h4>
-          <div class="form-group-small">
-            <label for="about_us_title">About Us Title</label>
-            <input type="text" id="about_us_title" name="about_us_title" class="form-control-small" value="{{ aboutUsTitle }}">
-          </div>
-          <div class="form-group-small">
-            <label for="about_us_content">About Us Content</label>
-            <div id="aboutUsEditor" class="quill-container"></div>
-            <input type="hidden" name="about_us_content" id="about_us_content_hidden">
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-success btn-small">Save Settings</button>
-      </form>
-
-      <!-- Sections -->
-      <div class="section-divider">
-        <div class="section-header">
-          <h3>Content Sections</h3>
-        </div>
-
-        @each(section in sections)
-          <div class="accordion-section" data-section-id="{{ section.id }}">
-            <div class="accordion-header" onclick="toggleAccordion(this)">
-              <h4>{{ section.title }}</h4>
-              <span class="status {{ section.isPublished ? 'published' : 'draft' }}">
-                {{ section.isPublished ? 'Published' : 'Draft' }}
-              </span>
-            </div>
-            <div class="accordion-body">
-              <form method="POST" action="{{ route('admin.bilingual.updateSection', { id: section.id }) }}" class="section-form">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <input type="hidden" name="_method" value="PUT">
-
-                <div class="form-group-small">
-                  <label>Title</label>
-                  <input type="text" name="title" class="form-control-small" value="{{ section.title }}" required>
-                </div>
-
-                <div class="form-group-small">
-                  <label>Reflective Question 1</label>
-                  <input type="text" name="reflective_question" class="form-control-small" value="{{ section.reflectiveQuestion || '' }}">
-                </div>
-
-                <div class="form-group-small">
-                  <label>Reflective Question 2</label>
-                  <input type="text" name="reflective_question_2" class="form-control-small" value="{{ section.reflectiveQuestion2 || '' }}">
-                </div>
-
-                <div class="form-group-small">
-                  <label>Reflective Question 3</label>
-                  <input type="text" name="reflective_question_3" class="form-control-small" value="{{ section.reflectiveQuestion3 || '' }}">
-                </div>
-
-                <div class="form-group-small">
-                  <label>Content</label>
-                  <div id="sectionEditor_{{ section.id }}" class="quill-container section-editor" data-section-id="{{ section.id }}"></div>
-                  <input type="hidden" name="content" id="section_content_{{ section.id }}">
-                </div>
-
-                <div class="form-group-small">
-                  <label class="checkbox-group">
-                    <input type="checkbox" name="is_published" {{ section.isPublished ? 'checked' : '' }}>
-                    Published
-                  </label>
-                </div>
-
-                <div style="display: flex; gap: 10px;">
-                  <button type="submit" class="btn btn-success btn-small">Save Section</button>
-                  <button type="button" class="btn btn-danger btn-small" onclick="deleteSection({{ section.id }}, '{{ section.title }}')">Delete</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        @end
-
-        <!-- Add New Section -->
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <h4>+ Add New Section</h4>
-          </div>
-          <div class="accordion-body">
-            <form method="POST" action="{{ route('admin.bilingual.createSection') }}" id="newSectionForm">
-              <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-
-              <div class="form-group-small">
-                <label>Title</label>
-                <input type="text" name="title" class="form-control-small" required>
-              </div>
-
-              <div class="form-group-small">
-                <label>Reflective Question 1</label>
-                <input type="text" name="reflective_question" class="form-control-small">
-              </div>
-
-              <div class="form-group-small">
-                <label>Reflective Question 2</label>
-                <input type="text" name="reflective_question_2" class="form-control-small">
-              </div>
-
-              <div class="form-group-small">
-                <label>Reflective Question 3</label>
-                <input type="text" name="reflective_question_3" class="form-control-small">
-              </div>
-
-              <div class="form-group-small">
-                <label>Content</label>
-                <div id="newSectionEditor" class="quill-container"></div>
-                <input type="hidden" name="content" id="new_section_content">
-              </div>
-
-              <div class="form-group-small">
-                <label class="checkbox-group">
-                  <input type="checkbox" name="is_published">
-                  Published
-                </label>
-              </div>
-
-              <button type="submit" class="btn btn-success btn-small">Create Section</button>
-            </form>
-          </div>
-        </div>
+    .column-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .editor-column.english .column-header {
+      background: #3498db;
+      color: white;
+      border-radius: 8px 8px 0 0;
+    }
+    .editor-column.indonesian .column-header {
+      background: #27ae60;
+      color: white;
+      border-radius: 8px 8px 0 0;
+    }
+    .column-content {
+      padding: 20px;
+    }
+    .section-block {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid #e0e0e0;
+    }
+    .section-block h4 {
+      margin: 0 0 10px 0;
+      color: #2c3e50;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .translation-text {
+      background: white;
+      padding: 12px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+      line-height: 1.6;
+      min-height: 40px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .translation-text:hover {
+      background: #f0fff4;
+      border-color: #27ae60;
+    }
+    .translation-text.copied {
+      background: #d4edda;
+      border-color: #27ae60;
+    }
+    .translation-text p {
+      margin: 0 0 10px 0;
+    }
+    .translation-text p:last-child {
+      margin-bottom: 0;
+    }
+    .translation-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .copy-hint {
+      font-size: 11px;
+      color: #999;
+    }
+    .form-group-small {
+      margin-bottom: 12px;
+    }
+    .form-group-small label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+      font-size: 13px;
+      color: #555;
+    }
+    .form-control-small {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .quill-container {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .quill-container .ql-container {
+      min-height: 100px;
+      font-size: 14px;
+    }
+    .quill-container .ql-editor {
+      min-height: 100px;
+    }
+    .section-divider {
+      border-top: 2px solid #e0e0e0;
+      margin: 25px 0;
+      padding-top: 25px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .section-header h3 {
+      margin: 0;
+      color: #2c3e50;
+    }
+    .accordion-section {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+    .accordion-header {
+      background: #f8f9fa;
+      padding: 12px 15px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+    }
+    .accordion-header:hover {
+      background: #e9ecef;
+    }
+    .accordion-header h4 {
+      margin: 0;
+      font-size: 15px;
+      color: #2c3e50;
+    }
+    .accordion-header .status {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    .accordion-header .status.published {
+      background: #d4edda;
+      color: #155724;
+    }
+    .accordion-header .status.draft {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .accordion-body {
+      padding: 15px;
+      display: none;
+    }
+    .accordion-section.open .accordion-body {
+      display: block;
+    }
+    .accordion-section.open .accordion-header {
+      background: #e9ecef;
+    }
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .refresh-btn {
+      background: #9b59b6;
+      margin-left: auto;
+    }
+    .refresh-btn:hover {
+      background: #8e44ad;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+    }
+    .checkbox-group input {
+      margin-right: 8px;
+    }
+    @media (max-width: 1200px) {
+      .bilingual-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Bilingual Content Editor</h1>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary" style="padding: 8px 16px;">Sections</a>
+        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+          {{ csrfField() }}
+          <button type="submit" class="btn btn-secondary" style="padding: 8px 16px;">Logout</button>
+        </form>
       </div>
-
     </div>
   </div>
 
-  <!-- Indonesian Translation Column -->
-  <div class="editor-column indonesian">
-    <div class="column-header">Indonesian (Copy)</div>
-    <div class="column-content">
-
-      <div class="section-block">
-        <h4>Welcome Section</h4>
-        <div class="translation-label">
-          <span>Welcome Title</span>
-          <span class="copy-hint">Click to copy</span>
-        </div>
-        <div class="translation-text" onclick="copyText(this)">{{ welcomeTitleTranslated || '(No translation)' }}</div>
-
-        <div class="translation-label">
-          <span>Welcome Subtitle</span>
-          <span class="copy-hint">Click to copy</span>
-        </div>
-        <div class="translation-text" onclick="copyText(this)">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
+  <div class="container">
+    @if(flashMessages.has('success'))
+      <div class="alert alert-success">
+        {{ flashMessages.get('success') }}
       </div>
+    @end
 
-      <div class="section-block">
-        <h4>Lesson Overview</h4>
-        <div class="translation-label">
-          <span>Lesson Title</span>
-          <span class="copy-hint">Click to copy</span>
-        </div>
-        <div class="translation-text" onclick="copyText(this)">{{ lessonTitleTranslated || '(No translation)' }}</div>
-
-        <div class="translation-label">
-          <span>Lesson Introduction</span>
-          <span class="copy-hint">Click to copy</span>
-        </div>
-        <div class="translation-text" onclick="copyText(this)">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
+    @if(translationError)
+      <div class="alert-error">
+        <strong>Translation Error:</strong> {{ translationError }}
+        <br><small>The Indonesian translations may not be available. Please check your Google Cloud Translation API configuration.</small>
       </div>
+    @end
 
-      <div class="section-block">
-        <h4>About Us</h4>
-        <div class="translation-label">
-          <span>About Us Title</span>
-          <span class="copy-hint">Click to copy</span>
-        </div>
-        <div class="translation-text" onclick="copyText(this)">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
-
-        <div class="translation-label">
-          <span>About Us Content</span>
-          <span class="copy-hint">Click to copy</span>
-        </div>
-        <div class="translation-text" onclick="copyText(this)">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
+    @if(flashMessages.has('error'))
+      <div class="alert-error">
+        {{ flashMessages.get('error') }}
       </div>
+    @end
 
-      <div class="section-divider">
-        <h3 style="margin-bottom: 15px; color: #2c3e50;">Content Sections</h3>
+    <div class="nav-buttons">
+      <a href="/" target="_blank" class="btn btn-secondary">View Public Page</a>
+      <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
+      <button type="button" class="btn refresh-btn" onclick="location.reload()">Refresh Translations</button>
+    </div>
 
-        @each(section in sections)
-          <div class="section-block" data-translation-section="{{ section.id }}">
-            <h4>{{ section.title }}</h4>
+    <p style="color: #666; margin-bottom: 20px;">Edit English content on the left. Indonesian translations appear on the right (click to copy).</p>
 
-            <div class="translation-label">
-              <span>Title</span>
-              <span class="copy-hint">Click to copy</span>
+    <div class="bilingual-container">
+      <!-- English Editor Column -->
+      <div class="editor-column english">
+        <div class="column-header">English (Edit)</div>
+        <div class="column-content">
+
+          <!-- Settings Section -->
+          <form method="POST" action="{{ route('admin.bilingual.updateSettings') }}" id="settingsForm">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            <input type="hidden" name="_method" value="PUT">
+
+            <div class="section-block">
+              <h4>Welcome Section</h4>
+              <div class="form-group-small">
+                <label for="welcome_title">Welcome Title</label>
+                <input type="text" id="welcome_title" name="welcome_title" class="form-control-small" value="{{ welcomeTitle }}">
+              </div>
+              <div class="form-group-small">
+                <label for="welcome_subtitle">Welcome Subtitle</label>
+                <div id="welcomeSubtitleEditor" class="quill-container"></div>
+                <input type="hidden" name="welcome_subtitle" id="welcome_subtitle_hidden">
+              </div>
             </div>
-            <div class="translation-text" onclick="copyText(this)">{{ section.titleTranslated || '(No translation)' }}</div>
 
-            @if(section.reflectiveQuestion)
-              <div class="translation-label">
-                <span>Question 1</span>
-                <span class="copy-hint">Click to copy</span>
+            <div class="section-block">
+              <h4>Lesson Overview</h4>
+              <div class="form-group-small">
+                <label for="lesson_title">Lesson Title</label>
+                <input type="text" id="lesson_title" name="lesson_title" class="form-control-small" value="{{ lessonTitle }}">
               </div>
-              <div class="translation-text" onclick="copyText(this)">{{ section.q1Translated || '(No translation)' }}</div>
-            @end
-
-            @if(section.reflectiveQuestion2)
-              <div class="translation-label">
-                <span>Question 2</span>
-                <span class="copy-hint">Click to copy</span>
+              <div class="form-group-small">
+                <label for="lesson_introduction">Lesson Introduction</label>
+                <div id="lessonIntroEditor" class="quill-container"></div>
+                <input type="hidden" name="lesson_introduction" id="lesson_introduction_hidden">
               </div>
-              <div class="translation-text" onclick="copyText(this)">{{ section.q2Translated || '(No translation)' }}</div>
-            @end
-
-            @if(section.reflectiveQuestion3)
-              <div class="translation-label">
-                <span>Question 3</span>
-                <span class="copy-hint">Click to copy</span>
-              </div>
-              <div class="translation-text" onclick="copyText(this)">{{ section.q3Translated || '(No translation)' }}</div>
-            @end
-
-            <div class="translation-label">
-              <span>Content</span>
-              <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" onclick="copyText(this)">{{{ section.contentTranslated || '(No translation)' }}}</div>
+
+            <div class="section-block">
+              <h4>About Us</h4>
+              <div class="form-group-small">
+                <label for="about_us_title">About Us Title</label>
+                <input type="text" id="about_us_title" name="about_us_title" class="form-control-small" value="{{ aboutUsTitle }}">
+              </div>
+              <div class="form-group-small">
+                <label for="about_us_content">About Us Content</label>
+                <div id="aboutUsEditor" class="quill-container"></div>
+                <input type="hidden" name="about_us_content" id="about_us_content_hidden">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-small">Save Settings</button>
+          </form>
+
+          <!-- Sections -->
+          <div class="section-divider">
+            <div class="section-header">
+              <h3>Content Sections</h3>
+            </div>
+
+            @each(section in sections)
+              <div class="accordion-section" data-section-id="{{ section.id }}">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                  <h4>{{ section.title }}</h4>
+                  <span class="status {{ section.isPublished ? 'published' : 'draft' }}">
+                    {{ section.isPublished ? 'Published' : 'Draft' }}
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <form method="POST" action="{{ route('admin.bilingual.updateSection', { id: section.id }) }}" class="section-form">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    <input type="hidden" name="_method" value="PUT">
+
+                    <div class="form-group-small">
+                      <label>Title</label>
+                      <input type="text" name="title" class="form-control-small" value="{{ section.title }}" required>
+                    </div>
+
+                    <div class="form-group-small">
+                      <label>Reflective Question 1</label>
+                      <input type="text" name="reflective_question" class="form-control-small" value="{{ section.reflectiveQuestion || '' }}">
+                    </div>
+
+                    <div class="form-group-small">
+                      <label>Reflective Question 2</label>
+                      <input type="text" name="reflective_question_2" class="form-control-small" value="{{ section.reflectiveQuestion2 || '' }}">
+                    </div>
+
+                    <div class="form-group-small">
+                      <label>Reflective Question 3</label>
+                      <input type="text" name="reflective_question_3" class="form-control-small" value="{{ section.reflectiveQuestion3 || '' }}">
+                    </div>
+
+                    <div class="form-group-small">
+                      <label>Content</label>
+                      <div id="sectionEditor_{{ section.id }}" class="quill-container section-editor" data-section-id="{{ section.id }}"></div>
+                      <input type="hidden" name="content" id="section_content_{{ section.id }}">
+                    </div>
+
+                    <div class="form-group-small">
+                      <label class="checkbox-group">
+                        <input type="checkbox" name="is_published" {{ section.isPublished ? 'checked' : '' }}>
+                        Published
+                      </label>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                      <button type="submit" class="btn btn-success btn-small">Save Section</button>
+                      <button type="button" class="btn btn-danger btn-small" onclick="deleteSection({{ section.id }}, '{{ section.title }}')">Delete</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            @end
+
+            <!-- Add New Section -->
+            <div class="accordion-section">
+              <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h4>+ Add New Section</h4>
+              </div>
+              <div class="accordion-body">
+                <form method="POST" action="{{ route('admin.bilingual.createSection') }}" id="newSectionForm">
+                  <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                  <div class="form-group-small">
+                    <label>Title</label>
+                    <input type="text" name="title" class="form-control-small" required>
+                  </div>
+
+                  <div class="form-group-small">
+                    <label>Reflective Question 1</label>
+                    <input type="text" name="reflective_question" class="form-control-small">
+                  </div>
+
+                  <div class="form-group-small">
+                    <label>Reflective Question 2</label>
+                    <input type="text" name="reflective_question_2" class="form-control-small">
+                  </div>
+
+                  <div class="form-group-small">
+                    <label>Reflective Question 3</label>
+                    <input type="text" name="reflective_question_3" class="form-control-small">
+                  </div>
+
+                  <div class="form-group-small">
+                    <label>Content</label>
+                    <div id="newSectionEditor" class="quill-container"></div>
+                    <input type="hidden" name="content" id="new_section_content">
+                  </div>
+
+                  <div class="form-group-small">
+                    <label class="checkbox-group">
+                      <input type="checkbox" name="is_published">
+                      Published
+                    </label>
+                  </div>
+
+                  <button type="submit" class="btn btn-success btn-small">Create Section</button>
+                </form>
+              </div>
+            </div>
           </div>
-        @end
+
+        </div>
       </div>
 
+      <!-- Indonesian Translation Column -->
+      <div class="editor-column indonesian">
+        <div class="column-header">Indonesian (Copy)</div>
+        <div class="column-content">
+
+          <div class="section-block">
+            <h4>Welcome Section</h4>
+            <div class="translation-label">
+              <span>Welcome Title</span>
+              <span class="copy-hint">Click to copy</span>
+            </div>
+            <div class="translation-text" onclick="copyText(this)">{{ welcomeTitleTranslated || '(No translation)' }}</div>
+
+            <div class="translation-label">
+              <span>Welcome Subtitle</span>
+              <span class="copy-hint">Click to copy</span>
+            </div>
+            <div class="translation-text" onclick="copyText(this)">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
+          </div>
+
+          <div class="section-block">
+            <h4>Lesson Overview</h4>
+            <div class="translation-label">
+              <span>Lesson Title</span>
+              <span class="copy-hint">Click to copy</span>
+            </div>
+            <div class="translation-text" onclick="copyText(this)">{{ lessonTitleTranslated || '(No translation)' }}</div>
+
+            <div class="translation-label">
+              <span>Lesson Introduction</span>
+              <span class="copy-hint">Click to copy</span>
+            </div>
+            <div class="translation-text" onclick="copyText(this)">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
+          </div>
+
+          <div class="section-block">
+            <h4>About Us</h4>
+            <div class="translation-label">
+              <span>About Us Title</span>
+              <span class="copy-hint">Click to copy</span>
+            </div>
+            <div class="translation-text" onclick="copyText(this)">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
+
+            <div class="translation-label">
+              <span>About Us Content</span>
+              <span class="copy-hint">Click to copy</span>
+            </div>
+            <div class="translation-text" onclick="copyText(this)">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
+          </div>
+
+          <div class="section-divider">
+            <h3 style="margin-bottom: 15px; color: #2c3e50;">Content Sections</h3>
+
+            @each(section in sections)
+              <div class="section-block" data-translation-section="{{ section.id }}">
+                <h4>{{ section.title }}</h4>
+
+                <div class="translation-label">
+                  <span>Title</span>
+                  <span class="copy-hint">Click to copy</span>
+                </div>
+                <div class="translation-text" onclick="copyText(this)">{{ section.titleTranslated || '(No translation)' }}</div>
+
+                @if(section.reflectiveQuestion)
+                  <div class="translation-label">
+                    <span>Question 1</span>
+                    <span class="copy-hint">Click to copy</span>
+                  </div>
+                  <div class="translation-text" onclick="copyText(this)">{{ section.q1Translated || '(No translation)' }}</div>
+                @end
+
+                @if(section.reflectiveQuestion2)
+                  <div class="translation-label">
+                    <span>Question 2</span>
+                    <span class="copy-hint">Click to copy</span>
+                  </div>
+                  <div class="translation-text" onclick="copyText(this)">{{ section.q2Translated || '(No translation)' }}</div>
+                @end
+
+                @if(section.reflectiveQuestion3)
+                  <div class="translation-label">
+                    <span>Question 3</span>
+                    <span class="copy-hint">Click to copy</span>
+                  </div>
+                  <div class="translation-text" onclick="copyText(this)">{{ section.q3Translated || '(No translation)' }}</div>
+                @end
+
+                <div class="translation-label">
+                  <span>Content</span>
+                  <span class="copy-hint">Click to copy</span>
+                </div>
+                <div class="translation-text" onclick="copyText(this)">{{{ section.contentTranslated || '(No translation)' }}}</div>
+              </div>
+            @end
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Delete form (hidden) -->
-<form id="deleteForm" method="POST" style="display: none;">
-  <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-  <input type="hidden" name="_method" value="DELETE">
-</form>
+  <!-- Delete form (hidden) -->
+  <form id="deleteForm" method="POST" style="display: none;">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <input type="hidden" name="_method" value="DELETE">
+  </form>
 
-<!-- Quill JS -->
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+  <!-- Quill JS -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 
-<!-- Pass data to JavaScript -->
-<script id="pageData" type="application/json">
-  {{{ JSON.stringify({ welcomeSubtitle, lessonIntroduction, aboutUsContent, sections: sections.map(s => ({ id: s.id, content: s.content })) }) }}}
-</script>
+  <!-- Pass data to JavaScript -->
+  <script id="pageData" type="application/json">{{{ JSON.stringify({ welcomeSubtitle: welcomeSubtitle || '', lessonIntroduction: lessonIntroduction || '', aboutUsContent: aboutUsContent || '', sections: sections.map(s => ({ id: s.id, content: s.content || '' })) }) }}}</script>
 
-<script>
-  // Parse page data
-  const pageData = JSON.parse(document.getElementById('pageData').textContent);
+  <script>
+    // Parse page data
+    var pageData = JSON.parse(document.getElementById('pageData').textContent);
 
-  // Quill toolbar configuration
-  const toolbarOptions = [
-    ['bold', 'italic', 'underline'],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    ['link'],
-    ['clean']
-  ];
+    // Quill toolbar configuration
+    var toolbarOptions = [
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link'],
+      ['clean']
+    ];
 
-  // Initialize Quill editors for settings
-  const welcomeSubtitleEditor = new Quill('#welcomeSubtitleEditor', {
-    theme: 'snow',
-    modules: { toolbar: toolbarOptions },
-    placeholder: 'Enter welcome subtitle...'
-  });
-  welcomeSubtitleEditor.root.innerHTML = pageData.welcomeSubtitle || '';
+    // Initialize Quill editors for settings
+    var welcomeSubtitleEditor = new Quill('#welcomeSubtitleEditor', {
+      theme: 'snow',
+      modules: { toolbar: toolbarOptions },
+      placeholder: 'Enter welcome subtitle...'
+    });
+    welcomeSubtitleEditor.root.innerHTML = pageData.welcomeSubtitle;
 
-  const lessonIntroEditor = new Quill('#lessonIntroEditor', {
-    theme: 'snow',
-    modules: { toolbar: toolbarOptions },
-    placeholder: 'Enter lesson introduction...'
-  });
-  lessonIntroEditor.root.innerHTML = pageData.lessonIntroduction || '';
+    var lessonIntroEditor = new Quill('#lessonIntroEditor', {
+      theme: 'snow',
+      modules: { toolbar: toolbarOptions },
+      placeholder: 'Enter lesson introduction...'
+    });
+    lessonIntroEditor.root.innerHTML = pageData.lessonIntroduction;
 
-  const aboutUsEditor = new Quill('#aboutUsEditor', {
-    theme: 'snow',
-    modules: { toolbar: toolbarOptions },
-    placeholder: 'Enter about us content...'
-  });
-  aboutUsEditor.root.innerHTML = pageData.aboutUsContent || '';
+    var aboutUsEditor = new Quill('#aboutUsEditor', {
+      theme: 'snow',
+      modules: { toolbar: toolbarOptions },
+      placeholder: 'Enter about us content...'
+    });
+    aboutUsEditor.root.innerHTML = pageData.aboutUsContent;
 
-  // Initialize Quill editors for existing sections
-  const sectionEditors = {};
-  pageData.sections.forEach(function(section) {
-    const editorEl = document.getElementById('sectionEditor_' + section.id);
-    if (editorEl) {
-      sectionEditors[section.id] = new Quill('#sectionEditor_' + section.id, {
-        theme: 'snow',
-        modules: { toolbar: toolbarOptions },
-        placeholder: 'Enter section content...'
+    // Initialize Quill editors for existing sections
+    var sectionEditors = {};
+    pageData.sections.forEach(function(section) {
+      var editorEl = document.getElementById('sectionEditor_' + section.id);
+      if (editorEl) {
+        sectionEditors[section.id] = new Quill('#sectionEditor_' + section.id, {
+          theme: 'snow',
+          modules: { toolbar: toolbarOptions },
+          placeholder: 'Enter section content...'
+        });
+        sectionEditors[section.id].root.innerHTML = section.content;
+      }
+    });
+
+    // Initialize Quill for new section
+    var newSectionEditor = new Quill('#newSectionEditor', {
+      theme: 'snow',
+      modules: { toolbar: toolbarOptions },
+      placeholder: 'Enter section content...'
+    });
+
+    // Sync Quill content before form submission
+    document.getElementById('settingsForm').addEventListener('submit', function() {
+      document.getElementById('welcome_subtitle_hidden').value = welcomeSubtitleEditor.root.innerHTML;
+      document.getElementById('lesson_introduction_hidden').value = lessonIntroEditor.root.innerHTML;
+      document.getElementById('about_us_content_hidden').value = aboutUsEditor.root.innerHTML;
+    });
+
+    // Sync section editors before submission
+    document.querySelectorAll('.section-form').forEach(function(form) {
+      form.addEventListener('submit', function() {
+        var sectionId = this.closest('.accordion-section').dataset.sectionId;
+        document.getElementById('section_content_' + sectionId).value = sectionEditors[sectionId].root.innerHTML;
       });
-      sectionEditors[section.id].root.innerHTML = section.content || '';
-    }
-  });
-
-  // Initialize Quill for new section
-  const newSectionEditor = new Quill('#newSectionEditor', {
-    theme: 'snow',
-    modules: { toolbar: toolbarOptions },
-    placeholder: 'Enter section content...'
-  });
-
-  // Sync Quill content before form submission
-  document.getElementById('settingsForm').addEventListener('submit', function() {
-    document.getElementById('welcome_subtitle_hidden').value = welcomeSubtitleEditor.root.innerHTML;
-    document.getElementById('lesson_introduction_hidden').value = lessonIntroEditor.root.innerHTML;
-    document.getElementById('about_us_content_hidden').value = aboutUsEditor.root.innerHTML;
-  });
-
-  // Sync section editors before submission
-  document.querySelectorAll('.section-form').forEach(form => {
-    form.addEventListener('submit', function() {
-      const sectionId = this.closest('.accordion-section').dataset.sectionId;
-      document.getElementById('section_content_' + sectionId).value = sectionEditors[sectionId].root.innerHTML;
     });
-  });
 
-  // Sync new section editor
-  document.getElementById('newSectionForm').addEventListener('submit', function() {
-    document.getElementById('new_section_content').value = newSectionEditor.root.innerHTML;
-  });
-
-  // Toggle accordion
-  function toggleAccordion(header) {
-    const section = header.closest('.accordion-section');
-    section.classList.toggle('open');
-  }
-
-  // Delete section
-  function deleteSection(id, title) {
-    if (confirm('Are you sure you want to delete "' + title + '"? This cannot be undone.')) {
-      const form = document.getElementById('deleteForm');
-      form.action = '/admin/bilingual/sections/' + id;
-      form.submit();
-    }
-  }
-
-  // Copy text to clipboard
-  function copyText(element) {
-    const text = element.innerText;
-    if (text === '(No translation)') return;
-
-    navigator.clipboard.writeText(text).then(() => {
-      element.classList.add('copied');
-      setTimeout(() => {
-        element.classList.remove('copied');
-      }, 1000);
-    }).catch(err => {
-      console.error('Failed to copy:', err);
-      // Fallback for older browsers
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-      element.classList.add('copied');
-      setTimeout(() => {
-        element.classList.remove('copied');
-      }, 1000);
+    // Sync new section editor
+    document.getElementById('newSectionForm').addEventListener('submit', function() {
+      document.getElementById('new_section_content').value = newSectionEditor.root.innerHTML;
     });
-  }
-</script>
-@end
+
+    // Toggle accordion
+    function toggleAccordion(header) {
+      var section = header.closest('.accordion-section');
+      section.classList.toggle('open');
+    }
+
+    // Delete section
+    function deleteSection(id, title) {
+      if (confirm('Are you sure you want to delete "' + title + '"? This cannot be undone.')) {
+        var form = document.getElementById('deleteForm');
+        form.action = '/admin/bilingual/sections/' + id;
+        form.submit();
+      }
+    }
+
+    // Copy text to clipboard
+    function copyText(element) {
+      var text = element.innerText;
+      if (text === '(No translation)') return;
+
+      navigator.clipboard.writeText(text).then(function() {
+        element.classList.add('copied');
+        setTimeout(function() {
+          element.classList.remove('copied');
+        }, 1000);
+      }).catch(function(err) {
+        console.error('Failed to copy:', err);
+        // Fallback for older browsers
+        var textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        element.classList.add('copied');
+        setTimeout(function() {
+          element.classList.remove('copied');
+        }, 1000);
+      });
+    }
+  </script>
+</body>
+</html>
