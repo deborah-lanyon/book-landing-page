@@ -7,6 +7,7 @@ node_modules/
 # Build output
 build/
 tmp/
+tmpclaude-*
 
 # Git
 .git/
@@ -24,9 +25,14 @@ tmp/
 
 # OS
 .DS_Store
+Thumbs.db
 
 # Logs
 *.log
 
 # Test coverage
 coverage/
+
+# Temporary files
+*.tmp
+*.temp

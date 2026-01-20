@@ -1,0 +1,54 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/book-landing-page-indonesian:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/book-landing-page-indonesian:latest'
+      - '.'
+
+  # Push the image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/book-landing-page-indonesian:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/book-landing-page-indonesian:latest'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'book-landing-page-indonesian'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/book-landing-page-indonesian:$COMMIT_SHA'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'DEFAULT_LANGUAGE=id'
+
+# Store images in Container Registry
+images:
+  - 'gcr.io/$PROJECT_ID/book-landing-page-indonesian:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/book-landing-page-indonesian:latest'
+
+# Substitution variables
+substitutions:
+  _REGION: australia-southeast1
+
+# Build timeout (15 minutes)
+timeout: 900s
+
+# Use Cloud Logging only
+options:
+  logging: CLOUD_LOGGING_ONLY

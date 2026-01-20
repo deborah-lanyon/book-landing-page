@@ -63,9 +63,9 @@ export default class TranslationController {
       return response.status(400).json({ error: 'Target language is required' })
     }
 
-    // If target language is English, return original content without translation
-    // (source content is always in English)
-    if (targetLanguage === 'en') {
+    // If target language is Indonesian, return original content without translation
+    // (source content is in Indonesian)
+    if (targetLanguage === 'id') {
       // Get lesson settings
       const lessonTitleSetting = await Setting.findBy('key', 'lesson_title')
       const lessonIntroSetting = await Setting.findBy('key', 'lesson_introduction')

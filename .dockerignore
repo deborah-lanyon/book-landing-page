@@ -1,0 +1,17 @@
+node_modules
+.git
+.env
+.env.local
+.env.*.local
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+tmp
+tmpclaude-*
+coverage
+.nyc_output
+dist
+build/.tsbuildinfo
+*.md
+!README.md

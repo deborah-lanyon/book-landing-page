@@ -88,7 +88,9 @@ export default class HomeController {
   }
 
   /**
-   * Render bilingual side-by-side page (Indonesian + English/other)
+   * Render bilingual side-by-side page (Indonesian original + English/other translation)
+   * Left column: Original Indonesian content (no translation needed)
+   * Right column: Translated to English (default) or other selected language
    */
   private async renderBilingualPage(
     view: HttpContext['view'],
@@ -104,7 +106,7 @@ export default class HomeController {
     }
   ) {
     try {
-      // Collect all texts to translate to Indonesian
+      // Collect all texts to translate FROM Indonesian TO English
       const textsToTranslate: string[] = []
       const textKeys: string[] = []
 
@@ -153,8 +155,8 @@ export default class HomeController {
         }
       }
 
-      // Translate all to Indonesian
-      const translations = await translateMultiple(textsToTranslate, 'id')
+      // Translate all FROM Indonesian TO English (source language is 'id' by default now)
+      const translations = await translateMultiple(textsToTranslate, 'en')
 
       // Map translations
       const translationMap: Record<string, string> = {}
@@ -162,15 +164,17 @@ export default class HomeController {
         translationMap[key] = translations[index]
       })
 
-      // Build sections with both original and translated content
+      // Build sections with both original Indonesian and translated English content
       const sectionsWithTranslations = data.sections.map((section) => ({
         id: section.id,
+        // Original Indonesian content (left column)
         title: section.title,
         content: section.content,
         reflectiveQuestion: section.reflectiveQuestion,
         reflectiveQuestion2: section.reflectiveQuestion2,
         reflectiveQuestion3: section.reflectiveQuestion3,
         imageUrl: section.imageUrl,
+        // Translated English content (right column)
         titleTranslated: translationMap[`section_${section.id}_title`] || section.title,
         contentTranslated: translationMap[`section_${section.id}_content`] || section.content,
         reflectiveQuestionTranslated: translationMap[`section_${section.id}_q1`] || section.reflectiveQuestion,
@@ -180,7 +184,7 @@ export default class HomeController {
 
       return view.render('pages/home-bilingual', {
         sections: sectionsWithTranslations,
-        // Original English
+        // Original Indonesian (left column)
         welcomeTitle: data.welcomeTitle,
         welcomeSubtitle: data.welcomeSubtitle,
         lessonTitle: data.lessonTitle,
@@ -188,7 +192,7 @@ export default class HomeController {
         lessonImage: data.lessonImage,
         aboutUsTitle: data.aboutUsTitle,
         aboutUsContent: data.aboutUsContent,
-        // Translated Indonesian
+        // Translated English (right column)
         welcomeTitleTranslated: translationMap.welcomeTitle || data.welcomeTitle,
         welcomeSubtitleTranslated: translationMap.welcomeSubtitle || data.welcomeSubtitle,
         lessonTitleTranslated: translationMap.lessonTitle || data.lessonTitle,
@@ -198,9 +202,26 @@ export default class HomeController {
       })
     } catch (error) {
       console.error('Failed to translate content for bilingual page:', error)
-      // Fall back to English-only if translation fails
-      return view.render('pages/home', {
-        sections: data.sections,
+      // Fall back to bilingual page with Indonesian content on both sides
+      // (translation will be available via client-side when API works)
+      const sectionsWithTranslations = data.sections.map((section) => ({
+        id: section.id,
+        title: section.title,
+        content: section.content,
+        reflectiveQuestion: section.reflectiveQuestion,
+        reflectiveQuestion2: section.reflectiveQuestion2,
+        reflectiveQuestion3: section.reflectiveQuestion3,
+        imageUrl: section.imageUrl,
+        // Use same content when translation fails
+        titleTranslated: section.title,
+        contentTranslated: section.content,
+        reflectiveQuestionTranslated: section.reflectiveQuestion,
+        reflectiveQuestion2Translated: section.reflectiveQuestion2,
+        reflectiveQuestion3Translated: section.reflectiveQuestion3,
+      }))
+
+      return view.render('pages/home-bilingual', {
+        sections: sectionsWithTranslations,
         welcomeTitle: data.welcomeTitle,
         welcomeSubtitle: data.welcomeSubtitle,
         lessonTitle: data.lessonTitle,
@@ -208,8 +229,13 @@ export default class HomeController {
         lessonImage: data.lessonImage,
         aboutUsTitle: data.aboutUsTitle,
         aboutUsContent: data.aboutUsContent,
-        defaultLanguage: 'en',
-        defaultLanguageName: 'English',
+        // Use same content when translation fails
+        welcomeTitleTranslated: data.welcomeTitle,
+        welcomeSubtitleTranslated: data.welcomeSubtitle,
+        lessonTitleTranslated: data.lessonTitle,
+        lessonIntroductionTranslated: data.lessonIntroduction,
+        aboutUsTitleTranslated: data.aboutUsTitle,
+        aboutUsContentTranslated: data.aboutUsContent,
       })
     }
   }

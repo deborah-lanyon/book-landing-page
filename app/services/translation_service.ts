@@ -2,8 +2,9 @@ import { TranslationServiceClient } from '@google-cloud/translate'
 
 const translationClient = new TranslationServiceClient()
 
-// Common languages for translation
+// Common languages for translation (from Indonesian source)
 export const SUPPORTED_LANGUAGES = [
+  { code: 'en', name: 'English' },
   { code: 'es', name: 'Spanish' },
   { code: 'fr', name: 'French' },
   { code: 'de', name: 'German' },
@@ -24,7 +25,7 @@ export const SUPPORTED_LANGUAGES = [
 export async function translateText(
   text: string,
   targetLanguage: string,
-  sourceLanguage: string = 'en'
+  sourceLanguage: string = 'id'
 ): Promise<string> {
   // Get project ID from environment or use default
   const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT
@@ -53,7 +54,7 @@ export async function translateText(
 export async function translateMultiple(
   texts: string[],
   targetLanguage: string,
-  sourceLanguage: string = 'en'
+  sourceLanguage: string = 'id'
 ): Promise<string[]> {
   const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT
 
