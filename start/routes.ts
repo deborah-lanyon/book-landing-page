@@ -16,6 +16,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const SettingsController = () => import('#controllers/settings_controller')
 const ContactsController = () => import('#controllers/contacts_controller')
 const TranslationController = () => import('#controllers/translation_controller')
+const BilingualEditorController = () => import('#controllers/bilingual_editor_controller')
 
 // Public landing page
 router.get('/', [HomeController, 'index'])
@@ -67,6 +68,13 @@ router
     // Translation (admin)
     router.post('/translate/section/:id', [TranslationController, 'translateSection']).as('admin.translate.section')
     router.post('/translate/text', [TranslationController, 'translateText']).as('admin.translate.text')
+
+    // Bilingual editor
+    router.get('/bilingual', [BilingualEditorController, 'index']).as('admin.bilingual.index')
+    router.put('/bilingual/settings', [BilingualEditorController, 'updateSettings']).as('admin.bilingual.updateSettings')
+    router.put('/bilingual/sections/:id', [BilingualEditorController, 'updateSection']).as('admin.bilingual.updateSection')
+    router.post('/bilingual/sections', [BilingualEditorController, 'createSection']).as('admin.bilingual.createSection')
+    router.delete('/bilingual/sections/:id', [BilingualEditorController, 'deleteSection']).as('admin.bilingual.deleteSection')
   })
   .prefix('/admin')
   .use(middleware.auth())
