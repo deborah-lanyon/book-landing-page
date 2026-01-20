@@ -2,9 +2,10 @@ import { TranslationServiceClient } from '@google-cloud/translate'
 
 const translationClient = new TranslationServiceClient()
 
-// Common languages for translation (from Indonesian source)
+// Common languages for translation
 export const SUPPORTED_LANGUAGES = [
   { code: 'en', name: 'English' },
+  { code: 'id', name: 'Indonesian' },
   { code: 'es', name: 'Spanish' },
   { code: 'fr', name: 'French' },
   { code: 'de', name: 'German' },
@@ -22,11 +23,18 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'th', name: 'Thai' },
 ]
 
+// Get the default language from environment (this is the source language for content)
+export function getSourceLanguage(): string {
+  return process.env.DEFAULT_LANGUAGE || 'en'
+}
+
 export async function translateText(
   text: string,
   targetLanguage: string,
-  sourceLanguage: string = 'id'
+  sourceLanguage?: string
 ): Promise<string> {
+  // Use provided source language, or fall back to the configured default language
+  const source = sourceLanguage ?? getSourceLanguage()
   // Get project ID from environment or use default
   const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT
 
@@ -38,7 +46,7 @@ export async function translateText(
     parent: `projects/${projectId}/locations/global`,
     contents: [text],
     mimeType: 'text/html', // Preserve HTML formatting
-    sourceLanguageCode: sourceLanguage,
+    sourceLanguageCode: source,
     targetLanguageCode: targetLanguage,
   }
 
@@ -54,8 +62,10 @@ export async function translateText(
 export async function translateMultiple(
   texts: string[],
   targetLanguage: string,
-  sourceLanguage: string = 'id'
+  sourceLanguage?: string
 ): Promise<string[]> {
+  // Use provided source language, or fall back to the configured default language
+  const source = sourceLanguage ?? getSourceLanguage()
   const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT
 
   if (!projectId) {
@@ -66,7 +76,7 @@ export async function translateMultiple(
     parent: `projects/${projectId}/locations/global`,
     contents: texts,
     mimeType: 'text/html',
-    sourceLanguageCode: sourceLanguage,
+    sourceLanguageCode: source,
     targetLanguageCode: targetLanguage,
   }
 
