@@ -94,8 +94,8 @@ export default class BilingualEditorController {
 
       try {
         if (textsToTranslate.length > 0) {
-          // Translate from Indonesian to English
-          const translations = await translateMultiple(textsToTranslate, 'en')
+          // Translate from Indonesian to English (explicitly specify source as 'id')
+          const translations = await translateMultiple(textsToTranslate, 'en', 'id')
           textKeys.forEach((key, index) => {
             translationMap[key] = translations[index]
           })
@@ -328,8 +328,8 @@ export default class BilingualEditorController {
     }
 
     try {
-      // Translate from Indonesian to English
-      const translations = await translateMultiple(texts, 'en')
+      // Translate from Indonesian to English (explicitly specify source as 'id')
+      const translations = await translateMultiple(texts, 'en', 'id')
       return response.json({ success: true, translations })
     } catch (error) {
       console.error('Translation error:', error)
