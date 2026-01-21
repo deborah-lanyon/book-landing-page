@@ -23,7 +23,23 @@ export default class Section extends BaseModel {
   @column()
   declare imageUrl: string | null
 
-  // Indonesian translations
+  // English translations (translated from Indonesian)
+  @column()
+  declare titleEn: string | null
+
+  @column()
+  declare contentEn: string | null
+
+  @column()
+  declare reflectiveQuestionEn: string | null
+
+  @column()
+  declare reflectiveQuestion2En: string | null
+
+  @column()
+  declare reflectiveQuestion3En: string | null
+
+  // Legacy Indonesian translation fields (keeping for backwards compatibility)
   @column()
   declare titleId: string | null
 

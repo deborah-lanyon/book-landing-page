@@ -94,13 +94,13 @@
       font-weight: 600;
       font-size: 16px;
     }
-    .editor-column.english .column-header {
-      background: #3498db;
+    .editor-column.indonesian .column-header {
+      background: #27ae60;
       color: white;
       border-radius: 8px 8px 0 0;
     }
-    .editor-column.indonesian .column-header {
-      background: #27ae60;
+    .editor-column.english .column-header {
+      background: #3498db;
       color: white;
       border-radius: 8px 8px 0 0;
     }
@@ -143,10 +143,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    .copy-hint {
-      font-size: 11px;
-      color: #999;
     }
     .form-group-small {
       margin-bottom: 12px;
@@ -290,7 +286,7 @@
     @if(translationError)
       <div class="alert-error">
         <strong>Translation Error:</strong> {{ translationError }}
-        <br><small>The Indonesian translations may not be available. Please check your Google Cloud Translation API configuration.</small>
+        <br><small>The English translations may not be available. Please check your Google Cloud Translation API configuration.</small>
       </div>
     @end
 
@@ -306,7 +302,7 @@
     </div>
 
     <p style="color: #666; margin-bottom: 20px;">
-      Edit English content on the left. Indonesian translations appear on the right.
+      Edit Indonesian content on the left. English translations appear on the right.
       @if(hasStoredTranslations)
         <strong style="color: #27ae60;">(Using saved translations)</strong>
       @else
@@ -315,9 +311,9 @@
     </p>
 
     <div class="bilingual-container">
-      <!-- English Editor Column -->
-      <div class="editor-column english">
-        <div class="column-header">English (Edit)</div>
+      <!-- Indonesian Editor Column (Left) -->
+      <div class="editor-column indonesian">
+        <div class="column-header">Indonesian (Edit)</div>
         <div class="column-content">
 
           <!-- Settings Section -->
@@ -479,9 +475,9 @@
         </div>
       </div>
 
-      <!-- Indonesian Translation Column -->
-      <div class="editor-column indonesian">
-        <div class="column-header">Indonesian (Translation Preview)</div>
+      <!-- English Translation Column (Right) -->
+      <div class="editor-column english">
+        <div class="column-header">English (Translation Preview)</div>
         <div class="column-content">
 
           <div class="section-block">
@@ -489,12 +485,12 @@
             <div class="translation-label">
               <span>Welcome Title</span>
             </div>
-            <div class="translation-text" data-field="welcome_title_id">{{ welcomeTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="welcome_title_en">{{ welcomeTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>Welcome Subtitle</span>
             </div>
-            <div class="translation-text" data-field="welcome_subtitle_id" data-html="true">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="welcome_subtitle_en" data-html="true">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-block">
@@ -502,12 +498,12 @@
             <div class="translation-label">
               <span>Lesson Title</span>
             </div>
-            <div class="translation-text" data-field="lesson_title_id">{{ lessonTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="lesson_title_en">{{ lessonTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>Lesson Introduction</span>
             </div>
-            <div class="translation-text" data-field="lesson_introduction_id" data-html="true">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="lesson_introduction_en" data-html="true">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-block">
@@ -515,12 +511,12 @@
             <div class="translation-label">
               <span>About Us Title</span>
             </div>
-            <div class="translation-text" data-field="about_us_title_id">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="about_us_title_en">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>About Us Content</span>
             </div>
-            <div class="translation-text" data-field="about_us_content_id" data-html="true">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="about_us_content_en" data-html="true">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-divider">
@@ -533,33 +529,33 @@
                 <div class="translation-label">
                   <span>Title</span>
                 </div>
-                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="title_id">{{ section.titleTranslated || '(No translation)' }}</div>
+                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="title_en">{{ section.titleTranslated || '(No translation)' }}</div>
 
                 @if(section.reflectiveQuestion)
                   <div class="translation-label">
                     <span>Question 1</span>
                   </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q1_id">{{ section.q1Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q1_en">{{ section.q1Translated || '(No translation)' }}</div>
                 @end
 
                 @if(section.reflectiveQuestion2)
                   <div class="translation-label">
                     <span>Question 2</span>
                   </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q2_id">{{ section.q2Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q2_en">{{ section.q2Translated || '(No translation)' }}</div>
                 @end
 
                 @if(section.reflectiveQuestion3)
                   <div class="translation-label">
                     <span>Question 3</span>
                   </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q3_id">{{ section.q3Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q3_en">{{ section.q3Translated || '(No translation)' }}</div>
                 @end
 
                 <div class="translation-label">
                   <span>Content</span>
                 </div>
-                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="content_id" data-html="true">{{{ section.contentTranslated || '(No translation)' }}}</div>
+                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="content_en" data-html="true">{{{ section.contentTranslated || '(No translation)' }}}</div>
               </div>
             @end
           </div>
@@ -676,32 +672,6 @@
       }
     }
 
-    // Copy text to clipboard
-    function copyText(element) {
-      var text = element.innerText;
-      if (text === '(No translation)') return;
-
-      navigator.clipboard.writeText(text).then(function() {
-        element.classList.add('copied');
-        setTimeout(function() {
-          element.classList.remove('copied');
-        }, 1000);
-      }).catch(function(err) {
-        console.error('Failed to copy:', err);
-        // Fallback for older browsers
-        var textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        element.classList.add('copied');
-        setTimeout(function() {
-          element.classList.remove('copied');
-        }, 1000);
-      });
-    }
-
     // Save all translations to database
     function saveAllTranslations() {
       var form = document.getElementById('saveTranslationsForm');
@@ -712,8 +682,8 @@
         input.remove();
       });
 
-      // Collect settings translations
-      var settingsFields = ['welcome_title_id', 'welcome_subtitle_id', 'lesson_title_id', 'lesson_introduction_id', 'about_us_title_id', 'about_us_content_id'];
+      // Collect settings translations (English)
+      var settingsFields = ['welcome_title_en', 'welcome_subtitle_en', 'lesson_title_en', 'lesson_introduction_en', 'about_us_title_en', 'about_us_content_en'];
       settingsFields.forEach(function(field) {
         var el = document.querySelector('[data-field="' + field + '"]');
         if (el) {
@@ -728,8 +698,8 @@
         }
       });
 
-      // Collect section translations
-      var sectionElements = document.querySelectorAll('[data-section-id]');
+      // Collect section translations (English)
+      var sectionElements = document.querySelectorAll('[data-section-id][data-section-field]');
       var sectionsData = {};
 
       sectionElements.forEach(function(el) {
@@ -754,7 +724,7 @@
         idInput.value = section.id;
         form.appendChild(idInput);
 
-        ['title_id', 'content_id', 'q1_id', 'q2_id', 'q3_id'].forEach(function(field) {
+        ['title_en', 'content_en', 'q1_en', 'q2_en', 'q3_en'].forEach(function(field) {
           if (section[field]) {
             var input = document.createElement('input');
             input.type = 'hidden';

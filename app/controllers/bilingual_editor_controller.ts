@@ -5,43 +5,44 @@ import { translateMultiple } from '#services/translation_service'
 
 export default class BilingualEditorController {
   /**
-   * Show the bilingual editor with all content and Indonesian translations
-   * Prioritizes stored translations from database, falls back to API translations
+   * Show the bilingual editor with Indonesian content and English translations
+   * Left column: Indonesian (editable) - stored in main fields
+   * Right column: English (translation preview) - stored in _en fields
    */
   async index({ view, request }: HttpContext) {
     // Check if user wants to refresh translations from API
     const refreshTranslations = request.input('refresh') === '1'
 
-    // Get all settings (English content)
-    const welcomeTitle = await Setting.get('welcome_title', 'Welcome')
+    // Get all settings (Indonesian content - stored in main fields)
+    const welcomeTitle = await Setting.get('welcome_title', 'Selamat Datang')
     const welcomeSubtitle = await Setting.get('welcome_subtitle', '')
     const lessonTitle = await Setting.get('lesson_title', '')
     const lessonIntroduction = await Setting.get('lesson_introduction', '')
-    const aboutUsTitle = await Setting.get('about_us_title', 'About Us')
+    const aboutUsTitle = await Setting.get('about_us_title', 'Tentang Kami')
     const aboutUsContent = await Setting.get('about_us_content', '')
 
-    // Get stored Indonesian translations for settings
-    const welcomeTitleId = await Setting.get('welcome_title_id', '')
-    const welcomeSubtitleId = await Setting.get('welcome_subtitle_id', '')
-    const lessonTitleId = await Setting.get('lesson_title_id', '')
-    const lessonIntroductionId = await Setting.get('lesson_introduction_id', '')
-    const aboutUsTitleId = await Setting.get('about_us_title_id', '')
-    const aboutUsContentId = await Setting.get('about_us_content_id', '')
+    // Get stored English translations for settings
+    const welcomeTitleEn = await Setting.get('welcome_title_en', '')
+    const welcomeSubtitleEn = await Setting.get('welcome_subtitle_en', '')
+    const lessonTitleEn = await Setting.get('lesson_title_en', '')
+    const lessonIntroductionEn = await Setting.get('lesson_introduction_en', '')
+    const aboutUsTitleEn = await Setting.get('about_us_title_en', '')
+    const aboutUsContentEn = await Setting.get('about_us_content_en', '')
 
     // Get all sections ordered by display order
     const sections = await Section.query().orderBy('display_order', 'asc')
 
-    // Check if we have stored translations or need to fetch from API
+    // Check if we have stored English translations or need to fetch from API
     const hasStoredSettingsTranslations =
-      welcomeTitleId || welcomeSubtitleId || lessonTitleId || aboutUsTitleId
-    const hasStoredSectionTranslations = sections.some((s) => s.titleId || s.contentId)
+      welcomeTitleEn || welcomeSubtitleEn || lessonTitleEn || aboutUsTitleEn
+    const hasStoredSectionTranslations = sections.some((s) => s.titleEn || s.contentEn)
 
     let translationMap: Record<string, string> = {}
     let translationError = ''
 
-    // If refreshing or no stored translations, fetch from API
+    // If refreshing or no stored translations, fetch from API (Indonesian -> English)
     if (refreshTranslations || (!hasStoredSettingsTranslations && !hasStoredSectionTranslations)) {
-      // Prepare content for translation
+      // Prepare Indonesian content for translation to English
       const textsToTranslate: string[] = []
       const textKeys: string[] = []
 
@@ -93,7 +94,8 @@ export default class BilingualEditorController {
 
       try {
         if (textsToTranslate.length > 0) {
-          const translations = await translateMultiple(textsToTranslate, 'id')
+          // Translate from Indonesian to English
+          const translations = await translateMultiple(textsToTranslate, 'en')
           textKeys.forEach((key, index) => {
             translationMap[key] = translations[index]
           })
@@ -103,29 +105,30 @@ export default class BilingualEditorController {
         translationError = error instanceof Error ? error.message : 'Translation failed'
       }
     } else {
-      // Use stored translations
+      // Use stored English translations
       translationMap = {
-        welcomeTitle: welcomeTitleId,
-        welcomeSubtitle: welcomeSubtitleId,
-        lessonTitle: lessonTitleId,
-        lessonIntroduction: lessonIntroductionId,
-        aboutUsTitle: aboutUsTitleId,
-        aboutUsContent: aboutUsContentId,
+        welcomeTitle: welcomeTitleEn,
+        welcomeSubtitle: welcomeSubtitleEn,
+        lessonTitle: lessonTitleEn,
+        lessonIntroduction: lessonIntroductionEn,
+        aboutUsTitle: aboutUsTitleEn,
+        aboutUsContent: aboutUsContentEn,
       }
 
-      // Add section translations from database
+      // Add section English translations from database
       for (const section of sections) {
-        translationMap[`section_${section.id}_title`] = section.titleId || ''
-        translationMap[`section_${section.id}_content`] = section.contentId || ''
-        translationMap[`section_${section.id}_q1`] = section.reflectiveQuestionId || ''
-        translationMap[`section_${section.id}_q2`] = section.reflectiveQuestion2Id || ''
-        translationMap[`section_${section.id}_q3`] = section.reflectiveQuestion3Id || ''
+        translationMap[`section_${section.id}_title`] = section.titleEn || ''
+        translationMap[`section_${section.id}_content`] = section.contentEn || ''
+        translationMap[`section_${section.id}_q1`] = section.reflectiveQuestionEn || ''
+        translationMap[`section_${section.id}_q2`] = section.reflectiveQuestion2En || ''
+        translationMap[`section_${section.id}_q3`] = section.reflectiveQuestion3En || ''
       }
     }
 
     // Build sections with translations
     const sectionsWithTranslations = sections.map((section) => ({
       id: section.id,
+      // Indonesian content (editable)
       title: section.title,
       content: section.content,
       reflectiveQuestion: section.reflectiveQuestion,
@@ -134,7 +137,7 @@ export default class BilingualEditorController {
       imageUrl: section.imageUrl,
       isPublished: section.isPublished,
       displayOrder: section.displayOrder,
-      // Translations (from DB or API)
+      // English translations (from DB or API)
       titleTranslated: translationMap[`section_${section.id}_title`] || '',
       contentTranslated: translationMap[`section_${section.id}_content`] || '',
       q1Translated: translationMap[`section_${section.id}_q1`] || '',
@@ -143,7 +146,7 @@ export default class BilingualEditorController {
     }))
 
     return view.render('admin/bilingual/index', {
-      // Original content
+      // Indonesian content (editable)
       welcomeTitle,
       welcomeSubtitle,
       lessonTitle,
@@ -151,7 +154,7 @@ export default class BilingualEditorController {
       aboutUsTitle,
       aboutUsContent,
       sections: sectionsWithTranslations,
-      // Translations
+      // English translations
       welcomeTitleTranslated: translationMap.welcomeTitle || '',
       welcomeSubtitleTranslated: translationMap.welcomeSubtitle || '',
       lessonTitleTranslated: translationMap.lessonTitle || '',
@@ -164,7 +167,7 @@ export default class BilingualEditorController {
   }
 
   /**
-   * Update settings (welcome, lesson, about us)
+   * Update settings (Indonesian content)
    */
   async updateSettings({ request, response, session }: HttpContext) {
     const data = request.only([
@@ -176,6 +179,7 @@ export default class BilingualEditorController {
       'about_us_content',
     ])
 
+    // Save Indonesian content to main fields
     await Setting.set('welcome_title', data.welcome_title || '')
     await Setting.set('welcome_subtitle', data.welcome_subtitle || '')
     await Setting.set('lesson_title', data.lesson_title || '')
@@ -188,50 +192,50 @@ export default class BilingualEditorController {
   }
 
   /**
-   * Save Indonesian translations to the database
+   * Save English translations to the database
    */
   async saveTranslations({ request, response, session }: HttpContext) {
     const data = request.only([
-      // Settings translations
-      'welcome_title_id',
-      'welcome_subtitle_id',
-      'lesson_title_id',
-      'lesson_introduction_id',
-      'about_us_title_id',
-      'about_us_content_id',
-      // Section translations (will be in format section_1_title_id, section_1_content_id, etc.)
+      // English translations for settings
+      'welcome_title_en',
+      'welcome_subtitle_en',
+      'lesson_title_en',
+      'lesson_introduction_en',
+      'about_us_title_en',
+      'about_us_content_en',
+      // Section translations
       'sections',
     ])
 
-    // Save settings translations
-    await Setting.set('welcome_title_id', data.welcome_title_id || '')
-    await Setting.set('welcome_subtitle_id', data.welcome_subtitle_id || '')
-    await Setting.set('lesson_title_id', data.lesson_title_id || '')
-    await Setting.set('lesson_introduction_id', data.lesson_introduction_id || '')
-    await Setting.set('about_us_title_id', data.about_us_title_id || '')
-    await Setting.set('about_us_content_id', data.about_us_content_id || '')
+    // Save English translations for settings
+    await Setting.set('welcome_title_en', data.welcome_title_en || '')
+    await Setting.set('welcome_subtitle_en', data.welcome_subtitle_en || '')
+    await Setting.set('lesson_title_en', data.lesson_title_en || '')
+    await Setting.set('lesson_introduction_en', data.lesson_introduction_en || '')
+    await Setting.set('about_us_title_en', data.about_us_title_en || '')
+    await Setting.set('about_us_content_en', data.about_us_content_en || '')
 
-    // Save section translations
+    // Save section English translations
     if (data.sections && Array.isArray(data.sections)) {
       for (const sectionData of data.sections) {
         const section = await Section.find(sectionData.id)
         if (section) {
-          section.titleId = sectionData.title_id || null
-          section.contentId = sectionData.content_id || null
-          section.reflectiveQuestionId = sectionData.q1_id || null
-          section.reflectiveQuestion2Id = sectionData.q2_id || null
-          section.reflectiveQuestion3Id = sectionData.q3_id || null
+          section.titleEn = sectionData.title_en || null
+          section.contentEn = sectionData.content_en || null
+          section.reflectiveQuestionEn = sectionData.q1_en || null
+          section.reflectiveQuestion2En = sectionData.q2_en || null
+          section.reflectiveQuestion3En = sectionData.q3_en || null
           await section.save()
         }
       }
     }
 
-    session.flash('success', 'Indonesian translations saved successfully')
+    session.flash('success', 'English translations saved successfully')
     return response.redirect().toRoute('admin.bilingual.index')
   }
 
   /**
-   * Update a single section
+   * Update a single section (Indonesian content)
    */
   async updateSection({ params, request, response, session }: HttpContext) {
     const section = await Section.find(params.id)
@@ -250,6 +254,7 @@ export default class BilingualEditorController {
       'is_published',
     ])
 
+    // Save Indonesian content
     section.title = data.title
     section.content = data.content
     section.reflectiveQuestion = data.reflective_question || null
@@ -264,7 +269,7 @@ export default class BilingualEditorController {
   }
 
   /**
-   * Create a new section
+   * Create a new section (Indonesian content)
    */
   async createSection({ request, response, session }: HttpContext) {
     const data = request.only([
@@ -323,7 +328,8 @@ export default class BilingualEditorController {
     }
 
     try {
-      const translations = await translateMultiple(texts, 'id')
+      // Translate from Indonesian to English
+      const translations = await translateMultiple(texts, 'en')
       return response.json({ success: true, translations })
     } catch (error) {
       console.error('Translation error:', error)
