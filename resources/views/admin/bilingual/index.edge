@@ -129,16 +129,6 @@
       margin-bottom: 10px;
       line-height: 1.6;
       min-height: 40px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .translation-text:hover {
-      background: #f0fff4;
-      border-color: #27ae60;
-    }
-    .translation-text.copied {
-      background: #d4edda;
-      border-color: #27ae60;
     }
     .translation-text p {
       margin: 0 0 10px 0;
@@ -281,7 +271,7 @@
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
       <h1>Bilingual Content Editor</h1>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary" style="padding: 8px 16px;">Sections</a>
+        <a href="/" target="_blank" class="btn btn-secondary" style="padding: 8px 16px;">View Public Page</a>
         <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
           {{ csrfField() }}
           <button type="submit" class="btn btn-secondary" style="padding: 8px 16px;">Logout</button>
@@ -311,8 +301,6 @@
     @end
 
     <div class="nav-buttons">
-      <a href="/" target="_blank" class="btn btn-secondary">View Public Page</a>
-      <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
       <a href="{{ route('admin.bilingual.index') }}?refresh=1" class="btn refresh-btn">Refresh from API</a>
       <button type="button" class="btn btn-success" onclick="saveAllTranslations()" style="margin-left: 10px;">Save All Translations to DB</button>
     </div>
@@ -493,52 +481,46 @@
 
       <!-- Indonesian Translation Column -->
       <div class="editor-column indonesian">
-        <div class="column-header">Indonesian (Click to copy)</div>
+        <div class="column-header">Indonesian (Translation Preview)</div>
         <div class="column-content">
 
           <div class="section-block">
             <h4>Welcome Section</h4>
             <div class="translation-label">
               <span>Welcome Title</span>
-              <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" data-field="welcome_title_id" onclick="copyText(this)">{{ welcomeTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="welcome_title_id">{{ welcomeTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>Welcome Subtitle</span>
-              <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" data-field="welcome_subtitle_id" data-html="true" onclick="copyText(this)">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="welcome_subtitle_id" data-html="true">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-block">
             <h4>Lesson Overview</h4>
             <div class="translation-label">
               <span>Lesson Title</span>
-              <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" data-field="lesson_title_id" onclick="copyText(this)">{{ lessonTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="lesson_title_id">{{ lessonTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>Lesson Introduction</span>
-              <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" data-field="lesson_introduction_id" data-html="true" onclick="copyText(this)">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="lesson_introduction_id" data-html="true">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-block">
             <h4>About Us</h4>
             <div class="translation-label">
               <span>About Us Title</span>
-              <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" data-field="about_us_title_id" onclick="copyText(this)">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="about_us_title_id">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>About Us Content</span>
-              <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" data-field="about_us_content_id" data-html="true" onclick="copyText(this)">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="about_us_content_id" data-html="true">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-divider">
@@ -550,39 +532,34 @@
 
                 <div class="translation-label">
                   <span>Title</span>
-                  <span class="copy-hint">Click to copy</span>
                 </div>
-                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="title_id" onclick="copyText(this)">{{ section.titleTranslated || '(No translation)' }}</div>
+                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="title_id">{{ section.titleTranslated || '(No translation)' }}</div>
 
                 @if(section.reflectiveQuestion)
                   <div class="translation-label">
                     <span>Question 1</span>
-                    <span class="copy-hint">Click to copy</span>
                   </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q1_id" onclick="copyText(this)">{{ section.q1Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q1_id">{{ section.q1Translated || '(No translation)' }}</div>
                 @end
 
                 @if(section.reflectiveQuestion2)
                   <div class="translation-label">
                     <span>Question 2</span>
-                    <span class="copy-hint">Click to copy</span>
                   </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q2_id" onclick="copyText(this)">{{ section.q2Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q2_id">{{ section.q2Translated || '(No translation)' }}</div>
                 @end
 
                 @if(section.reflectiveQuestion3)
                   <div class="translation-label">
                     <span>Question 3</span>
-                    <span class="copy-hint">Click to copy</span>
                   </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q3_id" onclick="copyText(this)">{{ section.q3Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q3_id">{{ section.q3Translated || '(No translation)' }}</div>
                 @end
 
                 <div class="translation-label">
                   <span>Content</span>
-                  <span class="copy-hint">Click to copy</span>
                 </div>
-                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="content_id" data-html="true" onclick="copyText(this)">{{{ section.contentTranslated || '(No translation)' }}}</div>
+                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="content_id" data-html="true">{{{ section.contentTranslated || '(No translation)' }}}</div>
               </div>
             @end
           </div>

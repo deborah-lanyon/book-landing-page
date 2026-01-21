@@ -184,7 +184,7 @@ export default class BilingualEditorController {
     await Setting.set('about_us_content', data.about_us_content || '')
 
     session.flash('success', 'Settings updated successfully')
-    return response.redirect().toRoute('admin.bilingual.index')
+    return response.redirect().toRoute('admin.bilingual.index', {}, { qs: { refresh: '1' } })
   }
 
   /**
@@ -260,7 +260,7 @@ export default class BilingualEditorController {
     await section.save()
 
     session.flash('success', `Section "${section.title}" updated successfully`)
-    return response.redirect().toRoute('admin.bilingual.index')
+    return response.redirect().toRoute('admin.bilingual.index', {}, { qs: { refresh: '1' } })
   }
 
   /**
@@ -291,7 +291,7 @@ export default class BilingualEditorController {
     })
 
     session.flash('success', 'New section created successfully')
-    return response.redirect().toRoute('admin.bilingual.index')
+    return response.redirect().toRoute('admin.bilingual.index', {}, { qs: { refresh: '1' } })
   }
 
   /**
