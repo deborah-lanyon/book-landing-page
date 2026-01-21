@@ -238,9 +238,9 @@ export default class HomeController {
   }
 
   /**
-   * Render English page with stored Indonesian translations
+   * Render page showing stored Indonesian translations (single column)
    * Uses translations saved in the database from the bilingual editor
-   * This ensures the public page shows exactly the same Indonesian text as the editor
+   * Shows Indonesian content with option to translate to English/other languages
    */
   private async renderEnglishWithIndonesian(
     view: HttpContext['view'],
@@ -263,41 +263,35 @@ export default class HomeController {
     const aboutUsTitleId = await Setting.get('about_us_title_id', '')
     const aboutUsContentId = await Setting.get('about_us_content_id', '')
 
-    // Build sections with stored Indonesian translations from database
-    const sectionsWithTranslations = data.sections.map((section) => ({
-      id: section.id,
-      // Original English content (left column)
-      title: section.title,
-      content: section.content,
-      reflectiveQuestion: section.reflectiveQuestion,
-      reflectiveQuestion2: section.reflectiveQuestion2,
-      reflectiveQuestion3: section.reflectiveQuestion3,
-      imageUrl: section.imageUrl,
-      // Stored Indonesian translations from database (right column)
-      titleTranslated: section.titleId || section.title,
-      contentTranslated: section.contentId || section.content,
-      reflectiveQuestionTranslated: section.reflectiveQuestionId || section.reflectiveQuestion,
-      reflectiveQuestion2Translated: section.reflectiveQuestion2Id || section.reflectiveQuestion2,
-      reflectiveQuestion3Translated: section.reflectiveQuestion3Id || section.reflectiveQuestion3,
-    }))
+    // Use Indonesian translations if available, fallback to English
+    const displayWelcomeTitle = welcomeTitleId || data.welcomeTitle
+    const displayWelcomeSubtitle = welcomeSubtitleId || data.welcomeSubtitle
+    const displayLessonTitle = lessonTitleId || data.lessonTitle
+    const displayLessonIntroduction = lessonIntroductionId || data.lessonIntroduction
+    const displayAboutUsTitle = aboutUsTitleId || data.aboutUsTitle
+    const displayAboutUsContent = aboutUsContentId || data.aboutUsContent
 
-    return view.render('pages/home-bilingual', {
-      sections: sectionsWithTranslations,
-      // Original English (left column)
-      welcomeTitle: data.welcomeTitle,
-      welcomeSubtitle: data.welcomeSubtitle,
-      lessonTitle: data.lessonTitle,
-      lessonIntroduction: data.lessonIntroduction,
+    // Build sections with Indonesian translations (or fallback to English)
+    for (const section of data.sections) {
+      section.title = section.titleId || section.title
+      section.content = section.contentId || section.content
+      section.reflectiveQuestion = section.reflectiveQuestionId || section.reflectiveQuestion
+      section.reflectiveQuestion2 = section.reflectiveQuestion2Id || section.reflectiveQuestion2
+      section.reflectiveQuestion3 = section.reflectiveQuestion3Id || section.reflectiveQuestion3
+    }
+
+    // Render single-column Indonesian page with language selector
+    return view.render('pages/home', {
+      sections: data.sections,
+      welcomeTitle: displayWelcomeTitle,
+      welcomeSubtitle: displayWelcomeSubtitle,
+      lessonTitle: displayLessonTitle,
+      lessonIntroduction: displayLessonIntroduction,
       lessonImage: data.lessonImage,
-      aboutUsTitle: data.aboutUsTitle,
-      aboutUsContent: data.aboutUsContent,
-      // Stored Indonesian translations from database (right column)
-      welcomeTitleTranslated: welcomeTitleId || data.welcomeTitle,
-      welcomeSubtitleTranslated: welcomeSubtitleId || data.welcomeSubtitle,
-      lessonTitleTranslated: lessonTitleId || data.lessonTitle,
-      lessonIntroductionTranslated: lessonIntroductionId || data.lessonIntroduction,
-      aboutUsTitleTranslated: aboutUsTitleId || data.aboutUsTitle,
-      aboutUsContentTranslated: aboutUsContentId || data.aboutUsContent,
+      aboutUsTitle: displayAboutUsTitle,
+      aboutUsContent: displayAboutUsContent,
+      defaultLanguage: 'id',
+      defaultLanguageName: 'Indonesian',
     })
   }
 
