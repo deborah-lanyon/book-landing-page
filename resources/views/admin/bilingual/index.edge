@@ -313,10 +313,18 @@
     <div class="nav-buttons">
       <a href="/" target="_blank" class="btn btn-secondary">View Public Page</a>
       <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
-      <button type="button" class="btn refresh-btn" onclick="location.reload()">Refresh Translations</button>
+      <a href="{{ route('admin.bilingual.index') }}?refresh=1" class="btn refresh-btn">Refresh from API</a>
+      <button type="button" class="btn btn-success" onclick="saveAllTranslations()" style="margin-left: 10px;">Save All Translations to DB</button>
     </div>
 
-    <p style="color: #666; margin-bottom: 20px;">Edit English content on the left. Indonesian translations appear on the right (click to copy).</p>
+    <p style="color: #666; margin-bottom: 20px;">
+      Edit English content on the left. Indonesian translations appear on the right.
+      @if(hasStoredTranslations)
+        <strong style="color: #27ae60;">(Using saved translations)</strong>
+      @else
+        <strong style="color: #9b59b6;">(Using API translations - click "Save All Translations" to save)</strong>
+      @end
+    </p>
 
     <div class="bilingual-container">
       <!-- English Editor Column -->
@@ -485,7 +493,7 @@
 
       <!-- Indonesian Translation Column -->
       <div class="editor-column indonesian">
-        <div class="column-header">Indonesian (Copy)</div>
+        <div class="column-header">Indonesian (Click to copy)</div>
         <div class="column-content">
 
           <div class="section-block">
@@ -494,13 +502,13 @@
               <span>Welcome Title</span>
               <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" onclick="copyText(this)">{{ welcomeTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="welcome_title_id" onclick="copyText(this)">{{ welcomeTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>Welcome Subtitle</span>
               <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" onclick="copyText(this)">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="welcome_subtitle_id" data-html="true" onclick="copyText(this)">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-block">
@@ -509,13 +517,13 @@
               <span>Lesson Title</span>
               <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" onclick="copyText(this)">{{ lessonTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="lesson_title_id" onclick="copyText(this)">{{ lessonTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>Lesson Introduction</span>
               <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" onclick="copyText(this)">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="lesson_introduction_id" data-html="true" onclick="copyText(this)">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-block">
@@ -524,13 +532,13 @@
               <span>About Us Title</span>
               <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" onclick="copyText(this)">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
+            <div class="translation-text" data-field="about_us_title_id" onclick="copyText(this)">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
 
             <div class="translation-label">
               <span>About Us Content</span>
               <span class="copy-hint">Click to copy</span>
             </div>
-            <div class="translation-text" onclick="copyText(this)">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
+            <div class="translation-text" data-field="about_us_content_id" data-html="true" onclick="copyText(this)">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
           </div>
 
           <div class="section-divider">
@@ -544,14 +552,14 @@
                   <span>Title</span>
                   <span class="copy-hint">Click to copy</span>
                 </div>
-                <div class="translation-text" onclick="copyText(this)">{{ section.titleTranslated || '(No translation)' }}</div>
+                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="title_id" onclick="copyText(this)">{{ section.titleTranslated || '(No translation)' }}</div>
 
                 @if(section.reflectiveQuestion)
                   <div class="translation-label">
                     <span>Question 1</span>
                     <span class="copy-hint">Click to copy</span>
                   </div>
-                  <div class="translation-text" onclick="copyText(this)">{{ section.q1Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q1_id" onclick="copyText(this)">{{ section.q1Translated || '(No translation)' }}</div>
                 @end
 
                 @if(section.reflectiveQuestion2)
@@ -559,7 +567,7 @@
                     <span>Question 2</span>
                     <span class="copy-hint">Click to copy</span>
                   </div>
-                  <div class="translation-text" onclick="copyText(this)">{{ section.q2Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q2_id" onclick="copyText(this)">{{ section.q2Translated || '(No translation)' }}</div>
                 @end
 
                 @if(section.reflectiveQuestion3)
@@ -567,14 +575,14 @@
                     <span>Question 3</span>
                     <span class="copy-hint">Click to copy</span>
                   </div>
-                  <div class="translation-text" onclick="copyText(this)">{{ section.q3Translated || '(No translation)' }}</div>
+                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q3_id" onclick="copyText(this)">{{ section.q3Translated || '(No translation)' }}</div>
                 @end
 
                 <div class="translation-label">
                   <span>Content</span>
                   <span class="copy-hint">Click to copy</span>
                 </div>
-                <div class="translation-text" onclick="copyText(this)">{{{ section.contentTranslated || '(No translation)' }}}</div>
+                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="content_id" data-html="true" onclick="copyText(this)">{{{ section.contentTranslated || '(No translation)' }}}</div>
               </div>
             @end
           </div>
@@ -583,6 +591,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Save translations form (hidden) -->
+  <form id="saveTranslationsForm" method="POST" action="{{ route('admin.bilingual.saveTranslations') }}" style="display: none;">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+  </form>
 
   <!-- Delete form (hidden) -->
   <form id="deleteForm" method="POST" style="display: none;">
@@ -710,6 +723,73 @@
           element.classList.remove('copied');
         }, 1000);
       });
+    }
+
+    // Save all translations to database
+    function saveAllTranslations() {
+      var form = document.getElementById('saveTranslationsForm');
+
+      // Clear any existing hidden inputs (except csrf)
+      var existingInputs = form.querySelectorAll('input:not([name="_csrf"])');
+      existingInputs.forEach(function(input) {
+        input.remove();
+      });
+
+      // Collect settings translations
+      var settingsFields = ['welcome_title_id', 'welcome_subtitle_id', 'lesson_title_id', 'lesson_introduction_id', 'about_us_title_id', 'about_us_content_id'];
+      settingsFields.forEach(function(field) {
+        var el = document.querySelector('[data-field="' + field + '"]');
+        if (el) {
+          var value = el.dataset.html === 'true' ? el.innerHTML : el.innerText;
+          if (value && value !== '(No translation)') {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = field;
+            input.value = value;
+            form.appendChild(input);
+          }
+        }
+      });
+
+      // Collect section translations
+      var sectionElements = document.querySelectorAll('[data-section-id]');
+      var sectionsData = {};
+
+      sectionElements.forEach(function(el) {
+        var sectionId = el.dataset.sectionId;
+        var field = el.dataset.sectionField;
+        var value = el.dataset.html === 'true' ? el.innerHTML : el.innerText;
+
+        if (value && value !== '(No translation)') {
+          if (!sectionsData[sectionId]) {
+            sectionsData[sectionId] = { id: sectionId };
+          }
+          sectionsData[sectionId][field] = value;
+        }
+      });
+
+      // Add sections as JSON array
+      var sectionsArray = Object.values(sectionsData);
+      sectionsArray.forEach(function(section, index) {
+        var idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'sections[' + index + '][id]';
+        idInput.value = section.id;
+        form.appendChild(idInput);
+
+        ['title_id', 'content_id', 'q1_id', 'q2_id', 'q3_id'].forEach(function(field) {
+          if (section[field]) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'sections[' + index + '][' + field + ']';
+            input.value = section[field];
+            form.appendChild(input);
+          }
+        });
+      });
+
+      // Submit the form
+      form.submit();
     }
   </script>
 </body>

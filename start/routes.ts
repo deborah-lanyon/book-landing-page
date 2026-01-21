@@ -72,6 +72,7 @@ router
     // Bilingual editor
     router.get('/bilingual', [BilingualEditorController, 'index']).as('admin.bilingual.index')
     router.put('/bilingual/settings', [BilingualEditorController, 'updateSettings']).as('admin.bilingual.updateSettings')
+    router.post('/bilingual/translations', [BilingualEditorController, 'saveTranslations']).as('admin.bilingual.saveTranslations')
     router.put('/bilingual/sections/:id', [BilingualEditorController, 'updateSection']).as('admin.bilingual.updateSection')
     router.post('/bilingual/sections', [BilingualEditorController, 'createSection']).as('admin.bilingual.createSection')
     router.delete('/bilingual/sections/:id', [BilingualEditorController, 'deleteSection']).as('admin.bilingual.deleteSection')

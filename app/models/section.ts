@@ -23,6 +23,22 @@ export default class Section extends BaseModel {
   @column()
   declare imageUrl: string | null
 
+  // Indonesian translations
+  @column()
+  declare titleId: string | null
+
+  @column()
+  declare contentId: string | null
+
+  @column()
+  declare reflectiveQuestionId: string | null
+
+  @column()
+  declare reflectiveQuestion2Id: string | null
+
+  @column()
+  declare reflectiveQuestion3Id: string | null
+
   @column()
   declare displayOrder: number
 

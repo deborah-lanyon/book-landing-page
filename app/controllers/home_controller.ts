@@ -70,10 +70,9 @@ export default class HomeController {
       })
     }
 
-    // Default English page
-    const defaultLanguageName = LANGUAGE_NAMES[defaultLanguage] || defaultLanguage
-
-    return view.render('pages/home', {
+    // English page with automatic Indonesian translation
+    // Translate all content from English to Indonesian server-side
+    return this.renderEnglishWithIndonesian(view, {
       sections,
       welcomeTitle,
       welcomeSubtitle,
@@ -82,8 +81,6 @@ export default class HomeController {
       lessonImage,
       aboutUsTitle,
       aboutUsContent,
-      defaultLanguage,
-      defaultLanguageName,
     })
   }
 
@@ -238,6 +235,70 @@ export default class HomeController {
         aboutUsContentTranslated: data.aboutUsContent,
       })
     }
+  }
+
+  /**
+   * Render English page with stored Indonesian translations
+   * Uses translations saved in the database from the bilingual editor
+   * This ensures the public page shows exactly the same Indonesian text as the editor
+   */
+  private async renderEnglishWithIndonesian(
+    view: HttpContext['view'],
+    data: {
+      sections: Section[]
+      welcomeTitle: string
+      welcomeSubtitle: string
+      lessonTitle: string
+      lessonIntroduction: string
+      lessonImage: string
+      aboutUsTitle: string
+      aboutUsContent: string
+    }
+  ) {
+    // Get stored Indonesian translations for settings from database
+    const welcomeTitleId = await Setting.get('welcome_title_id', '')
+    const welcomeSubtitleId = await Setting.get('welcome_subtitle_id', '')
+    const lessonTitleId = await Setting.get('lesson_title_id', '')
+    const lessonIntroductionId = await Setting.get('lesson_introduction_id', '')
+    const aboutUsTitleId = await Setting.get('about_us_title_id', '')
+    const aboutUsContentId = await Setting.get('about_us_content_id', '')
+
+    // Build sections with stored Indonesian translations from database
+    const sectionsWithTranslations = data.sections.map((section) => ({
+      id: section.id,
+      // Original English content (left column)
+      title: section.title,
+      content: section.content,
+      reflectiveQuestion: section.reflectiveQuestion,
+      reflectiveQuestion2: section.reflectiveQuestion2,
+      reflectiveQuestion3: section.reflectiveQuestion3,
+      imageUrl: section.imageUrl,
+      // Stored Indonesian translations from database (right column)
+      titleTranslated: section.titleId || section.title,
+      contentTranslated: section.contentId || section.content,
+      reflectiveQuestionTranslated: section.reflectiveQuestionId || section.reflectiveQuestion,
+      reflectiveQuestion2Translated: section.reflectiveQuestion2Id || section.reflectiveQuestion2,
+      reflectiveQuestion3Translated: section.reflectiveQuestion3Id || section.reflectiveQuestion3,
+    }))
+
+    return view.render('pages/home-bilingual', {
+      sections: sectionsWithTranslations,
+      // Original English (left column)
+      welcomeTitle: data.welcomeTitle,
+      welcomeSubtitle: data.welcomeSubtitle,
+      lessonTitle: data.lessonTitle,
+      lessonIntroduction: data.lessonIntroduction,
+      lessonImage: data.lessonImage,
+      aboutUsTitle: data.aboutUsTitle,
+      aboutUsContent: data.aboutUsContent,
+      // Stored Indonesian translations from database (right column)
+      welcomeTitleTranslated: welcomeTitleId || data.welcomeTitle,
+      welcomeSubtitleTranslated: welcomeSubtitleId || data.welcomeSubtitle,
+      lessonTitleTranslated: lessonTitleId || data.lessonTitle,
+      lessonIntroductionTranslated: lessonIntroductionId || data.lessonIntroduction,
+      aboutUsTitleTranslated: aboutUsTitleId || data.aboutUsTitle,
+      aboutUsContentTranslated: aboutUsContentId || data.aboutUsContent,
+    })
   }
 
   /**
