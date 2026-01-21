@@ -104,7 +104,7 @@ export default class AuthController {
       // Login the user
       await auth.use('web').login(user)
 
-      return response.redirect().toRoute('admin.sections.index')
+      return response.redirect().toRoute('admin.bilingual.index')
     } catch {
       session.flash('error', 'Invalid credentials')
       return response.redirect().back()
@@ -162,7 +162,7 @@ export default class AuthController {
     await user.save()
 
     session.flash('success', 'Password updated successfully')
-    return response.redirect().toRoute('admin.sections.index')
+    return response.redirect().toRoute('admin.bilingual.index')
   }
 
   /**
