@@ -45,6 +45,59 @@ export default class HomeController {
     const aboutUsTitle = aboutUsTitleId || (await Setting.get('about_us_title', 'Tentang Kami'))
     const aboutUsContent = aboutUsContentId || (await Setting.get('about_us_content', ''))
 
+    // Get Indonesian content for Form labels (stored in _id fields from settings page)
+    // Fall back to English content if Indonesian translation doesn't exist yet
+    const formTitleId = await Setting.get('form_title_id', '')
+    const formTitle = formTitleId || (await Setting.get('form_title', 'Hubungi Kami'))
+
+    const formFirstNameLabelId = await Setting.get('form_first_name_label_id', '')
+    const formFirstNameLabel =
+      formFirstNameLabelId || (await Setting.get('form_first_name_label', 'Nama Depan'))
+
+    const formLastNameLabelId = await Setting.get('form_last_name_label_id', '')
+    const formLastNameLabel =
+      formLastNameLabelId || (await Setting.get('form_last_name_label', 'Nama Belakang'))
+
+    const formTownLabelId = await Setting.get('form_town_label_id', '')
+    const formTownLabel = formTownLabelId || (await Setting.get('form_town_label', 'Kota'))
+
+    const formEmailLabelId = await Setting.get('form_email_label_id', '')
+    const formEmailLabel = formEmailLabelId || (await Setting.get('form_email_label', 'Email'))
+
+    const formWouldLikeLabelId = await Setting.get('form_would_like_label_id', '')
+    const formWouldLikeLabel =
+      formWouldLikeLabelId || (await Setting.get('form_would_like_label', 'Apakah Anda ingin'))
+
+    const formFollowJesusLabelId = await Setting.get('form_follow_jesus_label_id', '')
+    const formFollowJesusLabel =
+      formFollowJesusLabelId ||
+      (await Setting.get(
+        'form_follow_jesus_label',
+        'Informasi lebih lanjut tentang cara menjadi pengikut Yesus Kristus'
+      ))
+
+    const formBibleLabelId = await Setting.get('form_bible_label_id', '')
+    const formBibleLabel =
+      formBibleLabelId ||
+      (await Setting.get('form_bible_label', 'Alkitab dalam bahasa Anda sendiri'))
+
+    const formPrayerLabelId = await Setting.get('form_prayer_label_id', '')
+    const formPrayerLabel =
+      formPrayerLabelId || (await Setting.get('form_prayer_label', 'Berbagi permintaan doa'))
+
+    const formQuestionLabelId = await Setting.get('form_question_label_id', '')
+    const formQuestionLabel =
+      formQuestionLabelId || (await Setting.get('form_question_label', 'Ajukan pertanyaan'))
+
+    const formMessageLabelId = await Setting.get('form_message_label_id', '')
+    const formMessageLabel =
+      formMessageLabelId ||
+      (await Setting.get('form_message_label', 'Pertanyaan atau Umpan Balik Anda'))
+
+    const formSubmitLabelId = await Setting.get('form_submit_label_id', '')
+    const formSubmitLabel =
+      formSubmitLabelId || (await Setting.get('form_submit_label', 'Kirim Pesan'))
+
     // Build sections with Indonesian content (the original)
     const displaySections = sections.map((section) => ({
       id: section.id,
@@ -68,6 +121,19 @@ export default class HomeController {
       lessonImage,
       aboutUsTitle,
       aboutUsContent,
+      // Form labels (Indonesian)
+      formTitle,
+      formFirstNameLabel,
+      formLastNameLabel,
+      formTownLabel,
+      formEmailLabel,
+      formWouldLikeLabel,
+      formFollowJesusLabel,
+      formBibleLabel,
+      formPrayerLabel,
+      formQuestionLabel,
+      formMessageLabel,
+      formSubmitLabel,
       defaultLanguage: 'id',
       defaultLanguageName: 'Indonesian',
     })

@@ -438,7 +438,7 @@
 
       <!-- Get In Touch Section -->
       <div style="margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
-        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">Get In Touch</h3>
+        <h3 class="translatable" data-key="formTitle" style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ formTitle }}</h3>
 
         @if(flashMessages.has('contactSuccess'))
           <div style="padding: 15px; margin-bottom: 20px; border-radius: 4px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
@@ -462,55 +462,55 @@
 
           <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
             <div>
-              <label for="firstName" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">First Name *</label>
+              <label for="firstName" class="translatable" data-key="formFirstNameLabel" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">{{ formFirstNameLabel }} *</label>
               <input type="text" id="firstName" name="firstName" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
             </div>
             <div>
-              <label for="lastName" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Last Name</label>
+              <label for="lastName" class="translatable" data-key="formLastNameLabel" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">{{ formLastNameLabel }}</label>
               <input type="text" id="lastName" name="lastName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
             </div>
           </div>
 
           <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
             <div>
-              <label for="town" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Town *</label>
+              <label for="town" class="translatable" data-key="formTownLabel" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">{{ formTownLabel }} *</label>
               <input type="text" id="town" name="town" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
             </div>
             <div>
-              <label for="email" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Email *</label>
+              <label for="email" class="translatable" data-key="formEmailLabel" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">{{ formEmailLabel }} *</label>
               <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
             </div>
           </div>
 
           <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50; font-size: 14px;">Would you like</label>
+            <label class="translatable" data-key="formWouldLikeLabel" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50; font-size: 14px;">{{ formWouldLikeLabel }}</label>
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <label style="display: flex; align-items: center; font-weight: normal; color: #495057; font-size: 14px; cursor: pointer;">
                 <input type="checkbox" name="wantFollowJesus" value="true" style="margin-right: 10px;">
-                Further information on how to become a follower of Jesus Christ
+                <span class="translatable" data-key="formFollowJesusLabel">{{ formFollowJesusLabel }}</span>
               </label>
               <label style="display: flex; align-items: center; font-weight: normal; color: #495057; font-size: 14px; cursor: pointer;">
                 <input type="checkbox" name="wantBible" value="true" style="margin-right: 10px;">
-                A Bible in your own language
+                <span class="translatable" data-key="formBibleLabel">{{ formBibleLabel }}</span>
               </label>
               <label style="display: flex; align-items: center; font-weight: normal; color: #495057; font-size: 14px; cursor: pointer;">
                 <input type="checkbox" name="wantPrayerRequest" value="true" style="margin-right: 10px;">
-                Share a prayer request
+                <span class="translatable" data-key="formPrayerLabel">{{ formPrayerLabel }}</span>
               </label>
               <label style="display: flex; align-items: center; font-weight: normal; color: #495057; font-size: 14px; cursor: pointer;">
                 <input type="checkbox" name="wantAskQuestion" value="true" style="margin-right: 10px;">
-                Ask a question
+                <span class="translatable" data-key="formQuestionLabel">{{ formQuestionLabel }}</span>
               </label>
             </div>
           </div>
 
           <div style="margin-bottom: 20px;">
-            <label for="message" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">Your Question or Feedback</label>
+            <label for="message" class="translatable" data-key="formMessageLabel" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">{{ formMessageLabel }}</label>
             <textarea id="message" name="message" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
           </div>
 
-          <button type="submit" style="display: inline-block; padding: 12px 30px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: 600;">
-            Send Message
+          <button type="submit" class="translatable" data-key="formSubmitLabel" style="display: inline-block; padding: 12px 30px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: 600;">
+            {{ formSubmitLabel }}
           </button>
         </form>
       </div>
