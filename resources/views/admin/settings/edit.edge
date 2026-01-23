@@ -203,7 +203,7 @@
       <h1>Miriam's Home - Site Settings</h1>
       <div class="header-buttons">
         <a href="/" class="btn" target="_blank">View Public Page</a>
-        <a href="{{ route('admin.bilingual.index') }}" class="btn btn-secondary">Bilingual Editor</a>
+        <a href="{{ route('admin.bilingual.index') }}" class="btn btn-secondary">Content Editor</a>
         <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Manage Users</a>
         <form method="POST" action="/logout" style="margin: 0;">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -227,7 +227,7 @@
     @end
 
     <div class="nav-buttons">
-      <a href="{{ route('admin.bilingual.index') }}" class="btn btn-secondary">Back to Bilingual Editor</a>
+      <a href="{{ route('admin.bilingual.index') }}" class="btn btn-secondary">Back to Content Editor</a>
       <button type="button" class="btn btn-success" onclick="saveAllTranslations()">Save All Translations</button>
     </div>
 
