@@ -53,6 +53,17 @@
     .refresh-btn { background: #e67e22; }
     .refresh-btn:hover { background: #d35400; }
 
+    .section-title {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+
     @media (max-width: 1024px) {
       .bilingual-container { grid-template-columns: 1fr; }
     }
@@ -111,57 +122,8 @@
       <br>The Indonesian content will be used as the source for the public page and can be translated to other languages.
     </p>
 
-    <!-- Header Section -->
-    <h3 style="margin-top: 0; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">Header Section</h3>
-
-    <div class="bilingual-container">
-      <!-- English Column -->
-      <div class="language-column">
-        <div class="language-header english">
-          English (Edit)
-        </div>
-        <div class="language-content">
-          <form id="settings-form" method="POST" action="{{ route('admin.settings.update') }}">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <input type="hidden" name="_method" value="PUT">
-
-            <div class="form-group">
-              <label for="welcome_title">Welcome Title</label>
-              <input type="text" id="welcome_title" name="welcome_title" class="form-control" value="{{ welcomeTitle }}" required placeholder="e.g., Welcome">
-            </div>
-
-            <div class="form-group">
-              <label>Welcome Subtitle</label>
-              <div id="subtitle-editor" style="height: 150px; background: white;">{{{ welcomeSubtitle }}}</div>
-              <input type="hidden" id="welcome_subtitle" name="welcome_subtitle">
-            </div>
-
-            <button type="submit" class="btn">Save English Content</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Indonesian Column -->
-      <div class="language-column">
-        <div class="language-header indonesian">
-          Indonesian (Translation Preview)
-        </div>
-        <div class="language-content">
-          <div class="form-group">
-            <label>Welcome Title (Indonesian)</label>
-            <input type="text" id="welcome_title_id" class="form-control translation-field" value="{{ welcomeTitleTranslated }}" placeholder="Indonesian translation...">
-          </div>
-
-          <div class="form-group">
-            <label>Welcome Subtitle (Indonesian)</label>
-            <div id="subtitle-editor-id" style="height: 150px; background: white;">{{{ welcomeSubtitleTranslated }}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- About Us Section -->
-    <h3 style="margin-top: 30px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">About Us Section</h3>
+    <h3 class="section-title">About Us Section</h3>
 
     <div class="bilingual-container">
       <!-- English Column -->
@@ -173,9 +135,6 @@
           <form id="about-form" method="POST" action="{{ route('admin.settings.update') }}">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
             <input type="hidden" name="_method" value="PUT">
-            <!-- Include all fields so they don't get cleared -->
-            <input type="hidden" name="welcome_title" value="{{ welcomeTitle }}">
-            <input type="hidden" id="about-welcome-subtitle" name="welcome_subtitle" value="">
 
             <div class="form-group">
               <label for="about_us_title">About Us Title</label>
@@ -212,6 +171,157 @@
       </div>
     </div>
 
+    <!-- Contact Form Section -->
+    <h3 class="section-title">Contact Form Section</h3>
+
+    <div class="bilingual-container">
+      <!-- English Column -->
+      <div class="language-column">
+        <div class="language-header english">
+          English (Edit)
+        </div>
+        <div class="language-content">
+          <form id="form-settings-form" method="POST" action="{{ route('admin.settings.update') }}">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            <input type="hidden" name="_method" value="PUT">
+            <!-- Preserve About Us fields -->
+            <input type="hidden" name="about_us_title" value="{{ aboutUsTitle }}">
+            <input type="hidden" id="form-about-us-content" name="about_us_content" value="">
+
+            <div class="form-group">
+              <label for="form_title">Form Title</label>
+              <input type="text" id="form_title" name="form_title" class="form-control" value="{{ formTitle }}" placeholder="e.g., Get In Touch">
+            </div>
+
+            <div class="form-group">
+              <label for="form_first_name_label">First Name Label</label>
+              <input type="text" id="form_first_name_label" name="form_first_name_label" class="form-control" value="{{ formFirstNameLabel }}" placeholder="e.g., First Name">
+            </div>
+
+            <div class="form-group">
+              <label for="form_last_name_label">Last Name Label</label>
+              <input type="text" id="form_last_name_label" name="form_last_name_label" class="form-control" value="{{ formLastNameLabel }}" placeholder="e.g., Last Name">
+            </div>
+
+            <div class="form-group">
+              <label for="form_town_label">Town Label</label>
+              <input type="text" id="form_town_label" name="form_town_label" class="form-control" value="{{ formTownLabel }}" placeholder="e.g., Town">
+            </div>
+
+            <div class="form-group">
+              <label for="form_email_label">Email Label</label>
+              <input type="text" id="form_email_label" name="form_email_label" class="form-control" value="{{ formEmailLabel }}" placeholder="e.g., Email">
+            </div>
+
+            <div class="form-group">
+              <label for="form_would_like_label">Would You Like Label</label>
+              <input type="text" id="form_would_like_label" name="form_would_like_label" class="form-control" value="{{ formWouldLikeLabel }}" placeholder="e.g., Would you like">
+            </div>
+
+            <div class="form-group">
+              <label for="form_follow_jesus_label">Follow Jesus Option</label>
+              <input type="text" id="form_follow_jesus_label" name="form_follow_jesus_label" class="form-control" value="{{ formFollowJesusLabel }}" placeholder="e.g., Further information on how to become a follower of Jesus Christ">
+            </div>
+
+            <div class="form-group">
+              <label for="form_bible_label">Bible Option</label>
+              <input type="text" id="form_bible_label" name="form_bible_label" class="form-control" value="{{ formBibleLabel }}" placeholder="e.g., A Bible in your own language">
+            </div>
+
+            <div class="form-group">
+              <label for="form_prayer_label">Prayer Request Option</label>
+              <input type="text" id="form_prayer_label" name="form_prayer_label" class="form-control" value="{{ formPrayerLabel }}" placeholder="e.g., Share a prayer request">
+            </div>
+
+            <div class="form-group">
+              <label for="form_question_label">Ask Question Option</label>
+              <input type="text" id="form_question_label" name="form_question_label" class="form-control" value="{{ formQuestionLabel }}" placeholder="e.g., Ask a question">
+            </div>
+
+            <div class="form-group">
+              <label for="form_message_label">Message Label</label>
+              <input type="text" id="form_message_label" name="form_message_label" class="form-control" value="{{ formMessageLabel }}" placeholder="e.g., Your Question or Feedback">
+            </div>
+
+            <div class="form-group">
+              <label for="form_submit_label">Submit Button Label</label>
+              <input type="text" id="form_submit_label" name="form_submit_label" class="form-control" value="{{ formSubmitLabel }}" placeholder="e.g., Send Message">
+            </div>
+
+            <button type="submit" class="btn">Save English Content</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Indonesian Column -->
+      <div class="language-column">
+        <div class="language-header indonesian">
+          Indonesian (Translation Preview)
+        </div>
+        <div class="language-content">
+          <div class="form-group">
+            <label>Form Title (Indonesian)</label>
+            <input type="text" id="form_title_id" class="form-control translation-field" value="{{ formTitleTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>First Name Label (Indonesian)</label>
+            <input type="text" id="form_first_name_label_id" class="form-control translation-field" value="{{ formFirstNameLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Last Name Label (Indonesian)</label>
+            <input type="text" id="form_last_name_label_id" class="form-control translation-field" value="{{ formLastNameLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Town Label (Indonesian)</label>
+            <input type="text" id="form_town_label_id" class="form-control translation-field" value="{{ formTownLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Email Label (Indonesian)</label>
+            <input type="text" id="form_email_label_id" class="form-control translation-field" value="{{ formEmailLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Would You Like Label (Indonesian)</label>
+            <input type="text" id="form_would_like_label_id" class="form-control translation-field" value="{{ formWouldLikeLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Follow Jesus Option (Indonesian)</label>
+            <input type="text" id="form_follow_jesus_label_id" class="form-control translation-field" value="{{ formFollowJesusLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Bible Option (Indonesian)</label>
+            <input type="text" id="form_bible_label_id" class="form-control translation-field" value="{{ formBibleLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Prayer Request Option (Indonesian)</label>
+            <input type="text" id="form_prayer_label_id" class="form-control translation-field" value="{{ formPrayerLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Ask Question Option (Indonesian)</label>
+            <input type="text" id="form_question_label_id" class="form-control translation-field" value="{{ formQuestionLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Message Label (Indonesian)</label>
+            <input type="text" id="form_message_label_id" class="form-control translation-field" value="{{ formMessageLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+
+          <div class="form-group">
+            <label>Submit Button Label (Indonesian)</label>
+            <input type="text" id="form_submit_label_id" class="form-control translation-field" value="{{ formSubmitLabelTranslated }}" placeholder="Indonesian translation...">
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div style="margin-top: 20px; display: flex; gap: 10px;">
       <a href="{{ route('admin.bilingual.index') }}" class="btn btn-secondary">Back to Bilingual Editor</a>
     </div>
@@ -220,28 +330,26 @@
   <!-- Hidden form for saving translations -->
   <form id="translations-form" method="POST" action="{{ route('admin.settings.saveTranslations') }}" style="display: none;">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    <input type="hidden" id="form_welcome_title_id" name="welcome_title_id">
-    <input type="hidden" id="form_welcome_subtitle_id" name="welcome_subtitle_id">
     <input type="hidden" id="form_about_us_title_id" name="about_us_title_id">
     <input type="hidden" id="form_about_us_content_id" name="about_us_content_id">
+    <!-- Form translations -->
+    <input type="hidden" id="form_form_title_id" name="form_title_id">
+    <input type="hidden" id="form_form_first_name_label_id" name="form_first_name_label_id">
+    <input type="hidden" id="form_form_last_name_label_id" name="form_last_name_label_id">
+    <input type="hidden" id="form_form_town_label_id" name="form_town_label_id">
+    <input type="hidden" id="form_form_email_label_id" name="form_email_label_id">
+    <input type="hidden" id="form_form_would_like_label_id" name="form_would_like_label_id">
+    <input type="hidden" id="form_form_follow_jesus_label_id" name="form_follow_jesus_label_id">
+    <input type="hidden" id="form_form_bible_label_id" name="form_bible_label_id">
+    <input type="hidden" id="form_form_prayer_label_id" name="form_prayer_label_id">
+    <input type="hidden" id="form_form_question_label_id" name="form_question_label_id">
+    <input type="hidden" id="form_form_message_label_id" name="form_message_label_id">
+    <input type="hidden" id="form_form_submit_label_id" name="form_submit_label_id">
   </form>
 
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
   <script>
-    // English editors
-    var subtitleQuill = new Quill('#subtitle-editor', {
-      theme: 'snow',
-      modules: {
-        toolbar: [
-          ['bold', 'italic', 'underline'],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          ['link', 'image'],
-          ['clean']
-        ]
-      },
-      placeholder: 'e.g., Tap any section below to learn more'
-    });
-
+    // English editor for About Us
     var aboutUsQuill = new Quill('#about-us-editor', {
       theme: 'snow',
       modules: {
@@ -255,20 +363,7 @@
       placeholder: 'Enter About Us content here...'
     });
 
-    // Indonesian editors (read-only for preview, but editable for corrections)
-    var subtitleQuillId = new Quill('#subtitle-editor-id', {
-      theme: 'snow',
-      modules: {
-        toolbar: [
-          ['bold', 'italic', 'underline'],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          ['link'],
-          ['clean']
-        ]
-      },
-      placeholder: 'Indonesian translation will appear here...'
-    });
-
+    // Indonesian editor for About Us
     var aboutUsQuillId = new Quill('#about-us-editor-id', {
       theme: 'snow',
       modules: {
@@ -282,7 +377,7 @@
       placeholder: 'Indonesian translation will appear here...'
     });
 
-    // Custom image handler for English editors
+    // Custom image handler
     function addImageHandler(quillInstance) {
       quillInstance.getModule('toolbar').addHandler('image', function() {
         var input = document.createElement('input');
@@ -303,27 +398,38 @@
       });
     }
 
-    addImageHandler(subtitleQuill);
     addImageHandler(aboutUsQuill);
-
-    // Sync Quill content before form submit (Header section)
-    document.getElementById('settings-form').addEventListener('submit', function () {
-      document.getElementById('welcome_subtitle').value = subtitleQuill.root.innerHTML;
-    });
 
     // Sync Quill content before form submit (About section)
     document.getElementById('about-form').addEventListener('submit', function () {
       document.getElementById('about_us_content').value = aboutUsQuill.root.innerHTML;
-      // Also sync the subtitle from the main editor
-      document.getElementById('about-welcome-subtitle').value = subtitleQuill.root.innerHTML;
+    });
+
+    // Sync Quill content before form submit (Form settings section)
+    document.getElementById('form-settings-form').addEventListener('submit', function () {
+      document.getElementById('form-about-us-content').value = aboutUsQuill.root.innerHTML;
     });
 
     // Save all Indonesian translations
     function saveAllTranslations() {
-      document.getElementById('form_welcome_title_id').value = document.getElementById('welcome_title_id').value;
-      document.getElementById('form_welcome_subtitle_id').value = subtitleQuillId.root.innerHTML;
+      // About Us translations
       document.getElementById('form_about_us_title_id').value = document.getElementById('about_us_title_id').value;
       document.getElementById('form_about_us_content_id').value = aboutUsQuillId.root.innerHTML;
+
+      // Form translations
+      document.getElementById('form_form_title_id').value = document.getElementById('form_title_id').value;
+      document.getElementById('form_form_first_name_label_id').value = document.getElementById('form_first_name_label_id').value;
+      document.getElementById('form_form_last_name_label_id').value = document.getElementById('form_last_name_label_id').value;
+      document.getElementById('form_form_town_label_id').value = document.getElementById('form_town_label_id').value;
+      document.getElementById('form_form_email_label_id').value = document.getElementById('form_email_label_id').value;
+      document.getElementById('form_form_would_like_label_id').value = document.getElementById('form_would_like_label_id').value;
+      document.getElementById('form_form_follow_jesus_label_id').value = document.getElementById('form_follow_jesus_label_id').value;
+      document.getElementById('form_form_bible_label_id').value = document.getElementById('form_bible_label_id').value;
+      document.getElementById('form_form_prayer_label_id').value = document.getElementById('form_prayer_label_id').value;
+      document.getElementById('form_form_question_label_id').value = document.getElementById('form_question_label_id').value;
+      document.getElementById('form_form_message_label_id').value = document.getElementById('form_message_label_id').value;
+      document.getElementById('form_form_submit_label_id').value = document.getElementById('form_submit_label_id').value;
+
       document.getElementById('translations-form').submit();
     }
   </script>

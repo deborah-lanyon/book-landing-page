@@ -2,6 +2,22 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Setting from '#models/setting'
 import { translateMultiple } from '#services/translation_service'
 
+// Default form labels
+const DEFAULT_FORM_LABELS = {
+  formTitle: 'Get In Touch',
+  formFirstNameLabel: 'First Name',
+  formLastNameLabel: 'Last Name',
+  formTownLabel: 'Town',
+  formEmailLabel: 'Email',
+  formWouldLikeLabel: 'Would you like',
+  formFollowJesusLabel: 'Further information on how to become a follower of Jesus Christ',
+  formBibleLabel: 'A Bible in your own language',
+  formPrayerLabel: 'Share a prayer request',
+  formQuestionLabel: 'Ask a question',
+  formMessageLabel: 'Your Question or Feedback',
+  formSubmitLabel: 'Send Message',
+}
+
 export default class SettingsController {
   /**
    * Show settings editor with English content and Indonesian translations
@@ -12,24 +28,69 @@ export default class SettingsController {
     // Check if user wants to refresh translations from API
     const refreshTranslations = request.input('refresh') === '1'
 
-    // Get English content (stored in main fields)
-    const welcomeTitle = await Setting.get('welcome_title', 'Welcome')
-    const welcomeSubtitle = await Setting.get(
-      'welcome_subtitle',
-      'Tap any section below to learn more'
-    )
+    // Get English content for About Us
     const aboutUsTitle = await Setting.get('about_us_title', 'About Us')
     const aboutUsContent = await Setting.get('about_us_content', '')
 
-    // Get stored Indonesian translations
-    const welcomeTitleId = await Setting.get('welcome_title_id', '')
-    const welcomeSubtitleId = await Setting.get('welcome_subtitle_id', '')
+    // Get English content for Form labels
+    const formTitle = await Setting.get('form_title', DEFAULT_FORM_LABELS.formTitle)
+    const formFirstNameLabel = await Setting.get(
+      'form_first_name_label',
+      DEFAULT_FORM_LABELS.formFirstNameLabel
+    )
+    const formLastNameLabel = await Setting.get(
+      'form_last_name_label',
+      DEFAULT_FORM_LABELS.formLastNameLabel
+    )
+    const formTownLabel = await Setting.get('form_town_label', DEFAULT_FORM_LABELS.formTownLabel)
+    const formEmailLabel = await Setting.get('form_email_label', DEFAULT_FORM_LABELS.formEmailLabel)
+    const formWouldLikeLabel = await Setting.get(
+      'form_would_like_label',
+      DEFAULT_FORM_LABELS.formWouldLikeLabel
+    )
+    const formFollowJesusLabel = await Setting.get(
+      'form_follow_jesus_label',
+      DEFAULT_FORM_LABELS.formFollowJesusLabel
+    )
+    const formBibleLabel = await Setting.get('form_bible_label', DEFAULT_FORM_LABELS.formBibleLabel)
+    const formPrayerLabel = await Setting.get(
+      'form_prayer_label',
+      DEFAULT_FORM_LABELS.formPrayerLabel
+    )
+    const formQuestionLabel = await Setting.get(
+      'form_question_label',
+      DEFAULT_FORM_LABELS.formQuestionLabel
+    )
+    const formMessageLabel = await Setting.get(
+      'form_message_label',
+      DEFAULT_FORM_LABELS.formMessageLabel
+    )
+    const formSubmitLabel = await Setting.get(
+      'form_submit_label',
+      DEFAULT_FORM_LABELS.formSubmitLabel
+    )
+
+    // Get stored Indonesian translations for About Us
     const aboutUsTitleId = await Setting.get('about_us_title_id', '')
     const aboutUsContentId = await Setting.get('about_us_content_id', '')
 
+    // Get stored Indonesian translations for Form labels
+    const formTitleId = await Setting.get('form_title_id', '')
+    const formFirstNameLabelId = await Setting.get('form_first_name_label_id', '')
+    const formLastNameLabelId = await Setting.get('form_last_name_label_id', '')
+    const formTownLabelId = await Setting.get('form_town_label_id', '')
+    const formEmailLabelId = await Setting.get('form_email_label_id', '')
+    const formWouldLikeLabelId = await Setting.get('form_would_like_label_id', '')
+    const formFollowJesusLabelId = await Setting.get('form_follow_jesus_label_id', '')
+    const formBibleLabelId = await Setting.get('form_bible_label_id', '')
+    const formPrayerLabelId = await Setting.get('form_prayer_label_id', '')
+    const formQuestionLabelId = await Setting.get('form_question_label_id', '')
+    const formMessageLabelId = await Setting.get('form_message_label_id', '')
+    const formSubmitLabelId = await Setting.get('form_submit_label_id', '')
+
     // Check if we have stored Indonesian translations
     const hasStoredTranslations =
-      welcomeTitleId || welcomeSubtitleId || aboutUsTitleId || aboutUsContentId
+      aboutUsTitleId || aboutUsContentId || formTitleId || formFirstNameLabelId
 
     let translationMap: Record<string, string> = {}
     let translationError = ''
@@ -39,14 +100,7 @@ export default class SettingsController {
       const textsToTranslate: string[] = []
       const textKeys: string[] = []
 
-      if (welcomeTitle) {
-        textsToTranslate.push(welcomeTitle)
-        textKeys.push('welcomeTitle')
-      }
-      if (welcomeSubtitle) {
-        textsToTranslate.push(welcomeSubtitle)
-        textKeys.push('welcomeSubtitle')
-      }
+      // About Us fields
       if (aboutUsTitle) {
         textsToTranslate.push(aboutUsTitle)
         textKeys.push('aboutUsTitle')
@@ -54,6 +108,56 @@ export default class SettingsController {
       if (aboutUsContent) {
         textsToTranslate.push(aboutUsContent)
         textKeys.push('aboutUsContent')
+      }
+
+      // Form fields
+      if (formTitle) {
+        textsToTranslate.push(formTitle)
+        textKeys.push('formTitle')
+      }
+      if (formFirstNameLabel) {
+        textsToTranslate.push(formFirstNameLabel)
+        textKeys.push('formFirstNameLabel')
+      }
+      if (formLastNameLabel) {
+        textsToTranslate.push(formLastNameLabel)
+        textKeys.push('formLastNameLabel')
+      }
+      if (formTownLabel) {
+        textsToTranslate.push(formTownLabel)
+        textKeys.push('formTownLabel')
+      }
+      if (formEmailLabel) {
+        textsToTranslate.push(formEmailLabel)
+        textKeys.push('formEmailLabel')
+      }
+      if (formWouldLikeLabel) {
+        textsToTranslate.push(formWouldLikeLabel)
+        textKeys.push('formWouldLikeLabel')
+      }
+      if (formFollowJesusLabel) {
+        textsToTranslate.push(formFollowJesusLabel)
+        textKeys.push('formFollowJesusLabel')
+      }
+      if (formBibleLabel) {
+        textsToTranslate.push(formBibleLabel)
+        textKeys.push('formBibleLabel')
+      }
+      if (formPrayerLabel) {
+        textsToTranslate.push(formPrayerLabel)
+        textKeys.push('formPrayerLabel')
+      }
+      if (formQuestionLabel) {
+        textsToTranslate.push(formQuestionLabel)
+        textKeys.push('formQuestionLabel')
+      }
+      if (formMessageLabel) {
+        textsToTranslate.push(formMessageLabel)
+        textKeys.push('formMessageLabel')
+      }
+      if (formSubmitLabel) {
+        textsToTranslate.push(formSubmitLabel)
+        textKeys.push('formSubmitLabel')
       }
 
       try {
@@ -71,24 +175,56 @@ export default class SettingsController {
     } else {
       // Use stored Indonesian translations
       translationMap = {
-        welcomeTitle: welcomeTitleId,
-        welcomeSubtitle: welcomeSubtitleId,
         aboutUsTitle: aboutUsTitleId,
         aboutUsContent: aboutUsContentId,
+        formTitle: formTitleId,
+        formFirstNameLabel: formFirstNameLabelId,
+        formLastNameLabel: formLastNameLabelId,
+        formTownLabel: formTownLabelId,
+        formEmailLabel: formEmailLabelId,
+        formWouldLikeLabel: formWouldLikeLabelId,
+        formFollowJesusLabel: formFollowJesusLabelId,
+        formBibleLabel: formBibleLabelId,
+        formPrayerLabel: formPrayerLabelId,
+        formQuestionLabel: formQuestionLabelId,
+        formMessageLabel: formMessageLabelId,
+        formSubmitLabel: formSubmitLabelId,
       }
     }
 
     return view.render('admin/settings/edit', {
-      // English content (editable)
-      welcomeTitle,
-      welcomeSubtitle,
+      // English content (editable) - About Us
       aboutUsTitle,
       aboutUsContent,
-      // Indonesian translations
-      welcomeTitleTranslated: translationMap.welcomeTitle || '',
-      welcomeSubtitleTranslated: translationMap.welcomeSubtitle || '',
+      // English content (editable) - Form labels
+      formTitle,
+      formFirstNameLabel,
+      formLastNameLabel,
+      formTownLabel,
+      formEmailLabel,
+      formWouldLikeLabel,
+      formFollowJesusLabel,
+      formBibleLabel,
+      formPrayerLabel,
+      formQuestionLabel,
+      formMessageLabel,
+      formSubmitLabel,
+      // Indonesian translations - About Us
       aboutUsTitleTranslated: translationMap.aboutUsTitle || '',
       aboutUsContentTranslated: translationMap.aboutUsContent || '',
+      // Indonesian translations - Form labels
+      formTitleTranslated: translationMap.formTitle || '',
+      formFirstNameLabelTranslated: translationMap.formFirstNameLabel || '',
+      formLastNameLabelTranslated: translationMap.formLastNameLabel || '',
+      formTownLabelTranslated: translationMap.formTownLabel || '',
+      formEmailLabelTranslated: translationMap.formEmailLabel || '',
+      formWouldLikeLabelTranslated: translationMap.formWouldLikeLabel || '',
+      formFollowJesusLabelTranslated: translationMap.formFollowJesusLabel || '',
+      formBibleLabelTranslated: translationMap.formBibleLabel || '',
+      formPrayerLabelTranslated: translationMap.formPrayerLabel || '',
+      formQuestionLabelTranslated: translationMap.formQuestionLabel || '',
+      formMessageLabelTranslated: translationMap.formMessageLabel || '',
+      formSubmitLabelTranslated: translationMap.formSubmitLabel || '',
       translationError,
       hasStoredTranslations,
     })
@@ -98,18 +234,64 @@ export default class SettingsController {
    * Update English content
    */
   async update({ request, response, session }: HttpContext) {
-    const { welcome_title, welcome_subtitle, about_us_title, about_us_content } = request.only([
-      'welcome_title',
-      'welcome_subtitle',
+    const data = request.only([
       'about_us_title',
       'about_us_content',
+      'form_title',
+      'form_first_name_label',
+      'form_last_name_label',
+      'form_town_label',
+      'form_email_label',
+      'form_would_like_label',
+      'form_follow_jesus_label',
+      'form_bible_label',
+      'form_prayer_label',
+      'form_question_label',
+      'form_message_label',
+      'form_submit_label',
     ])
 
-    // Save English content to main fields
-    await Setting.set('welcome_title', welcome_title)
-    await Setting.set('welcome_subtitle', welcome_subtitle)
-    await Setting.set('about_us_title', about_us_title)
-    await Setting.set('about_us_content', about_us_content)
+    // Save English content - About Us
+    await Setting.set('about_us_title', data.about_us_title || '')
+    await Setting.set('about_us_content', data.about_us_content || '')
+
+    // Save English content - Form labels (only if provided)
+    if (data.form_title !== undefined) {
+      await Setting.set('form_title', data.form_title || '')
+    }
+    if (data.form_first_name_label !== undefined) {
+      await Setting.set('form_first_name_label', data.form_first_name_label || '')
+    }
+    if (data.form_last_name_label !== undefined) {
+      await Setting.set('form_last_name_label', data.form_last_name_label || '')
+    }
+    if (data.form_town_label !== undefined) {
+      await Setting.set('form_town_label', data.form_town_label || '')
+    }
+    if (data.form_email_label !== undefined) {
+      await Setting.set('form_email_label', data.form_email_label || '')
+    }
+    if (data.form_would_like_label !== undefined) {
+      await Setting.set('form_would_like_label', data.form_would_like_label || '')
+    }
+    if (data.form_follow_jesus_label !== undefined) {
+      await Setting.set('form_follow_jesus_label', data.form_follow_jesus_label || '')
+    }
+    if (data.form_bible_label !== undefined) {
+      await Setting.set('form_bible_label', data.form_bible_label || '')
+    }
+    if (data.form_prayer_label !== undefined) {
+      await Setting.set('form_prayer_label', data.form_prayer_label || '')
+    }
+    if (data.form_question_label !== undefined) {
+      await Setting.set('form_question_label', data.form_question_label || '')
+    }
+    if (data.form_message_label !== undefined) {
+      await Setting.set('form_message_label', data.form_message_label || '')
+    }
+    if (data.form_submit_label !== undefined) {
+      await Setting.set('form_submit_label', data.form_submit_label || '')
+    }
 
     session.flash('success', 'Settings updated successfully')
     // Refresh translations after updating English content
@@ -121,17 +303,39 @@ export default class SettingsController {
    */
   async saveTranslations({ request, response, session }: HttpContext) {
     const data = request.only([
-      'welcome_title_id',
-      'welcome_subtitle_id',
       'about_us_title_id',
       'about_us_content_id',
+      'form_title_id',
+      'form_first_name_label_id',
+      'form_last_name_label_id',
+      'form_town_label_id',
+      'form_email_label_id',
+      'form_would_like_label_id',
+      'form_follow_jesus_label_id',
+      'form_bible_label_id',
+      'form_prayer_label_id',
+      'form_question_label_id',
+      'form_message_label_id',
+      'form_submit_label_id',
     ])
 
-    // Save Indonesian translations
-    await Setting.set('welcome_title_id', data.welcome_title_id || '')
-    await Setting.set('welcome_subtitle_id', data.welcome_subtitle_id || '')
+    // Save Indonesian translations - About Us
     await Setting.set('about_us_title_id', data.about_us_title_id || '')
     await Setting.set('about_us_content_id', data.about_us_content_id || '')
+
+    // Save Indonesian translations - Form labels
+    await Setting.set('form_title_id', data.form_title_id || '')
+    await Setting.set('form_first_name_label_id', data.form_first_name_label_id || '')
+    await Setting.set('form_last_name_label_id', data.form_last_name_label_id || '')
+    await Setting.set('form_town_label_id', data.form_town_label_id || '')
+    await Setting.set('form_email_label_id', data.form_email_label_id || '')
+    await Setting.set('form_would_like_label_id', data.form_would_like_label_id || '')
+    await Setting.set('form_follow_jesus_label_id', data.form_follow_jesus_label_id || '')
+    await Setting.set('form_bible_label_id', data.form_bible_label_id || '')
+    await Setting.set('form_prayer_label_id', data.form_prayer_label_id || '')
+    await Setting.set('form_question_label_id', data.form_question_label_id || '')
+    await Setting.set('form_message_label_id', data.form_message_label_id || '')
+    await Setting.set('form_submit_label_id', data.form_submit_label_id || '')
 
     session.flash('success', 'Indonesian translations saved successfully')
     return response.redirect().toRoute('admin.settings.edit')
