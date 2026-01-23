@@ -72,6 +72,38 @@ export default class TranslationController {
       const lessonTitleSetting = await Setting.findBy('key', 'lesson_title')
       const lessonIntroSetting = await Setting.findBy('key', 'lesson_introduction')
 
+      // Get About Us settings (Indonesian stored in _id fields)
+      const aboutUsTitleId = await Setting.get('about_us_title_id', '')
+      const aboutUsContentId = await Setting.get('about_us_content_id', '')
+      const aboutUsTitle = aboutUsTitleId || (await Setting.get('about_us_title', 'Tentang Kami'))
+      const aboutUsContent = aboutUsContentId || (await Setting.get('about_us_content', ''))
+
+      // Get Form labels (Indonesian stored in _id fields)
+      const formTitleId = await Setting.get('form_title_id', '')
+      const formTitle = formTitleId || (await Setting.get('form_title', 'Hubungi Kami'))
+      const formFirstNameLabelId = await Setting.get('form_first_name_label_id', '')
+      const formFirstNameLabel = formFirstNameLabelId || (await Setting.get('form_first_name_label', 'Nama Depan'))
+      const formLastNameLabelId = await Setting.get('form_last_name_label_id', '')
+      const formLastNameLabel = formLastNameLabelId || (await Setting.get('form_last_name_label', 'Nama Belakang'))
+      const formTownLabelId = await Setting.get('form_town_label_id', '')
+      const formTownLabel = formTownLabelId || (await Setting.get('form_town_label', 'Kota'))
+      const formEmailLabelId = await Setting.get('form_email_label_id', '')
+      const formEmailLabel = formEmailLabelId || (await Setting.get('form_email_label', 'Email'))
+      const formWouldLikeLabelId = await Setting.get('form_would_like_label_id', '')
+      const formWouldLikeLabel = formWouldLikeLabelId || (await Setting.get('form_would_like_label', 'Apakah Anda ingin'))
+      const formFollowJesusLabelId = await Setting.get('form_follow_jesus_label_id', '')
+      const formFollowJesusLabel = formFollowJesusLabelId || (await Setting.get('form_follow_jesus_label', 'Informasi lebih lanjut tentang cara menjadi pengikut Yesus Kristus'))
+      const formBibleLabelId = await Setting.get('form_bible_label_id', '')
+      const formBibleLabel = formBibleLabelId || (await Setting.get('form_bible_label', 'Alkitab dalam bahasa Anda sendiri'))
+      const formPrayerLabelId = await Setting.get('form_prayer_label_id', '')
+      const formPrayerLabel = formPrayerLabelId || (await Setting.get('form_prayer_label', 'Berbagi permintaan doa'))
+      const formQuestionLabelId = await Setting.get('form_question_label_id', '')
+      const formQuestionLabel = formQuestionLabelId || (await Setting.get('form_question_label', 'Ajukan pertanyaan'))
+      const formMessageLabelId = await Setting.get('form_message_label_id', '')
+      const formMessageLabel = formMessageLabelId || (await Setting.get('form_message_label', 'Pertanyaan atau Umpan Balik Anda'))
+      const formSubmitLabelId = await Setting.get('form_submit_label_id', '')
+      const formSubmitLabel = formSubmitLabelId || (await Setting.get('form_submit_label', 'Kirim Pesan'))
+
       // Get all published sections
       const sections = await Section.query()
         .where('is_published', true)
@@ -80,6 +112,20 @@ export default class TranslationController {
       const result: {
         lessonTitle?: string
         lessonIntroduction?: string
+        aboutUsTitle?: string
+        aboutUsContent?: string
+        formTitle?: string
+        formFirstNameLabel?: string
+        formLastNameLabel?: string
+        formTownLabel?: string
+        formEmailLabel?: string
+        formWouldLikeLabel?: string
+        formFollowJesusLabel?: string
+        formBibleLabel?: string
+        formPrayerLabel?: string
+        formQuestionLabel?: string
+        formMessageLabel?: string
+        formSubmitLabel?: string
         sections: {
           id: number
           title: string
@@ -98,6 +144,24 @@ export default class TranslationController {
       if (lessonIntroSetting?.value) {
         result.lessonIntroduction = lessonIntroSetting.value
       }
+
+      // Add About Us
+      result.aboutUsTitle = aboutUsTitle
+      result.aboutUsContent = aboutUsContent
+
+      // Add Form labels
+      result.formTitle = formTitle
+      result.formFirstNameLabel = formFirstNameLabel
+      result.formLastNameLabel = formLastNameLabel
+      result.formTownLabel = formTownLabel
+      result.formEmailLabel = formEmailLabel
+      result.formWouldLikeLabel = formWouldLikeLabel
+      result.formFollowJesusLabel = formFollowJesusLabel
+      result.formBibleLabel = formBibleLabel
+      result.formPrayerLabel = formPrayerLabel
+      result.formQuestionLabel = formQuestionLabel
+      result.formMessageLabel = formMessageLabel
+      result.formSubmitLabel = formSubmitLabel
 
       for (const section of sections) {
         result.sections.push({
@@ -122,6 +186,38 @@ export default class TranslationController {
       const lessonTitleSetting = await Setting.findBy('key', 'lesson_title')
       const lessonIntroSetting = await Setting.findBy('key', 'lesson_introduction')
 
+      // Get About Us settings (Indonesian stored in _id fields)
+      const aboutUsTitleId = await Setting.get('about_us_title_id', '')
+      const aboutUsContentId = await Setting.get('about_us_content_id', '')
+      const aboutUsTitle = aboutUsTitleId || (await Setting.get('about_us_title', 'Tentang Kami'))
+      const aboutUsContent = aboutUsContentId || (await Setting.get('about_us_content', ''))
+
+      // Get Form labels (Indonesian stored in _id fields)
+      const formTitleId = await Setting.get('form_title_id', '')
+      const formTitle = formTitleId || (await Setting.get('form_title', 'Hubungi Kami'))
+      const formFirstNameLabelId = await Setting.get('form_first_name_label_id', '')
+      const formFirstNameLabel = formFirstNameLabelId || (await Setting.get('form_first_name_label', 'Nama Depan'))
+      const formLastNameLabelId = await Setting.get('form_last_name_label_id', '')
+      const formLastNameLabel = formLastNameLabelId || (await Setting.get('form_last_name_label', 'Nama Belakang'))
+      const formTownLabelId = await Setting.get('form_town_label_id', '')
+      const formTownLabel = formTownLabelId || (await Setting.get('form_town_label', 'Kota'))
+      const formEmailLabelId = await Setting.get('form_email_label_id', '')
+      const formEmailLabel = formEmailLabelId || (await Setting.get('form_email_label', 'Email'))
+      const formWouldLikeLabelId = await Setting.get('form_would_like_label_id', '')
+      const formWouldLikeLabel = formWouldLikeLabelId || (await Setting.get('form_would_like_label', 'Apakah Anda ingin'))
+      const formFollowJesusLabelId = await Setting.get('form_follow_jesus_label_id', '')
+      const formFollowJesusLabel = formFollowJesusLabelId || (await Setting.get('form_follow_jesus_label', 'Informasi lebih lanjut tentang cara menjadi pengikut Yesus Kristus'))
+      const formBibleLabelId = await Setting.get('form_bible_label_id', '')
+      const formBibleLabel = formBibleLabelId || (await Setting.get('form_bible_label', 'Alkitab dalam bahasa Anda sendiri'))
+      const formPrayerLabelId = await Setting.get('form_prayer_label_id', '')
+      const formPrayerLabel = formPrayerLabelId || (await Setting.get('form_prayer_label', 'Berbagi permintaan doa'))
+      const formQuestionLabelId = await Setting.get('form_question_label_id', '')
+      const formQuestionLabel = formQuestionLabelId || (await Setting.get('form_question_label', 'Ajukan pertanyaan'))
+      const formMessageLabelId = await Setting.get('form_message_label_id', '')
+      const formMessageLabel = formMessageLabelId || (await Setting.get('form_message_label', 'Pertanyaan atau Umpan Balik Anda'))
+      const formSubmitLabelId = await Setting.get('form_submit_label_id', '')
+      const formSubmitLabel = formSubmitLabelId || (await Setting.get('form_submit_label', 'Kirim Pesan'))
+
       // Get all published sections
       const sections = await Section.query()
         .where('is_published', true)
@@ -136,6 +232,24 @@ export default class TranslationController {
       if (lessonIntroSetting?.value) {
         textsToTranslate.push(lessonIntroSetting.value)
       }
+
+      // Add About Us texts
+      textsToTranslate.push(aboutUsTitle)
+      textsToTranslate.push(aboutUsContent)
+
+      // Add Form labels
+      textsToTranslate.push(formTitle)
+      textsToTranslate.push(formFirstNameLabel)
+      textsToTranslate.push(formLastNameLabel)
+      textsToTranslate.push(formTownLabel)
+      textsToTranslate.push(formEmailLabel)
+      textsToTranslate.push(formWouldLikeLabel)
+      textsToTranslate.push(formFollowJesusLabel)
+      textsToTranslate.push(formBibleLabel)
+      textsToTranslate.push(formPrayerLabel)
+      textsToTranslate.push(formQuestionLabel)
+      textsToTranslate.push(formMessageLabel)
+      textsToTranslate.push(formSubmitLabel)
 
       // Track which sections have which reflective questions
       const sectionQuestions: { id: number; hasQ1: boolean; hasQ2: boolean; hasQ3: boolean }[] = []
@@ -160,6 +274,20 @@ export default class TranslationController {
       const result: {
         lessonTitle?: string
         lessonIntroduction?: string
+        aboutUsTitle?: string
+        aboutUsContent?: string
+        formTitle?: string
+        formFirstNameLabel?: string
+        formLastNameLabel?: string
+        formTownLabel?: string
+        formEmailLabel?: string
+        formWouldLikeLabel?: string
+        formFollowJesusLabel?: string
+        formBibleLabel?: string
+        formPrayerLabel?: string
+        formQuestionLabel?: string
+        formMessageLabel?: string
+        formSubmitLabel?: string
         sections: {
           id: number
           title: string
@@ -178,6 +306,24 @@ export default class TranslationController {
       if (lessonIntroSetting?.value) {
         result.lessonIntroduction = translations[index++]
       }
+
+      // Map About Us translations
+      result.aboutUsTitle = translations[index++]
+      result.aboutUsContent = translations[index++]
+
+      // Map Form label translations
+      result.formTitle = translations[index++]
+      result.formFirstNameLabel = translations[index++]
+      result.formLastNameLabel = translations[index++]
+      result.formTownLabel = translations[index++]
+      result.formEmailLabel = translations[index++]
+      result.formWouldLikeLabel = translations[index++]
+      result.formFollowJesusLabel = translations[index++]
+      result.formBibleLabel = translations[index++]
+      result.formPrayerLabel = translations[index++]
+      result.formQuestionLabel = translations[index++]
+      result.formMessageLabel = translations[index++]
+      result.formSubmitLabel = translations[index++]
 
       for (const sq of sectionQuestions) {
         const sectionResult: {

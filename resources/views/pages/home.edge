@@ -432,8 +432,8 @@
 
       <!-- About Us Section -->
       <div style="margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
-        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ aboutUsTitle }}</h3>
-        <div style="color: #495057; font-size: 15px; line-height: 1.6;">{{{ aboutUsContent }}}</div>
+        <h3 id="aboutUsTitle" style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ aboutUsTitle }}</h3>
+        <div id="aboutUsContent" style="color: #495057; font-size: 15px; line-height: 1.6;">{{{ aboutUsContent }}}</div>
       </div>
 
       <!-- Get In Touch Section -->
@@ -651,8 +651,17 @@
         originalContent = {
           lessonTitle: document.getElementById('lessonTitle')?.innerHTML,
           lessonIntro: document.getElementById('lessonIntro')?.innerHTML,
+          aboutUsTitle: document.getElementById('aboutUsTitle')?.innerHTML,
+          aboutUsContent: document.getElementById('aboutUsContent')?.innerHTML,
+          formLabels: {},
           sections: []
         };
+
+        // Save all translatable form elements
+        document.querySelectorAll('.translatable[data-key]').forEach(el => {
+          const key = el.dataset.key;
+          originalContent.formLabels[key] = el.innerHTML;
+        });
 
         document.querySelectorAll('.accordion-item').forEach(item => {
           const questions = item.querySelectorAll('.accordion-question');
@@ -670,12 +679,30 @@
 
         const lessonTitleEl = document.getElementById('lessonTitle');
         const lessonIntroEl = document.getElementById('lessonIntro');
+        const aboutUsTitleEl = document.getElementById('aboutUsTitle');
+        const aboutUsContentEl = document.getElementById('aboutUsContent');
 
         if (lessonTitleEl && originalContent.lessonTitle) {
           lessonTitleEl.innerHTML = originalContent.lessonTitle;
         }
         if (lessonIntroEl && originalContent.lessonIntro) {
           lessonIntroEl.innerHTML = originalContent.lessonIntro;
+        }
+        if (aboutUsTitleEl && originalContent.aboutUsTitle) {
+          aboutUsTitleEl.innerHTML = originalContent.aboutUsTitle;
+        }
+        if (aboutUsContentEl && originalContent.aboutUsContent) {
+          aboutUsContentEl.innerHTML = originalContent.aboutUsContent;
+        }
+
+        // Restore form labels
+        if (originalContent.formLabels) {
+          document.querySelectorAll('.translatable[data-key]').forEach(el => {
+            const key = el.dataset.key;
+            if (originalContent.formLabels[key]) {
+              el.innerHTML = originalContent.formLabels[key];
+            }
+          });
         }
 
         document.querySelectorAll('.accordion-item').forEach(item => {
@@ -706,6 +733,39 @@
           const lessonIntroEl = document.getElementById('lessonIntro');
           if (lessonIntroEl) lessonIntroEl.innerHTML = data.lessonIntroduction;
         }
+
+        // Apply About Us translations
+        if (data.aboutUsTitle) {
+          const aboutUsTitleEl = document.getElementById('aboutUsTitle');
+          if (aboutUsTitleEl) aboutUsTitleEl.innerHTML = data.aboutUsTitle;
+        }
+        if (data.aboutUsContent) {
+          const aboutUsContentEl = document.getElementById('aboutUsContent');
+          if (aboutUsContentEl) aboutUsContentEl.innerHTML = data.aboutUsContent;
+        }
+
+        // Apply Form label translations
+        const formLabelMap = {
+          formTitle: data.formTitle,
+          formFirstNameLabel: data.formFirstNameLabel,
+          formLastNameLabel: data.formLastNameLabel,
+          formTownLabel: data.formTownLabel,
+          formEmailLabel: data.formEmailLabel,
+          formWouldLikeLabel: data.formWouldLikeLabel,
+          formFollowJesusLabel: data.formFollowJesusLabel,
+          formBibleLabel: data.formBibleLabel,
+          formPrayerLabel: data.formPrayerLabel,
+          formQuestionLabel: data.formQuestionLabel,
+          formMessageLabel: data.formMessageLabel,
+          formSubmitLabel: data.formSubmitLabel
+        };
+
+        Object.keys(formLabelMap).forEach(key => {
+          if (formLabelMap[key]) {
+            const el = document.querySelector(`.translatable[data-key="${key}"]`);
+            if (el) el.innerHTML = formLabelMap[key];
+          }
+        });
 
         // Apply section translations
         if (data.sections) {
