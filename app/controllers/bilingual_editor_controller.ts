@@ -18,23 +18,19 @@ export default class BilingualEditorController {
     const welcomeSubtitle = await Setting.get('welcome_subtitle', '')
     const lessonTitle = await Setting.get('lesson_title', '')
     const lessonIntroduction = await Setting.get('lesson_introduction', '')
-    const aboutUsTitle = await Setting.get('about_us_title', 'Tentang Kami')
-    const aboutUsContent = await Setting.get('about_us_content', '')
 
     // Get stored English translations for settings
     const welcomeTitleEn = await Setting.get('welcome_title_en', '')
     const welcomeSubtitleEn = await Setting.get('welcome_subtitle_en', '')
     const lessonTitleEn = await Setting.get('lesson_title_en', '')
     const lessonIntroductionEn = await Setting.get('lesson_introduction_en', '')
-    const aboutUsTitleEn = await Setting.get('about_us_title_en', '')
-    const aboutUsContentEn = await Setting.get('about_us_content_en', '')
 
     // Get all sections ordered by display order
     const sections = await Section.query().orderBy('display_order', 'asc')
 
     // Check if we have stored English translations or need to fetch from API
     const hasStoredSettingsTranslations =
-      welcomeTitleEn || welcomeSubtitleEn || lessonTitleEn || aboutUsTitleEn
+      welcomeTitleEn || welcomeSubtitleEn || lessonTitleEn || lessonIntroductionEn
     const hasStoredSectionTranslations = sections.some((s) => s.titleEn || s.contentEn)
 
     let translationMap: Record<string, string> = {}
@@ -62,14 +58,6 @@ export default class BilingualEditorController {
       if (lessonIntroduction) {
         textsToTranslate.push(lessonIntroduction)
         textKeys.push('lessonIntroduction')
-      }
-      if (aboutUsTitle) {
-        textsToTranslate.push(aboutUsTitle)
-        textKeys.push('aboutUsTitle')
-      }
-      if (aboutUsContent) {
-        textsToTranslate.push(aboutUsContent)
-        textKeys.push('aboutUsContent')
       }
 
       // Add section content to translate
@@ -111,8 +99,6 @@ export default class BilingualEditorController {
         welcomeSubtitle: welcomeSubtitleEn,
         lessonTitle: lessonTitleEn,
         lessonIntroduction: lessonIntroductionEn,
-        aboutUsTitle: aboutUsTitleEn,
-        aboutUsContent: aboutUsContentEn,
       }
 
       // Add section English translations from database
@@ -151,16 +137,12 @@ export default class BilingualEditorController {
       welcomeSubtitle,
       lessonTitle,
       lessonIntroduction,
-      aboutUsTitle,
-      aboutUsContent,
       sections: sectionsWithTranslations,
       // English translations
       welcomeTitleTranslated: translationMap.welcomeTitle || '',
       welcomeSubtitleTranslated: translationMap.welcomeSubtitle || '',
       lessonTitleTranslated: translationMap.lessonTitle || '',
       lessonIntroductionTranslated: translationMap.lessonIntroduction || '',
-      aboutUsTitleTranslated: translationMap.aboutUsTitle || '',
-      aboutUsContentTranslated: translationMap.aboutUsContent || '',
       translationError,
       hasStoredTranslations: hasStoredSettingsTranslations || hasStoredSectionTranslations,
     })
@@ -175,8 +157,6 @@ export default class BilingualEditorController {
       'welcome_subtitle',
       'lesson_title',
       'lesson_introduction',
-      'about_us_title',
-      'about_us_content',
     ])
 
     // Save Indonesian content to main fields
@@ -184,8 +164,6 @@ export default class BilingualEditorController {
     await Setting.set('welcome_subtitle', data.welcome_subtitle || '')
     await Setting.set('lesson_title', data.lesson_title || '')
     await Setting.set('lesson_introduction', data.lesson_introduction || '')
-    await Setting.set('about_us_title', data.about_us_title || '')
-    await Setting.set('about_us_content', data.about_us_content || '')
 
     session.flash('success', 'Settings updated successfully')
     return response.redirect().toRoute('admin.bilingual.index', {}, { qs: { refresh: '1' } })
@@ -201,8 +179,6 @@ export default class BilingualEditorController {
       'welcome_subtitle_en',
       'lesson_title_en',
       'lesson_introduction_en',
-      'about_us_title_en',
-      'about_us_content_en',
       // Section translations
       'sections',
     ])
@@ -212,8 +188,6 @@ export default class BilingualEditorController {
     await Setting.set('welcome_subtitle_en', data.welcome_subtitle_en || '')
     await Setting.set('lesson_title_en', data.lesson_title_en || '')
     await Setting.set('lesson_introduction_en', data.lesson_introduction_en || '')
-    await Setting.set('about_us_title_en', data.about_us_title_en || '')
-    await Setting.set('about_us_content_en', data.about_us_content_en || '')
 
     // Save section English translations
     if (data.sections && Array.isArray(data.sections)) {

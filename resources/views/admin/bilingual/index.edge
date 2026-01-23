@@ -348,19 +348,6 @@
               </div>
             </div>
 
-            <div class="section-block">
-              <h4>About Us</h4>
-              <div class="form-group-small">
-                <label for="about_us_title">About Us Title</label>
-                <input type="text" id="about_us_title" name="about_us_title" class="form-control-small" value="{{ aboutUsTitle }}">
-              </div>
-              <div class="form-group-small">
-                <label for="about_us_content">About Us Content</label>
-                <div id="aboutUsEditor" class="quill-container"></div>
-                <input type="hidden" name="about_us_content" id="about_us_content_hidden">
-              </div>
-            </div>
-
             <button type="submit" class="btn btn-success btn-small">Save Settings</button>
           </form>
 
@@ -507,19 +494,6 @@
             <div class="translation-text" data-field="lesson_introduction_en" data-html="true">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
           </div>
 
-          <div class="section-block">
-            <h4>About Us</h4>
-            <div class="translation-label">
-              <span>About Us Title</span>
-            </div>
-            <div class="translation-text" data-field="about_us_title_en">{{ aboutUsTitleTranslated || '(No translation)' }}</div>
-
-            <div class="translation-label">
-              <span>About Us Content</span>
-            </div>
-            <div class="translation-text" data-field="about_us_content_en" data-html="true">{{{ aboutUsContentTranslated || '(No translation)' }}}</div>
-          </div>
-
           <div class="section-divider">
             <h3 style="margin-bottom: 15px; color: #2c3e50;">Content Sections</h3>
 
@@ -581,7 +555,7 @@
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 
   <!-- Pass data to JavaScript -->
-  <script id="pageData" type="application/json">{{{ JSON.stringify({ welcomeSubtitle: welcomeSubtitle || '', lessonIntroduction: lessonIntroduction || '', aboutUsContent: aboutUsContent || '', sections: sections.map(s => ({ id: s.id, content: s.content || '' })) }) }}}</script>
+  <script id="pageData" type="application/json">{{{ JSON.stringify({ welcomeSubtitle: welcomeSubtitle || '', lessonIntroduction: lessonIntroduction || '', sections: sections.map(s => ({ id: s.id, content: s.content || '' })) }) }}}</script>
 
   <script>
     // Parse page data
@@ -610,13 +584,6 @@
     });
     lessonIntroEditor.root.innerHTML = pageData.lessonIntroduction;
 
-    var aboutUsEditor = new Quill('#aboutUsEditor', {
-      theme: 'snow',
-      modules: { toolbar: toolbarOptions },
-      placeholder: 'Enter about us content...'
-    });
-    aboutUsEditor.root.innerHTML = pageData.aboutUsContent;
-
     // Initialize Quill editors for existing sections
     var sectionEditors = {};
     pageData.sections.forEach(function(section) {
@@ -642,7 +609,6 @@
     document.getElementById('settingsForm').addEventListener('submit', function() {
       document.getElementById('welcome_subtitle_hidden').value = welcomeSubtitleEditor.root.innerHTML;
       document.getElementById('lesson_introduction_hidden').value = lessonIntroEditor.root.innerHTML;
-      document.getElementById('about_us_content_hidden').value = aboutUsEditor.root.innerHTML;
     });
 
     // Sync section editors before submission
@@ -684,7 +650,7 @@
       });
 
       // Collect settings translations (English)
-      var settingsFields = ['welcome_title_en', 'welcome_subtitle_en', 'lesson_title_en', 'lesson_introduction_en', 'about_us_title_en', 'about_us_content_en'];
+      var settingsFields = ['welcome_title_en', 'welcome_subtitle_en', 'lesson_title_en', 'lesson_introduction_en'];
       settingsFields.forEach(function(field) {
         var el = document.querySelector('[data-field="' + field + '"]');
         if (el) {
