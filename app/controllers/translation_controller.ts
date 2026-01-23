@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Section from '#models/section'
 import Setting from '#models/setting'
-import env from '#start/env'
 import { translateText, translateMultiple, SUPPORTED_LANGUAGES } from '#services/translation_service'
 
 export default class TranslationController {
@@ -64,8 +63,8 @@ export default class TranslationController {
       return response.status(400).json({ error: 'Target language is required' })
     }
 
-    // Get the source language (the language content is stored in)
-    const sourceLanguage = env.get('DEFAULT_LANGUAGE', 'en')
+    // Source language is Indonesian (content is stored in Indonesian)
+    const sourceLanguage = 'id'
 
     // If target language matches source language, return original content without translation
     if (targetLanguage === sourceLanguage) {
@@ -153,8 +152,8 @@ export default class TranslationController {
         if (hasQ3) textsToTranslate.push(section.reflectiveQuestion3!)
       }
 
-      // Translate all at once for efficiency
-      const translations = await translateMultiple(textsToTranslate, targetLanguage)
+      // Translate all at once for efficiency (from Indonesian to target language)
+      const translations = await translateMultiple(textsToTranslate, targetLanguage, 'id')
 
       // Map translations back
       let index = 0
