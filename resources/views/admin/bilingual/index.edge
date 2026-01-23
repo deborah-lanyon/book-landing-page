@@ -78,81 +78,74 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
-    .bilingual-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
-    .editor-column {
+
+    /* Side-by-side pairs layout */
+    .content-section {
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      overflow: hidden;
     }
-    .column-header {
-      padding: 15px 20px;
-      border-bottom: 1px solid #e0e0e0;
+    .section-title {
+      background: #2c3e50;
+      color: white;
+      padding: 12px 20px;
       font-weight: 600;
       font-size: 16px;
     }
-    .editor-column.indonesian .column-header {
-      background: #27ae60;
-      color: white;
-      border-radius: 8px 8px 0 0;
-    }
-    .editor-column.english .column-header {
-      background: #3498db;
-      color: white;
-      border-radius: 8px 8px 0 0;
-    }
-    .column-content {
+    .section-body {
       padding: 20px;
     }
-    .section-block {
-      background: #f8f9fa;
-      border-radius: 6px;
-      padding: 15px;
-      margin-bottom: 15px;
-      border: 1px solid #e0e0e0;
+
+    /* Field pair row */
+    .field-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
     }
-    .section-block h4 {
-      margin: 0 0 10px 0;
-      color: #2c3e50;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .translation-text {
-      background: white;
-      padding: 12px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      margin-bottom: 10px;
-      line-height: 1.6;
-      min-height: 40px;
-    }
-    .translation-text p {
-      margin: 0 0 10px 0;
-    }
-    .translation-text p:last-child {
+    .field-pair:last-child {
       margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
     }
-    .translation-label {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 5px;
+    .field-side {
+      min-width: 0;
+    }
+    .field-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
     }
-    .form-group-small {
-      margin-bottom: 12px;
-    }
-    .form-group-small label {
-      display: block;
-      margin-bottom: 4px;
+    .field-label {
       font-weight: 500;
       font-size: 13px;
       color: #555;
+    }
+    .lang-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .lang-badge.indonesian {
+      background: #27ae60;
+      color: white;
+    }
+    .lang-badge.english {
+      background: #3498db;
+      color: white;
     }
     .form-control-small {
       width: 100%;
@@ -161,6 +154,29 @@
       border-radius: 4px;
       font-size: 14px;
       box-sizing: border-box;
+    }
+    .translation-preview {
+      background: #f8f9fa;
+      padding: 10px 12px;
+      border-radius: 4px;
+      border: 1px solid #e0e0e0;
+      min-height: 38px;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #333;
+    }
+    .translation-preview.html-content {
+      min-height: 100px;
+    }
+    .translation-preview p {
+      margin: 0 0 10px 0;
+    }
+    .translation-preview p:last-child {
+      margin-bottom: 0;
+    }
+    .translation-preview.empty {
+      color: #999;
+      font-style: italic;
     }
     .quill-container {
       background: white;
@@ -174,21 +190,8 @@
     .quill-container .ql-editor {
       min-height: 100px;
     }
-    .section-divider {
-      border-top: 2px solid #e0e0e0;
-      margin: 25px 0;
-      padding-top: 25px;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .section-header h3 {
-      margin: 0;
-      color: #2c3e50;
-    }
+
+    /* Accordion for sections */
     .accordion-section {
       border: 1px solid #ddd;
       border-radius: 6px;
@@ -202,10 +205,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid transparent;
     }
     .accordion-header:hover {
       background: #e9ecef;
+    }
+    .accordion-section.open .accordion-header {
+      background: #e9ecef;
+      border-bottom: 1px solid #ddd;
     }
     .accordion-header h4 {
       margin: 0;
@@ -226,28 +233,13 @@
       color: #856404;
     }
     .accordion-body {
-      padding: 15px;
+      padding: 20px;
       display: none;
     }
     .accordion-section.open .accordion-body {
       display: block;
     }
-    .accordion-section.open .accordion-header {
-      background: #e9ecef;
-    }
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .refresh-btn {
-      background: #9b59b6;
-      margin-left: auto;
-    }
-    .refresh-btn:hover {
-      background: #8e44ad;
-    }
+
     .checkbox-group {
       display: flex;
       align-items: center;
@@ -255,8 +247,16 @@
     .checkbox-group input {
       margin-right: 8px;
     }
-    @media (max-width: 1200px) {
-      .bilingual-container {
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    @media (max-width: 900px) {
+      .field-pair {
         grid-template-columns: 1fr;
       }
     }
@@ -298,12 +298,11 @@
 
     <div class="nav-buttons">
       <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
-      <a href="{{ route('admin.bilingual.index') }}?refresh=1" class="btn refresh-btn">Refresh from API</a>
       <button type="button" class="btn btn-success" onclick="saveAllTranslations()" style="margin-left: 10px;">Save All Translations</button>
     </div>
 
     <p style="color: #666; margin-bottom: 20px;">
-      Edit Indonesian content on the left. English translations appear on the right.
+      Edit Indonesian content on the left, English translations appear on the right.
       @if(hasStoredTranslations)
         <strong style="color: #27ae60;">(Using saved translations)</strong>
       @else
@@ -311,231 +310,349 @@
       @end
     </p>
 
-    <div class="bilingual-container">
-      <!-- Indonesian Editor Column (Left) -->
-      <div class="editor-column indonesian">
-        <div class="column-header">Indonesian (Edit)</div>
-        <div class="column-content">
+    <!-- Welcome Section -->
+    <div class="content-section">
+      <div class="section-title">Welcome Section</div>
+      <div class="section-body">
+        <form method="POST" action="{{ route('admin.bilingual.updateSettings') }}" id="settingsForm">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="_method" value="PUT">
 
-          <!-- Settings Section -->
-          <form method="POST" action="{{ route('admin.bilingual.updateSettings') }}" id="settingsForm">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <input type="hidden" name="_method" value="PUT">
-
-            <div class="section-block">
-              <h4>Welcome Section</h4>
-              <div class="form-group-small">
-                <label for="welcome_title">Welcome Title</label>
-                <input type="text" id="welcome_title" name="welcome_title" class="form-control-small" value="{{ welcomeTitle }}">
+          <!-- Welcome Title -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge indonesian">ID</span>
+                <span class="field-label">Welcome Title</span>
               </div>
-              <div class="form-group-small">
-                <label for="welcome_subtitle">Welcome Subtitle</label>
-                <div id="welcomeSubtitleEditor" class="quill-container"></div>
-                <input type="hidden" name="welcome_subtitle" id="welcome_subtitle_hidden">
-              </div>
+              <input type="text" id="welcome_title" name="welcome_title" class="form-control-small" value="{{ welcomeTitle }}">
             </div>
-
-            <div class="section-block">
-              <h4>Lesson Overview</h4>
-              <div class="form-group-small">
-                <label for="lesson_title">Lesson Title</label>
-                <input type="text" id="lesson_title" name="lesson_title" class="form-control-small" value="{{ lessonTitle }}">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge english">EN</span>
+                <span class="field-label">Welcome Title</span>
               </div>
-              <div class="form-group-small">
-                <label for="lesson_introduction">Lesson Introduction</label>
-                <div id="lessonIntroEditor" class="quill-container"></div>
-                <input type="hidden" name="lesson_introduction" id="lesson_introduction_hidden">
+              <div class="translation-preview {{ welcomeTitleTranslated ? '' : 'empty' }}" data-field="welcome_title_en">{{ welcomeTitleTranslated || '(No translation)' }}</div>
+            </div>
+          </div>
+
+          <!-- Welcome Subtitle -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge indonesian">ID</span>
+                <span class="field-label">Welcome Subtitle</span>
               </div>
+              <div id="welcomeSubtitleEditor" class="quill-container"></div>
+              <input type="hidden" name="welcome_subtitle" id="welcome_subtitle_hidden">
             </div>
-
-            <button type="submit" class="btn btn-success btn-small">Save Settings</button>
-          </form>
-
-          <!-- Sections -->
-          <div class="section-divider">
-            <div class="section-header">
-              <h3>Content Sections</h3>
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge english">EN</span>
+                <span class="field-label">Welcome Subtitle</span>
+              </div>
+              <div class="translation-preview html-content {{ welcomeSubtitleTranslated ? '' : 'empty' }}" data-field="welcome_subtitle_en" data-html="true">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
             </div>
+          </div>
 
-            @each(section in sections)
-              <div class="accordion-section" data-section-id="{{ section.id }}">
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                  <h4>{{ section.title }}</h4>
-                  <span class="status {{ section.isPublished ? 'published' : 'draft' }}">
-                    {{ section.isPublished ? 'Published' : 'Draft' }}
-                  </span>
+          <button type="submit" class="btn btn-success btn-small">Save Welcome Section</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Lesson Overview Section -->
+    <div class="content-section">
+      <div class="section-title">Lesson Overview</div>
+      <div class="section-body">
+        <form method="POST" action="{{ route('admin.bilingual.updateSettings') }}" id="lessonForm">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="_method" value="PUT">
+          <!-- Include welcome fields as hidden to preserve them -->
+          <input type="hidden" name="welcome_title" value="{{ welcomeTitle }}">
+          <input type="hidden" name="welcome_subtitle" id="welcome_subtitle_hidden_lesson" value="">
+
+          <!-- Lesson Title -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge indonesian">ID</span>
+                <span class="field-label">Lesson Title</span>
+              </div>
+              <input type="text" id="lesson_title" name="lesson_title" class="form-control-small" value="{{ lessonTitle }}">
+            </div>
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge english">EN</span>
+                <span class="field-label">Lesson Title</span>
+              </div>
+              <div class="translation-preview {{ lessonTitleTranslated ? '' : 'empty' }}" data-field="lesson_title_en">{{ lessonTitleTranslated || '(No translation)' }}</div>
+            </div>
+          </div>
+
+          <!-- Lesson Introduction -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge indonesian">ID</span>
+                <span class="field-label">Lesson Introduction</span>
+              </div>
+              <div id="lessonIntroEditor" class="quill-container"></div>
+              <input type="hidden" name="lesson_introduction" id="lesson_introduction_hidden">
+            </div>
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge english">EN</span>
+                <span class="field-label">Lesson Introduction</span>
+              </div>
+              <div class="translation-preview html-content {{ lessonIntroductionTranslated ? '' : 'empty' }}" data-field="lesson_introduction_en" data-html="true">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success btn-small">Save Lesson Overview</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="content-section">
+      <div class="section-title">Content Sections</div>
+      <div class="section-body">
+
+        @each(section in sections)
+          <div class="accordion-section" data-section-id="{{ section.id }}">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <h4>{{ section.title }}</h4>
+              <span class="status {{ section.isPublished ? 'published' : 'draft' }}">
+                {{ section.isPublished ? 'Published' : 'Draft' }}
+              </span>
+            </div>
+            <div class="accordion-body">
+              <form method="POST" action="{{ route('admin.bilingual.updateSection', { id: section.id }) }}" class="section-form">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <input type="hidden" name="_method" value="PUT">
+
+                <!-- Section Title -->
+                <div class="field-pair">
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge indonesian">ID</span>
+                      <span class="field-label">Title</span>
+                    </div>
+                    <input type="text" name="title" class="form-control-small" value="{{ section.title }}" required>
+                  </div>
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge english">EN</span>
+                      <span class="field-label">Title</span>
+                    </div>
+                    <div class="translation-preview {{ section.titleTranslated ? '' : 'empty' }}" data-section-id="{{ section.id }}" data-section-field="title_en">{{ section.titleTranslated || '(No translation)' }}</div>
+                  </div>
                 </div>
-                <div class="accordion-body">
-                  <form method="POST" action="{{ route('admin.bilingual.updateSection', { id: section.id }) }}" class="section-form">
-                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                    <input type="hidden" name="_method" value="PUT">
 
-                    <div class="form-group-small">
-                      <label>Title</label>
-                      <input type="text" name="title" class="form-control-small" value="{{ section.title }}" required>
+                <!-- Reflective Question 1 -->
+                <div class="field-pair">
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge indonesian">ID</span>
+                      <span class="field-label">Reflective Question 1</span>
                     </div>
-
-                    <div class="form-group-small">
-                      <label>Reflective Question 1</label>
-                      <input type="text" name="reflective_question" class="form-control-small" value="{{ section.reflectiveQuestion || '' }}">
+                    <input type="text" name="reflective_question" class="form-control-small" value="{{ section.reflectiveQuestion || '' }}">
+                  </div>
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge english">EN</span>
+                      <span class="field-label">Reflective Question 1</span>
                     </div>
-
-                    <div class="form-group-small">
-                      <label>Reflective Question 2</label>
-                      <input type="text" name="reflective_question_2" class="form-control-small" value="{{ section.reflectiveQuestion2 || '' }}">
-                    </div>
-
-                    <div class="form-group-small">
-                      <label>Reflective Question 3</label>
-                      <input type="text" name="reflective_question_3" class="form-control-small" value="{{ section.reflectiveQuestion3 || '' }}">
-                    </div>
-
-                    <div class="form-group-small">
-                      <label>Content</label>
-                      <div id="sectionEditor_{{ section.id }}" class="quill-container section-editor" data-section-id="{{ section.id }}"></div>
-                      <input type="hidden" name="content" id="section_content_{{ section.id }}">
-                    </div>
-
-                    <div class="form-group-small">
-                      <label class="checkbox-group">
-                        <input type="checkbox" name="is_published" {{ section.isPublished ? 'checked' : '' }}>
-                        Published
-                      </label>
-                    </div>
-
-                    <div style="display: flex; gap: 10px;">
-                      <button type="submit" class="btn btn-success btn-small">Save Section</button>
-                      <button type="button" class="btn btn-danger btn-small" onclick="deleteSection({{ section.id }}, '{{ section.title }}')">Delete</button>
-                    </div>
-                  </form>
+                    <div class="translation-preview {{ section.q1Translated ? '' : 'empty' }}" data-section-id="{{ section.id }}" data-section-field="q1_en">{{ section.q1Translated || '(No translation)' }}</div>
+                  </div>
                 </div>
-              </div>
-            @end
 
-            <!-- Add New Section -->
-            <div class="accordion-section">
-              <div class="accordion-header" onclick="toggleAccordion(this)">
-                <h4>+ Add New Section</h4>
-              </div>
-              <div class="accordion-body">
-                <form method="POST" action="{{ route('admin.bilingual.createSection') }}" id="newSectionForm">
-                  <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-
-                  <div class="form-group-small">
-                    <label>Title</label>
-                    <input type="text" name="title" class="form-control-small" required>
+                <!-- Reflective Question 2 -->
+                <div class="field-pair">
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge indonesian">ID</span>
+                      <span class="field-label">Reflective Question 2</span>
+                    </div>
+                    <input type="text" name="reflective_question_2" class="form-control-small" value="{{ section.reflectiveQuestion2 || '' }}">
                   </div>
-
-                  <div class="form-group-small">
-                    <label>Reflective Question 1</label>
-                    <input type="text" name="reflective_question" class="form-control-small">
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge english">EN</span>
+                      <span class="field-label">Reflective Question 2</span>
+                    </div>
+                    <div class="translation-preview {{ section.q2Translated ? '' : 'empty' }}" data-section-id="{{ section.id }}" data-section-field="q2_en">{{ section.q2Translated || '(No translation)' }}</div>
                   </div>
+                </div>
 
-                  <div class="form-group-small">
-                    <label>Reflective Question 2</label>
-                    <input type="text" name="reflective_question_2" class="form-control-small">
+                <!-- Reflective Question 3 -->
+                <div class="field-pair">
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge indonesian">ID</span>
+                      <span class="field-label">Reflective Question 3</span>
+                    </div>
+                    <input type="text" name="reflective_question_3" class="form-control-small" value="{{ section.reflectiveQuestion3 || '' }}">
                   </div>
-
-                  <div class="form-group-small">
-                    <label>Reflective Question 3</label>
-                    <input type="text" name="reflective_question_3" class="form-control-small">
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge english">EN</span>
+                      <span class="field-label">Reflective Question 3</span>
+                    </div>
+                    <div class="translation-preview {{ section.q3Translated ? '' : 'empty' }}" data-section-id="{{ section.id }}" data-section-field="q3_en">{{ section.q3Translated || '(No translation)' }}</div>
                   </div>
+                </div>
 
-                  <div class="form-group-small">
-                    <label>Content</label>
-                    <div id="newSectionEditor" class="quill-container"></div>
-                    <input type="hidden" name="content" id="new_section_content">
+                <!-- Section Content -->
+                <div class="field-pair">
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge indonesian">ID</span>
+                      <span class="field-label">Content</span>
+                    </div>
+                    <div id="sectionEditor_{{ section.id }}" class="quill-container section-editor" data-section-id="{{ section.id }}"></div>
+                    <input type="hidden" name="content" id="section_content_{{ section.id }}">
                   </div>
+                  <div class="field-side">
+                    <div class="field-header">
+                      <span class="lang-badge english">EN</span>
+                      <span class="field-label">Content</span>
+                    </div>
+                    <div class="translation-preview html-content {{ section.contentTranslated ? '' : 'empty' }}" data-section-id="{{ section.id }}" data-section-field="content_en" data-html="true">{{{ section.contentTranslated || '(No translation)' }}}</div>
+                  </div>
+                </div>
 
-                  <div class="form-group-small">
+                <div class="field-pair" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                  <div class="field-side">
                     <label class="checkbox-group">
-                      <input type="checkbox" name="is_published">
+                      <input type="checkbox" name="is_published" {{ section.isPublished ? 'checked' : '' }}>
                       Published
                     </label>
                   </div>
-
-                  <button type="submit" class="btn btn-success btn-small">Create Section</button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- English Translation Column (Right) -->
-      <div class="editor-column english">
-        <div class="column-header">English (Translation Preview)</div>
-        <div class="column-content">
-
-          <div class="section-block">
-            <h4>Welcome Section</h4>
-            <div class="translation-label">
-              <span>Welcome Title</span>
-            </div>
-            <div class="translation-text" data-field="welcome_title_en">{{ welcomeTitleTranslated || '(No translation)' }}</div>
-
-            <div class="translation-label">
-              <span>Welcome Subtitle</span>
-            </div>
-            <div class="translation-text" data-field="welcome_subtitle_en" data-html="true">{{{ welcomeSubtitleTranslated || '(No translation)' }}}</div>
-          </div>
-
-          <div class="section-block">
-            <h4>Lesson Overview</h4>
-            <div class="translation-label">
-              <span>Lesson Title</span>
-            </div>
-            <div class="translation-text" data-field="lesson_title_en">{{ lessonTitleTranslated || '(No translation)' }}</div>
-
-            <div class="translation-label">
-              <span>Lesson Introduction</span>
-            </div>
-            <div class="translation-text" data-field="lesson_introduction_en" data-html="true">{{{ lessonIntroductionTranslated || '(No translation)' }}}</div>
-          </div>
-
-          <div class="section-divider">
-            <h3 style="margin-bottom: 15px; color: #2c3e50;">Content Sections</h3>
-
-            @each(section in sections)
-              <div class="section-block" data-translation-section="{{ section.id }}">
-                <h4>{{ section.title }}</h4>
-
-                <div class="translation-label">
-                  <span>Title</span>
+                  <div class="field-side"></div>
                 </div>
-                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="title_en">{{ section.titleTranslated || '(No translation)' }}</div>
 
-                @if(section.reflectiveQuestion)
-                  <div class="translation-label">
-                    <span>Question 1</span>
-                  </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q1_en">{{ section.q1Translated || '(No translation)' }}</div>
-                @end
-
-                @if(section.reflectiveQuestion2)
-                  <div class="translation-label">
-                    <span>Question 2</span>
-                  </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q2_en">{{ section.q2Translated || '(No translation)' }}</div>
-                @end
-
-                @if(section.reflectiveQuestion3)
-                  <div class="translation-label">
-                    <span>Question 3</span>
-                  </div>
-                  <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="q3_en">{{ section.q3Translated || '(No translation)' }}</div>
-                @end
-
-                <div class="translation-label">
-                  <span>Content</span>
+                <div class="action-buttons">
+                  <button type="submit" class="btn btn-success btn-small">Save Section</button>
+                  <button type="button" class="btn btn-danger btn-small" onclick="deleteSection({{ section.id }}, '{{ section.title }}')">Delete</button>
                 </div>
-                <div class="translation-text" data-section-id="{{ section.id }}" data-section-field="content_en" data-html="true">{{{ section.contentTranslated || '(No translation)' }}}</div>
-              </div>
-            @end
+              </form>
+            </div>
           </div>
+        @end
 
+        <!-- Add New Section -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <h4>+ Add New Section</h4>
+          </div>
+          <div class="accordion-body">
+            <form method="POST" action="{{ route('admin.bilingual.createSection') }}" id="newSectionForm">
+              <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+              <div class="field-pair">
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge indonesian">ID</span>
+                    <span class="field-label">Title</span>
+                  </div>
+                  <input type="text" name="title" class="form-control-small" required>
+                </div>
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge english">EN</span>
+                    <span class="field-label">Title</span>
+                  </div>
+                  <div class="translation-preview empty">(Translation will appear after saving)</div>
+                </div>
+              </div>
+
+              <div class="field-pair">
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge indonesian">ID</span>
+                    <span class="field-label">Reflective Question 1</span>
+                  </div>
+                  <input type="text" name="reflective_question" class="form-control-small">
+                </div>
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge english">EN</span>
+                    <span class="field-label">Reflective Question 1</span>
+                  </div>
+                  <div class="translation-preview empty">(Translation will appear after saving)</div>
+                </div>
+              </div>
+
+              <div class="field-pair">
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge indonesian">ID</span>
+                    <span class="field-label">Reflective Question 2</span>
+                  </div>
+                  <input type="text" name="reflective_question_2" class="form-control-small">
+                </div>
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge english">EN</span>
+                    <span class="field-label">Reflective Question 2</span>
+                  </div>
+                  <div class="translation-preview empty">(Translation will appear after saving)</div>
+                </div>
+              </div>
+
+              <div class="field-pair">
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge indonesian">ID</span>
+                    <span class="field-label">Reflective Question 3</span>
+                  </div>
+                  <input type="text" name="reflective_question_3" class="form-control-small">
+                </div>
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge english">EN</span>
+                    <span class="field-label">Reflective Question 3</span>
+                  </div>
+                  <div class="translation-preview empty">(Translation will appear after saving)</div>
+                </div>
+              </div>
+
+              <div class="field-pair">
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge indonesian">ID</span>
+                    <span class="field-label">Content</span>
+                  </div>
+                  <div id="newSectionEditor" class="quill-container"></div>
+                  <input type="hidden" name="content" id="new_section_content">
+                </div>
+                <div class="field-side">
+                  <div class="field-header">
+                    <span class="lang-badge english">EN</span>
+                    <span class="field-label">Content</span>
+                  </div>
+                  <div class="translation-preview html-content empty">(Translation will appear after saving)</div>
+                </div>
+              </div>
+
+              <div class="field-pair" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                <div class="field-side">
+                  <label class="checkbox-group">
+                    <input type="checkbox" name="is_published">
+                    Published
+                  </label>
+                </div>
+                <div class="field-side"></div>
+              </div>
+
+              <div class="action-buttons">
+                <button type="submit" class="btn btn-success btn-small">Create Section</button>
+              </div>
+            </form>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -608,7 +725,12 @@
     // Sync Quill content before form submission
     document.getElementById('settingsForm').addEventListener('submit', function() {
       document.getElementById('welcome_subtitle_hidden').value = welcomeSubtitleEditor.root.innerHTML;
+    });
+
+    // Sync lesson form
+    document.getElementById('lessonForm').addEventListener('submit', function() {
       document.getElementById('lesson_introduction_hidden').value = lessonIntroEditor.root.innerHTML;
+      document.getElementById('welcome_subtitle_hidden_lesson').value = welcomeSubtitleEditor.root.innerHTML;
     });
 
     // Sync section editors before submission
