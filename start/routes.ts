@@ -58,6 +58,7 @@ router
     // Settings
     router.get('/settings', [SettingsController, 'edit']).as('admin.settings.edit')
     router.put('/settings', [SettingsController, 'update']).as('admin.settings.update')
+    router.post('/settings/translations', [SettingsController, 'saveTranslations']).as('admin.settings.saveTranslations')
 
     // User management
     router.get('/users', [AuthController, 'listUsers']).as('admin.users.index')

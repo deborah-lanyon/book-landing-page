@@ -24,63 +24,52 @@ const LANGUAGE_NAMES: Record<string, string> = {
 export default class HomeController {
   /**
    * Display the public accordion landing page
-   * Shows English content (translated from Indonesian) with option to translate to other languages
+   * Shows Indonesian content (the original) with option to translate to English and other languages
    */
   async index({ view }: HttpContext) {
     const sections = await Section.query()
       .where('is_published', true)
       .orderBy('display_order', 'asc')
 
-    // Get stored English translations (these are the primary display content)
-    const welcomeTitleEn = await Setting.get('welcome_title_en', '')
-    const welcomeSubtitleEn = await Setting.get('welcome_subtitle_en', '')
-    const lessonTitleEn = await Setting.get('lesson_title_en', '')
-    const lessonIntroductionEn = await Setting.get('lesson_introduction_en', '')
-    const aboutUsTitleEn = await Setting.get('about_us_title_en', '')
-    const aboutUsContentEn = await Setting.get('about_us_content_en', '')
-
-    // Fallback to Indonesian content if no English translations exist
-    const welcomeTitleId = await Setting.get('welcome_title', 'Welcome')
-    const welcomeSubtitleId = await Setting.get('welcome_subtitle', '')
-    const lessonTitleId = await Setting.get('lesson_title', '')
-    const lessonIntroductionId = await Setting.get('lesson_introduction', '')
-    const aboutUsTitleId = await Setting.get('about_us_title', 'About Us')
-    const aboutUsContentId = await Setting.get('about_us_content', '')
+    // Get Indonesian content for sections/lesson/welcome (stored in main fields from bilingual editor)
+    const welcomeTitle = await Setting.get('welcome_title', 'Selamat Datang')
+    const welcomeSubtitle = await Setting.get('welcome_subtitle', '')
+    const lessonTitle = await Setting.get('lesson_title', '')
+    const lessonIntroduction = await Setting.get('lesson_introduction', '')
     const lessonImage = await Setting.get('lesson_image', '')
 
-    // Use English translations if available, otherwise fall back to Indonesian (original)
-    const displayWelcomeTitle = welcomeTitleEn || welcomeTitleId
-    const displayWelcomeSubtitle = welcomeSubtitleEn || welcomeSubtitleId
-    const displayLessonTitle = lessonTitleEn || lessonTitleId
-    const displayLessonIntroduction = lessonIntroductionEn || lessonIntroductionId
-    const displayAboutUsTitle = aboutUsTitleEn || aboutUsTitleId
-    const displayAboutUsContent = aboutUsContentEn || aboutUsContentId
+    // Get Indonesian content for About Us (stored in _id fields from settings page)
+    // Fall back to English content if Indonesian translation doesn't exist yet
+    const aboutUsTitleId = await Setting.get('about_us_title_id', '')
+    const aboutUsContentId = await Setting.get('about_us_content_id', '')
+    const aboutUsTitle = aboutUsTitleId || (await Setting.get('about_us_title', 'Tentang Kami'))
+    const aboutUsContent = aboutUsContentId || (await Setting.get('about_us_content', ''))
 
-    // Build sections with English translations (or fallback to Indonesian)
+    // Build sections with Indonesian content (the original)
     const displaySections = sections.map((section) => ({
       id: section.id,
-      title: section.titleEn || section.title,
-      content: section.contentEn || section.content,
-      reflectiveQuestion: section.reflectiveQuestionEn || section.reflectiveQuestion,
-      reflectiveQuestion2: section.reflectiveQuestion2En || section.reflectiveQuestion2,
-      reflectiveQuestion3: section.reflectiveQuestion3En || section.reflectiveQuestion3,
+      title: section.title,
+      content: section.content,
+      reflectiveQuestion: section.reflectiveQuestion,
+      reflectiveQuestion2: section.reflectiveQuestion2,
+      reflectiveQuestion3: section.reflectiveQuestion3,
       imageUrl: section.imageUrl,
       isPublished: section.isPublished,
       displayOrder: section.displayOrder,
     }))
 
-    // Render single-column English page with language selector
+    // Render single-column Indonesian page with language selector
     return view.render('pages/home', {
       sections: displaySections,
-      welcomeTitle: displayWelcomeTitle,
-      welcomeSubtitle: displayWelcomeSubtitle,
-      lessonTitle: displayLessonTitle,
-      lessonIntroduction: displayLessonIntroduction,
+      welcomeTitle,
+      welcomeSubtitle,
+      lessonTitle,
+      lessonIntroduction,
       lessonImage,
-      aboutUsTitle: displayAboutUsTitle,
-      aboutUsContent: displayAboutUsContent,
-      defaultLanguage: 'en',
-      defaultLanguageName: 'English',
+      aboutUsTitle,
+      aboutUsContent,
+      defaultLanguage: 'id',
+      defaultLanguageName: 'Indonesian',
     })
   }
 
@@ -96,8 +85,8 @@ export default class HomeController {
     }
 
     try {
-      // Translate from English to target language
-      const translations = await translateMultiple(texts, targetLanguage)
+      // Translate from Indonesian to target language
+      const translations = await translateMultiple(texts, targetLanguage, 'id')
       return response.json({
         success: true,
         translations,
