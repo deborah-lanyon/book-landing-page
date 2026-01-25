@@ -35,5 +35,5 @@ ENV NODE_ENV=production
 # Expose port
 EXPOSE 8080
 
-# Start script: run migrations, seed sections, then start server
-CMD ["sh", "-c", "node build/ace migration:run --force && node build/ace db:seed && node build/bin/server.js"]
+# Start script: run migrations then start server
+CMD ["sh", "-c", "node build/ace migration:run --force && node build/bin/server.js"]
