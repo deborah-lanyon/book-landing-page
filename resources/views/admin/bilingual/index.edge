@@ -756,7 +756,7 @@
     function deleteSection(id, title) {
       if (confirm('Are you sure you want to delete "' + title + '"? This cannot be undone.')) {
         var form = document.getElementById('deleteForm');
-        form.action = '/admin/sections-content/' + id;
+        form.action = '/admin/content/sections/' + id;
         form.submit();
       }
     }
