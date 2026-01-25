@@ -68,6 +68,10 @@ export default class TranslationController {
 
     // If target language matches source language, return original content without translation
     if (targetLanguage === sourceLanguage) {
+      // Get welcome settings
+      const welcomeTitle = await Setting.get('welcome_title', 'Selamat Datang')
+      const welcomeSubtitle = await Setting.get('welcome_subtitle', '')
+
       // Get lesson settings
       const lessonTitleSetting = await Setting.findBy('key', 'lesson_title')
       const lessonIntroSetting = await Setting.findBy('key', 'lesson_introduction')
@@ -110,6 +114,8 @@ export default class TranslationController {
         .orderBy('display_order', 'asc')
 
       const result: {
+        welcomeTitle?: string
+        welcomeSubtitle?: string
         lessonTitle?: string
         lessonIntroduction?: string
         aboutUsTitle?: string
@@ -137,6 +143,10 @@ export default class TranslationController {
       } = {
         sections: [],
       }
+
+      // Add Welcome section
+      result.welcomeTitle = welcomeTitle
+      result.welcomeSubtitle = welcomeSubtitle
 
       if (lessonTitleSetting?.value) {
         result.lessonTitle = lessonTitleSetting.value
@@ -182,6 +192,10 @@ export default class TranslationController {
     }
 
     try {
+      // Get welcome settings
+      const welcomeTitle = await Setting.get('welcome_title', 'Selamat Datang')
+      const welcomeSubtitle = await Setting.get('welcome_subtitle', '')
+
       // Get lesson settings
       const lessonTitleSetting = await Setting.findBy('key', 'lesson_title')
       const lessonIntroSetting = await Setting.findBy('key', 'lesson_introduction')
@@ -225,6 +239,10 @@ export default class TranslationController {
 
       // Collect all texts to translate
       const textsToTranslate: string[] = []
+
+      // Add welcome texts
+      textsToTranslate.push(welcomeTitle)
+      textsToTranslate.push(welcomeSubtitle)
 
       if (lessonTitleSetting?.value) {
         textsToTranslate.push(lessonTitleSetting.value)
@@ -272,6 +290,8 @@ export default class TranslationController {
       // Map translations back
       let index = 0
       const result: {
+        welcomeTitle?: string
+        welcomeSubtitle?: string
         lessonTitle?: string
         lessonIntroduction?: string
         aboutUsTitle?: string
@@ -299,6 +319,10 @@ export default class TranslationController {
       } = {
         sections: [],
       }
+
+      // Map welcome translations
+      result.welcomeTitle = translations[index++]
+      result.welcomeSubtitle = translations[index++]
 
       if (lessonTitleSetting?.value) {
         result.lessonTitle = translations[index++]

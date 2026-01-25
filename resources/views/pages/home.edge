@@ -380,8 +380,8 @@
 
   <div class="container">
     <div class="header">
-      <h1>{{ welcomeTitle }}</h1>
-      <div class="subtitle">{{{ welcomeSubtitle }}}</div>
+      <h1 id="welcomeTitle">{{ welcomeTitle }}</h1>
+      <div id="welcomeSubtitle" class="subtitle">{{{ welcomeSubtitle }}}</div>
     </div>
 
     @if(lessonTitle)
@@ -649,6 +649,8 @@
 
       function saveOriginalContent() {
         originalContent = {
+          welcomeTitle: document.getElementById('welcomeTitle')?.innerHTML,
+          welcomeSubtitle: document.getElementById('welcomeSubtitle')?.innerHTML,
           lessonTitle: document.getElementById('lessonTitle')?.innerHTML,
           lessonIntro: document.getElementById('lessonIntro')?.innerHTML,
           aboutUsTitle: document.getElementById('aboutUsTitle')?.innerHTML,
@@ -677,11 +679,19 @@
       function restoreOriginalContent() {
         if (!originalContent) return;
 
+        const welcomeTitleEl = document.getElementById('welcomeTitle');
+        const welcomeSubtitleEl = document.getElementById('welcomeSubtitle');
         const lessonTitleEl = document.getElementById('lessonTitle');
         const lessonIntroEl = document.getElementById('lessonIntro');
         const aboutUsTitleEl = document.getElementById('aboutUsTitle');
         const aboutUsContentEl = document.getElementById('aboutUsContent');
 
+        if (welcomeTitleEl && originalContent.welcomeTitle) {
+          welcomeTitleEl.innerHTML = originalContent.welcomeTitle;
+        }
+        if (welcomeSubtitleEl && originalContent.welcomeSubtitle) {
+          welcomeSubtitleEl.innerHTML = originalContent.welcomeSubtitle;
+        }
         if (lessonTitleEl && originalContent.lessonTitle) {
           lessonTitleEl.innerHTML = originalContent.lessonTitle;
         }
@@ -724,6 +734,16 @@
       }
 
       function applyTranslations(data) {
+        // Apply welcome translations
+        if (data.welcomeTitle) {
+          const welcomeTitleEl = document.getElementById('welcomeTitle');
+          if (welcomeTitleEl) welcomeTitleEl.innerHTML = data.welcomeTitle;
+        }
+        if (data.welcomeSubtitle) {
+          const welcomeSubtitleEl = document.getElementById('welcomeSubtitle');
+          if (welcomeSubtitleEl) welcomeSubtitleEl.innerHTML = data.welcomeSubtitle;
+        }
+
         // Apply lesson translations
         if (data.lessonTitle) {
           const lessonTitleEl = document.getElementById('lessonTitle');
