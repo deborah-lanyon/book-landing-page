@@ -59,6 +59,18 @@
     .btn-danger:hover {
       background: #c0392b;
     }
+    .btn-warning {
+      background: #e67e22;
+    }
+    .btn-warning:hover {
+      background: #d35400;
+    }
+    .btn-publish {
+      background: #27ae60;
+    }
+    .btn-publish:hover {
+      background: #219a52;
+    }
     .btn-small {
       padding: 6px 12px;
       font-size: 13px;
@@ -522,18 +534,13 @@
                   </div>
                 </div>
 
-                <div class="field-pair" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
-                  <div class="field-side">
-                    <label class="checkbox-group">
-                      <input type="checkbox" name="is_published" {{ section.isPublished ? 'checked' : '' }}>
-                      Published
-                    </label>
-                  </div>
-                  <div class="field-side"></div>
-                </div>
+                <input type="checkbox" name="is_published" style="display: none;" {{ section.isPublished ? 'checked' : '' }}>
 
                 <div class="action-buttons">
                   <button type="submit" class="btn btn-success btn-small">Save Section</button>
+                  <button type="button" class="btn btn-small {{ section.isPublished ? 'btn-warning' : 'btn-publish' }}" onclick="togglePublish(this, {{ section.id }})">
+                    {{ section.isPublished ? 'Unpublish' : 'Publish' }}
+                  </button>
                   <button type="button" class="btn btn-danger btn-small" onclick="deleteSection({{ section.id }}, '{{ section.title }}')">Delete</button>
                 </div>
               </form>
@@ -750,6 +757,21 @@
     function toggleAccordion(header) {
       var section = header.closest('.accordion-section');
       section.classList.toggle('open');
+    }
+
+    // Toggle publish/unpublish
+    function togglePublish(btn, sectionId) {
+      var sectionEl = btn.closest('.accordion-section');
+      var checkbox = sectionEl.querySelector('input[name="is_published"]');
+      var statusBadge = sectionEl.querySelector('.status');
+      var isPublished = checkbox.checked;
+
+      // Toggle the checkbox
+      checkbox.checked = !isPublished;
+
+      // Submit the form to save the change
+      var form = sectionEl.querySelector('.section-form');
+      form.submit();
     }
 
     // Delete section
