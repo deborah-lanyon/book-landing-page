@@ -776,22 +776,21 @@
       var form = document.getElementById(formId);
       var hiddenInput = form.querySelector('input[name="' + fieldName + '"]');
       hiddenInput.value = hiddenInput.value === '1' ? '0' : '1';
-      form.submit();
+      form.requestSubmit();
     }
 
     // Toggle publish/unpublish for content sections
     function togglePublish(btn, sectionId) {
       var sectionEl = btn.closest('.accordion-section');
       var checkbox = sectionEl.querySelector('input[name="is_published"]');
-      var statusBadge = sectionEl.querySelector('.status');
       var isPublished = checkbox.checked;
 
       // Toggle the checkbox
       checkbox.checked = !isPublished;
 
-      // Submit the form to save the change
+      // Use requestSubmit to trigger submit event (syncs Quill editors)
       var form = sectionEl.querySelector('.section-form');
-      form.submit();
+      form.requestSubmit();
     }
 
     // Delete section
