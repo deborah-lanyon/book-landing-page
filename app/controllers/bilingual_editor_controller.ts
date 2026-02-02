@@ -16,8 +16,10 @@ export default class BilingualEditorController {
     // Get all settings (Indonesian content - stored in main fields)
     const welcomeTitle = await Setting.get('welcome_title', 'Selamat Datang')
     const welcomeSubtitle = await Setting.get('welcome_subtitle', '')
+    const welcomePublished = (await Setting.get('welcome_published', '1')) === '1'
     const lessonTitle = await Setting.get('lesson_title', '')
     const lessonIntroduction = await Setting.get('lesson_introduction', '')
+    const lessonPublished = (await Setting.get('lesson_published', '1')) === '1'
 
     // Get stored English translations for settings
     const welcomeTitleEn = await Setting.get('welcome_title_en', '')
@@ -135,8 +137,10 @@ export default class BilingualEditorController {
       // Indonesian content (editable)
       welcomeTitle,
       welcomeSubtitle,
+      welcomePublished,
       lessonTitle,
       lessonIntroduction,
+      lessonPublished,
       sections: sectionsWithTranslations,
       // English translations
       welcomeTitleTranslated: translationMap.welcomeTitle || '',
@@ -155,8 +159,10 @@ export default class BilingualEditorController {
     const data = request.only([
       'welcome_title',
       'welcome_subtitle',
+      'welcome_published',
       'lesson_title',
       'lesson_introduction',
+      'lesson_published',
     ])
 
     // Save Indonesian content to main fields
@@ -164,6 +170,14 @@ export default class BilingualEditorController {
     await Setting.set('welcome_subtitle', data.welcome_subtitle || '')
     await Setting.set('lesson_title', data.lesson_title || '')
     await Setting.set('lesson_introduction', data.lesson_introduction || '')
+
+    // Save publish state if provided
+    if (data.welcome_published !== undefined) {
+      await Setting.set('welcome_published', data.welcome_published === '1' ? '1' : '0')
+    }
+    if (data.lesson_published !== undefined) {
+      await Setting.set('lesson_published', data.lesson_published === '1' ? '1' : '0')
+    }
 
     session.flash('success', 'Settings updated successfully')
     return response.redirect().toRoute('admin.bilingual.index', {}, { qs: { refresh: '1' } })

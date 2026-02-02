@@ -324,7 +324,7 @@
 
     <!-- Welcome Section -->
     <div class="content-section">
-      <div class="section-title">Welcome Section</div>
+      <div class="section-title">Welcome Section <span class="status {{ welcomePublished ? 'published' : 'draft' }}">{{ welcomePublished ? 'Published' : 'Draft' }}</span></div>
       <div class="section-body">
         <form method="POST" action="{{ route('admin.bilingual.updateSettings') }}" id="settingsForm">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -367,14 +367,20 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-success btn-small">Save Welcome Section</button>
+          <input type="hidden" name="welcome_published" value="{{ welcomePublished ? '1' : '0' }}">
+          <div class="action-buttons">
+            <button type="submit" class="btn btn-success btn-small">Save Welcome Section</button>
+            <button type="button" class="btn btn-small {{ welcomePublished ? 'btn-warning' : 'btn-publish' }}" onclick="toggleSettingPublish(this, 'welcome_published', 'settingsForm')">
+              {{ welcomePublished ? 'Unpublish' : 'Publish' }}
+            </button>
+          </div>
         </form>
       </div>
     </div>
 
     <!-- Lesson Overview Section -->
     <div class="content-section">
-      <div class="section-title">Lesson Overview</div>
+      <div class="section-title">Lesson Overview <span class="status {{ lessonPublished ? 'published' : 'draft' }}">{{ lessonPublished ? 'Published' : 'Draft' }}</span></div>
       <div class="section-body">
         <form method="POST" action="{{ route('admin.bilingual.updateSettings') }}" id="lessonForm">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -420,7 +426,13 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-success btn-small">Save Lesson Overview</button>
+          <input type="hidden" name="lesson_published" value="{{ lessonPublished ? '1' : '0' }}">
+          <div class="action-buttons">
+            <button type="submit" class="btn btn-success btn-small">Save Lesson Overview</button>
+            <button type="button" class="btn btn-small {{ lessonPublished ? 'btn-warning' : 'btn-publish' }}" onclick="toggleSettingPublish(this, 'lesson_published', 'lessonForm')">
+              {{ lessonPublished ? 'Unpublish' : 'Publish' }}
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -759,7 +771,15 @@
       section.classList.toggle('open');
     }
 
-    // Toggle publish/unpublish
+    // Toggle publish/unpublish for Welcome/Lesson sections
+    function toggleSettingPublish(btn, fieldName, formId) {
+      var form = document.getElementById(formId);
+      var hiddenInput = form.querySelector('input[name="' + fieldName + '"]');
+      hiddenInput.value = hiddenInput.value === '1' ? '0' : '1';
+      form.submit();
+    }
+
+    // Toggle publish/unpublish for content sections
     function togglePublish(btn, sectionId) {
       var sectionEl = btn.closest('.accordion-section');
       var checkbox = sectionEl.querySelector('input[name="is_published"]');

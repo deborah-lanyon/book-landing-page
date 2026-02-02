@@ -32,11 +32,13 @@ export default class HomeController {
       .orderBy('display_order', 'asc')
 
     // Get Indonesian content for sections/lesson/welcome (stored in main fields from bilingual editor)
-    const welcomeTitle = await Setting.get('welcome_title', 'Selamat Datang')
-    const welcomeSubtitle = await Setting.get('welcome_subtitle', '')
-    const lessonTitle = await Setting.get('lesson_title', '')
-    const lessonIntroduction = await Setting.get('lesson_introduction', '')
-    const lessonImage = await Setting.get('lesson_image', '')
+    const welcomePublished = (await Setting.get('welcome_published', '1')) === '1'
+    const welcomeTitle = welcomePublished ? await Setting.get('welcome_title', 'Selamat Datang') : ''
+    const welcomeSubtitle = welcomePublished ? await Setting.get('welcome_subtitle', '') : ''
+    const lessonPublished = (await Setting.get('lesson_published', '1')) === '1'
+    const lessonTitle = lessonPublished ? await Setting.get('lesson_title', '') : ''
+    const lessonIntroduction = lessonPublished ? await Setting.get('lesson_introduction', '') : ''
+    const lessonImage = lessonPublished ? await Setting.get('lesson_image', '') : ''
 
     // Get Indonesian content for About Us (stored in _id fields from settings page)
     // Fall back to English content if Indonesian translation doesn't exist yet
