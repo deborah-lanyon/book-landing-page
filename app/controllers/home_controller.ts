@@ -32,10 +32,15 @@ export default class HomeController {
       .where('is_published', true)
       .orderBy('display_order', 'asc')
 
-    // Get approved comments
-    const comments = await Comment.query()
-      .where('is_approved', true)
-      .orderBy('created_at', 'asc')
+    // Get approved comments (with fallback to empty array if query fails)
+    let comments: Comment[] = []
+    try {
+      comments = await Comment.query()
+        .where('is_approved', true)
+        .orderBy('created_at', 'asc')
+    } catch (error) {
+      console.error('Failed to fetch comments:', error)
+    }
 
     // Get Indonesian content for sections/lesson/welcome (stored in main fields from bilingual editor)
     const welcomePublished = (await Setting.get('welcome_published', '1')) === '1'
