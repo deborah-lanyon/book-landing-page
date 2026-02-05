@@ -17,12 +17,17 @@ const SettingsController = () => import('#controllers/settings_controller')
 const ContactsController = () => import('#controllers/contacts_controller')
 const TranslationController = () => import('#controllers/translation_controller')
 const BilingualEditorController = () => import('#controllers/bilingual_editor_controller')
+const CommentsController = () => import('#controllers/comments_controller')
+const AdminCommentsController = () => import('#controllers/admin_comments_controller')
 
 // Public landing page
 router.get('/', [HomeController, 'index'])
 
 // Contact form submission
 router.post('/contact', [ContactsController, 'store']).as('contact.store')
+
+// Comment submission (public)
+router.post('/comments', [CommentsController, 'store']).as('comments.store')
 
 // Setup route (only works when no users exist)
 router.get('/setup', [AuthController, 'showSetup']).as('setup')
@@ -69,6 +74,11 @@ router
     // Translation (admin)
     router.post('/translate/section/:id', [TranslationController, 'translateSection']).as('admin.translate.section')
     router.post('/translate/text', [TranslationController, 'translateText']).as('admin.translate.text')
+
+    // Comments management
+    router.get('/comments', [AdminCommentsController, 'index']).as('admin.comments.index')
+    router.post('/comments/:id/approve', [AdminCommentsController, 'approve']).as('admin.comments.approve')
+    router.delete('/comments/:id', [AdminCommentsController, 'destroy']).as('admin.comments.destroy')
 
     // Content editor (main admin page)
     router.get('/', [BilingualEditorController, 'index']).as('admin.bilingual.index')

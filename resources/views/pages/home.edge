@@ -425,6 +425,67 @@
               @if(section.imageUrl)
                 <img src="{{ section.imageUrl }}" alt="Section image" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 15px;">
               @end
+
+              <!-- Comments Section -->
+              <div class="section-comments" style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                @set('sectionComments', comments.filter(c => c.sectionId === section.id))
+                @if(sectionComments.length > 0)
+                  <h4 style="font-size: 14px; color: #2c3e50; margin-bottom: 15px; font-weight: 600;">Comments ({{ sectionComments.length }})</h4>
+                  @each(comment in sectionComments)
+                    <div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #e0e0e0;">
+                      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <strong style="color: #2c3e50; font-size: 13px;">{{ comment.authorName }}</strong>
+                        <span style="color: #999; font-size: 12px;">{{ comment.createdAt.toFormat('dd MMM yyyy') }}</span>
+                      </div>
+                      <p style="margin: 0; color: #495057; font-size: 14px; line-height: 1.5;">{{ comment.content }}</p>
+                    </div>
+                  @end
+                @end
+
+                <!-- Comment Form -->
+                <div style="margin-top: 15px;">
+                  <h4 style="font-size: 14px; color: #2c3e50; margin-bottom: 10px; font-weight: 600;">Leave a Comment</h4>
+
+                  @if(flashMessages.has('commentSuccess'))
+                    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background: #d4edda; color: #155724; font-size: 13px;">
+                      {{ flashMessages.get('commentSuccess') }}
+                    </div>
+                  @end
+
+                  @if(flashMessages.has('commentErrors'))
+                    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background: #f8d7da; color: #721c24; font-size: 13px;">
+                      <ul style="margin: 0; padding-left: 20px;">
+                        @each(error in flashMessages.get('commentErrors'))
+                          <li>{{ error.message }}</li>
+                        @end
+                      </ul>
+                    </div>
+                  @end
+
+                  <form method="POST" action="/comments">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    <input type="hidden" name="sectionId" value="{{ section.id }}">
+                    <!-- Honeypot field - hidden from users, bots fill it -->
+                    <div style="position: absolute; left: -9999px;">
+                      <input type="text" name="website" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                      <input type="text" name="authorName" placeholder="Your Name *" required
+                        style="padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                      <input type="email" name="authorEmail" placeholder="Your Email *" required
+                        style="padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                    </div>
+
+                    <textarea name="content" placeholder="Your comment *" required rows="3"
+                      style="width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; resize: vertical; box-sizing: border-box;"></textarea>
+
+                    <button type="submit" style="margin-top: 10px; padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;">
+                      Submit Comment
+                    </button>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         @end
