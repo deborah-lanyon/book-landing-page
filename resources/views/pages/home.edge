@@ -428,10 +428,9 @@
 
               <!-- Comments Section -->
               <div class="section-comments" style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-                @set('sectionComments', (comments || []).filter(c => c.sectionId === section.id))
-                @if(sectionComments && sectionComments.length > 0)
-                  <h4 style="font-size: 14px; color: #2c3e50; margin-bottom: 15px; font-weight: 600;">Comments ({{ sectionComments.length }})</h4>
-                  @each(comment in sectionComments)
+                @if(section.comments && section.comments.length > 0)
+                  <h4 style="font-size: 14px; color: #2c3e50; margin-bottom: 15px; font-weight: 600;">Comments ({{ section.comments.length }})</h4>
+                  @each(comment in section.comments)
                     <div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #e0e0e0;">
                       <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                         <strong style="color: #2c3e50; font-size: 13px;">{{ comment.authorName }}</strong>

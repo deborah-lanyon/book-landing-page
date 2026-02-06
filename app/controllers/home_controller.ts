@@ -111,7 +111,7 @@ export default class HomeController {
     const formSubmitLabel =
       formSubmitLabelId || (await Setting.get('form_submit_label', 'Kirim Pesan'))
 
-    // Build sections with Indonesian content (the original)
+    // Build sections with Indonesian content (the original) and their comments
     const displaySections = sections.map((section) => ({
       id: section.id,
       title: section.title,
@@ -122,6 +122,7 @@ export default class HomeController {
       imageUrl: section.imageUrl,
       isPublished: section.isPublished,
       displayOrder: section.displayOrder,
+      comments: comments.filter((c) => c.sectionId === section.id),
     }))
 
     // Render single-column Indonesian page with language selector
