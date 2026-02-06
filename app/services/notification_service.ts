@@ -27,11 +27,13 @@ export default class NotificationService {
     const adminEmails = admins.map((admin) => admin.email)
 
     try {
-      await mail.send((message) => {
-        message
-          .to(adminEmails)
-          .subject('New Comment Pending Approval - Reading God\'s Word')
-          .html(`
+      // Send email to each admin
+      for (const adminEmail of adminEmails) {
+        await mail.send((message) => {
+          message
+            .to(adminEmail)
+            .subject('New Comment Pending Approval - Reading God\'s Word')
+            .html(`
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <h2 style="color: #2c3e50;">New Comment Requires Approval</h2>
 
@@ -59,7 +61,8 @@ export default class NotificationService {
               </p>
             </div>
           `)
-      })
+        })
+      }
 
       console.log(`Notification sent to ${adminEmails.length} admin(s) for new comment`)
     } catch (error) {
