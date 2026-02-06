@@ -3,6 +3,7 @@ import Comment from '#models/comment'
 import Section from '#models/section'
 import { commentValidator } from '#validators/comment_validator'
 import { errors } from '@vinejs/vine'
+import NotificationService from '#services/notification_service'
 
 export default class CommentsController {
   /**
@@ -30,12 +31,17 @@ export default class CommentsController {
         return response.redirect().back()
       }
 
-      await Comment.create({
+      const comment = await Comment.create({
         sectionId: data.sectionId,
         authorName: data.authorName,
         authorEmail: data.authorEmail,
         content: data.content,
         isApproved: false,
+      })
+
+      // Send email notification to administrators (non-blocking)
+      NotificationService.notifyAdminsOfNewComment(comment).catch((err) => {
+        console.error('Failed to send admin notification:', err)
       })
 
       session.flash('commentSuccess', 'Thank you for your comment! It will be visible after approval.')

@@ -23,6 +23,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare password: string
 
   @column()
+  declare role: 'admin' | 'contributor'
+
+  @column()
   declare resetToken: string | null
 
   @column.dateTime()
@@ -33,4 +36,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column.dateTime({ autoUpdate: true })
   declare updatedAt: DateTime | null
+
+  /**
+   * Check if user is an admin
+   */
+  get isAdmin(): boolean {
+    return this.role === 'admin'
+  }
 }
