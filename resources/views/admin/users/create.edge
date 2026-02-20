@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add New User - Admin Panel</title>
+  @!component('partials/admin-sidebar-styles')
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -15,16 +16,6 @@
       max-width: 600px;
       margin: 0 auto;
       padding: 20px;
-    }
-    .header {
-      background: #2c3e50;
-      color: white;
-      padding: 20px 0;
-      margin-bottom: 30px;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
     }
     .btn {
       display: inline-block;
@@ -88,37 +79,12 @@
       outline: none;
       border-color: #3498db;
     }
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    .header-buttons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
     .form-actions {
       display: flex;
       gap: 10px;
       margin-top: 20px;
     }
     @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-      }
-      .header-buttons {
-        justify-content: center;
-      }
-      .header h1 {
-        font-size: 20px;
-      }
       .btn {
         padding: 8px 12px;
         font-size: 13px;
@@ -130,74 +96,53 @@
         padding: 20px;
       }
     }
-    @media (max-width: 480px) {
-      .header-buttons {
-        flex-direction: column;
-        width: 100%;
-      }
-      .header-buttons .btn,
-      .header-buttons form {
-        width: 100%;
-      }
-      .header-buttons form button {
-        width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="header-content">
-      <h1>Miriam's Home - Admin Panel</h1>
-      <div class="header-buttons">
-        <a href="/" class="btn" target="_blank">View Public Page</a>
-        <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
-        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary">Manage Sections</a>
-        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Manage Users</a>
-        <form method="POST" action="/logout" style="margin: 0;">
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          <button type="submit" class="btn btn-secondary">Logout</button>
-        </form>
+  <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+  <div class="sidebar-overlay" onclick="document.querySelector('.admin-sidebar').classList.remove('open');this.classList.remove('open');"></div>
+  <div class="admin-layout">
+    @!component('partials/admin-sidebar', { activeMenu: 'users' })
+    <div class="admin-main">
+      <div class="container">
+        @if(flashMessages.has('error'))
+          <div class="alert alert-error">
+            {{ flashMessages.get('error') }}
+          </div>
+        @end
+
+        <div class="card">
+          <h2 style="margin-top: 0; margin-bottom: 20px;">Add New User</h2>
+          <form method="POST" action="{{ route('admin.users.store') }}">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+            <div class="form-group">
+              <label for="full_name">Full Name</label>
+              <input type="text" id="full_name" name="full_name" class="form-control" required placeholder="Enter full name">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" class="form-control" required placeholder="Enter email address">
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" class="form-control" required minlength="8" placeholder="Minimum 8 characters">
+            </div>
+
+            <div class="form-group">
+              <label for="confirm_password">Confirm Password</label>
+              <input type="password" id="confirm_password" name="confirm_password" class="form-control" required minlength="8" placeholder="Re-enter password">
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Create User</button>
+              <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <div class="container">
-    @if(flashMessages.has('error'))
-      <div class="alert alert-error">
-        {{ flashMessages.get('error') }}
-      </div>
-    @end
-
-    <div class="card">
-      <form method="POST" action="{{ route('admin.users.store') }}">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-
-        <div class="form-group">
-          <label for="full_name">Full Name</label>
-          <input type="text" id="full_name" name="full_name" class="form-control" required placeholder="Enter full name">
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" class="form-control" required placeholder="Enter email address">
-        </div>
-
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" class="form-control" required minlength="8" placeholder="Minimum 8 characters">
-        </div>
-
-        <div class="form-group">
-          <label for="confirm_password">Confirm Password</label>
-          <input type="password" id="confirm_password" name="confirm_password" class="form-control" required minlength="8" placeholder="Re-enter password">
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn btn-success">Create User</button>
-          <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancel</a>
-        </div>
-      </form>
     </div>
   </div>
 </body>

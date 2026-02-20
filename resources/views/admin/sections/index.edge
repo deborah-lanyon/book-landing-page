@@ -6,6 +6,7 @@
   <title>Manage Sections - Admin Panel</title>
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  @!component('partials/admin-sidebar-styles')
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -17,16 +18,6 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
-    }
-    .header {
-      background: #2c3e50;
-      color: white;
-      padding: 20px 0;
-      margin-bottom: 30px;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
     }
     .btn {
       display: inline-block;
@@ -127,32 +118,10 @@
     #sections-tbody tr:active {
       cursor: grabbing;
     }
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .header-buttons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
     .table-responsive {
       overflow-x: auto;
     }
     @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-      }
-      .header-buttons {
-        justify-content: center;
-      }
-      .header h1 {
-        font-size: 20px;
-      }
       .btn {
         padding: 8px 12px;
         font-size: 13px;
@@ -172,38 +141,15 @@
         gap: 5px;
       }
     }
-    @media (max-width: 480px) {
-      .header-buttons {
-        flex-direction: column;
-        width: 100%;
-      }
-      .header-buttons .btn,
-      .header-buttons form {
-        width: 100%;
-      }
-      .header-buttons form button {
-        width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="container header-content">
-      <h1>Miriam's Home - Admin Panel</h1>
-      <div class="header-buttons">
-        <a href="/" class="btn" target="_blank">View Public Page</a>
-        <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
-        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Manage Users</a>
-        <form method="POST" action="/logout" style="margin: 0;">
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          <button type="submit" class="btn btn-secondary">Logout</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
+  <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+  <div class="sidebar-overlay" onclick="document.querySelector('.admin-sidebar').classList.remove('open');this.classList.remove('open');"></div>
+  <div class="admin-layout">
+    @!component('partials/admin-sidebar', { activeMenu: 'sections' })
+    <div class="admin-main">
+      <div class="container">
     @if(flashMessages.has('success'))
       <div class="alert alert-success">
         {{ flashMessages.get('success') }}
@@ -399,5 +345,7 @@
       });
     }
   </script>
+    </div>
+  </div>
 </body>
 </html>

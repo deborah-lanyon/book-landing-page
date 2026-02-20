@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Content Editor - Admin Panel</title>
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+  @!component('partials/admin-sidebar-styles')
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -16,16 +17,6 @@
       max-width: 1400px;
       margin: 0 auto;
       padding: 20px;
-    }
-    .header {
-      background: #2c3e50;
-      color: white;
-      padding: 20px 0;
-      margin-bottom: 30px;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
     }
     .btn {
       display: inline-block;
@@ -275,20 +266,12 @@
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-      <h1>Content Editor</h1>
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <a href="/" target="_blank" class="btn btn-secondary" style="padding: 8px 16px;">View Public Page</a>
-        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-          {{ csrfField() }}
-          <button type="submit" class="btn btn-secondary" style="padding: 8px 16px;">Logout</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
+  <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+  <div class="sidebar-overlay" onclick="document.querySelector('.admin-sidebar').classList.remove('open');this.classList.remove('open');"></div>
+  <div class="admin-layout">
+    @!component('partials/admin-sidebar', { activeMenu: 'editor' })
+    <div class="admin-main">
+      <div class="container">
     @if(flashMessages.has('success'))
       <div class="alert alert-success">
         {{ flashMessages.get('success') }}
@@ -309,9 +292,8 @@
     @end
 
     <div class="nav-buttons">
-      <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">Site Settings</a>
-      <a href="{{ route('admin.comments.index') }}" class="btn btn-secondary">Comments</a>
-      <button type="button" class="btn btn-success" onclick="saveAllTranslations()" style="margin-left: 10px;">Save All Translations</button>
+      <h1 style="margin: 0; font-size: 24px; color: #2c3e50;">Content Editor</h1>
+      <button type="button" class="btn btn-success" onclick="saveAllTranslations()" style="margin-left: auto;">Save All Translations</button>
     </div>
 
     <p style="color: #666; margin-bottom: 20px;">
@@ -870,5 +852,7 @@
       form.submit();
     }
   </script>
+    </div>
+  </div>
 </body>
 </html>

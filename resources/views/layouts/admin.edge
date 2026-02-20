@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ title || 'Admin Panel' }}</title>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
+  @!component('partials/admin-sidebar-styles')
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -16,16 +17,6 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
-    }
-    .header {
-      background: #2c3e50;
-      color: white;
-      padding: 20px 0;
-      margin-bottom: 30px;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
     }
     .btn {
       display: inline-block;
@@ -118,28 +109,21 @@
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-      <h1>Book Landing Page - Admin Panel</h1>
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <a href="{{ route('admin.bilingual.index') }}" class="btn" style="padding: 8px 16px; background: #27ae60;">Bilingual Editor</a>
-        <a href="{{ route('admin.sections.index') }}" class="btn btn-secondary" style="padding: 8px 16px;">Sections</a>
-        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-          {{ csrfField() }}
-          <button type="submit" class="btn btn-secondary" style="padding: 8px 16px;">Logout</button>
-        </form>
+  <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+  <div class="sidebar-overlay" onclick="document.querySelector('.admin-sidebar').classList.remove('open');this.classList.remove('open');"></div>
+  <div class="admin-layout">
+    @!component('partials/admin-sidebar', { activeMenu: activeMenu || '' })
+    <div class="admin-main">
+      <div class="container">
+        @if(flashMessages.has('success'))
+          <div class="alert alert-success">
+            {{ flashMessages.get('success') }}
+          </div>
+        @end
+
+        @!section('content')
       </div>
     </div>
-  </div>
-
-  <div class="container">
-    @if(flashMessages.has('success'))
-      <div class="alert alert-success">
-        {{ flashMessages.get('success') }}
-      </div>
-    @end
-
-    @!section('content')
   </div>
 </body>
 </html>
