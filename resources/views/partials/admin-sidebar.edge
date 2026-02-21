@@ -8,10 +8,7 @@
       <a href="{{ route('admin.bilingual.index') }}" class="nav-item {{ activeMenu === 'editor' ? 'active' : '' }}">
         <span class="nav-icon">&#9998;</span> Content Editor
       </a>
-      <a href="{{ route('admin.sections.index') }}" class="nav-item {{ activeMenu === 'sections' ? 'active' : '' }}">
-        <span class="nav-icon">&#9776;</span> Sections
-      </a>
-      <a href="{{ route('admin.comments.index') }}" class="nav-item {{ activeMenu === 'comments' ? 'active' : '' }}">
+<a href="{{ route('admin.comments.index') }}" class="nav-item {{ activeMenu === 'comments' ? 'active' : '' }}">
         <span class="nav-icon">&#128172;</span> Comments
         @if(typeof pendingCount !== 'undefined' && pendingCount > 0)
           <span class="nav-badge">{{ pendingCount }}</span>
