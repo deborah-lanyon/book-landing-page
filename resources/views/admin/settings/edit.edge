@@ -246,92 +246,6 @@
       </div>
     </div>
 
-    <!-- QR Code Section -->
-    <div class="content-section">
-      <div class="section-title">QR Code Section</div>
-      <div class="section-body">
-        <form id="qr-form" method="POST" action="{{ route('admin.settings.update') }}">
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          <input type="hidden" name="_method" value="PUT">
-          <!-- Preserve About Us fields -->
-          <input type="hidden" name="about_us_title" value="{{ aboutUsTitle }}">
-          <input type="hidden" id="qr-about-us-content" name="about_us_content" value="">
-
-          <!-- QR Title -->
-          <div class="field-pair">
-            <div class="field-side">
-              <div class="field-header">
-                <span class="lang-badge english">EN</span>
-                <span class="field-label">QR Section Title</span>
-              </div>
-              <input type="text" id="qr_title" name="qr_title" class="form-control" value="{{ qrTitle }}" placeholder="e.g., Share this page">
-            </div>
-            <div class="field-side">
-              <div class="field-header">
-                <span class="lang-badge indonesian">ID</span>
-                <span class="field-label">QR Section Title</span>
-              </div>
-              <input type="text" id="qr_title_id" class="form-control translation-input" value="{{ qrTitleTranslated }}" placeholder="Indonesian translation...">
-            </div>
-          </div>
-
-          <!-- QR Description -->
-          <div class="field-pair">
-            <div class="field-side">
-              <div class="field-header">
-                <span class="lang-badge english">EN</span>
-                <span class="field-label">QR Description</span>
-              </div>
-              <input type="text" id="qr_description" name="qr_description" class="form-control" value="{{ qrDescription }}" placeholder="e.g., Scan the QR code to open on your phone">
-            </div>
-            <div class="field-side">
-              <div class="field-header">
-                <span class="lang-badge indonesian">ID</span>
-                <span class="field-label">QR Description</span>
-              </div>
-              <input type="text" id="qr_description_id" class="form-control translation-input" value="{{ qrDescriptionTranslated }}" placeholder="Indonesian translation...">
-            </div>
-          </div>
-
-          <!-- QR Link Text -->
-          <div class="field-pair">
-            <div class="field-side">
-              <div class="field-header">
-                <span class="lang-badge english">EN</span>
-                <span class="field-label">Link Text Below QR Code</span>
-              </div>
-              <input type="text" id="qr_link_text" name="qr_link_text" class="form-control" value="{{ qrLinkText }}" placeholder="e.g., Or go to www.readinggodsword.org.au">
-            </div>
-            <div class="field-side">
-              <div class="field-header">
-                <span class="lang-badge indonesian">ID</span>
-                <span class="field-label">Link Text Below QR Code</span>
-              </div>
-              <input type="text" id="qr_link_text_id" class="form-control translation-input" value="{{ qrLinkTextTranslated }}" placeholder="Indonesian translation...">
-            </div>
-          </div>
-
-          <!-- QR Link URL (no translation needed) -->
-          <div class="field-pair">
-            <div class="field-side">
-              <div class="field-header">
-                <span class="field-label">Link URL</span>
-              </div>
-              <input type="text" id="qr_link_url" name="qr_link_url" class="form-control" value="{{ qrLinkUrl }}" placeholder="e.g., https://www.readinggodsword.org.au">
-            </div>
-            <div class="field-side">
-              <div class="field-header">
-                <span class="field-label" style="color: #999;">No translation needed</span>
-              </div>
-              <input type="text" class="form-control" value="{{ qrLinkUrl }}" disabled style="background: #eee;">
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-success btn-small">Save QR Code Section</button>
-        </form>
-      </div>
-    </div>
-
     <!-- Contact Form Section -->
     <div class="content-section">
       <div class="section-title">Contact Form Labels</div>
@@ -560,6 +474,92 @@
           </div>
 
           <button type="submit" class="btn btn-success btn-small">Save Form Labels</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- QR Code Section -->
+    <div class="content-section">
+      <div class="section-title">QR Code Section</div>
+      <div class="section-body">
+        <form id="qr-form" method="POST" action="{{ route('admin.settings.update') }}">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="_method" value="PUT">
+          <!-- Preserve About Us fields -->
+          <input type="hidden" name="about_us_title" value="{{ aboutUsTitle }}">
+          <input type="hidden" id="qr-about-us-content" name="about_us_content" value="">
+
+          <!-- QR Title -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge english">EN</span>
+                <span class="field-label">QR Section Title</span>
+              </div>
+              <input type="text" id="qr_title" name="qr_title" class="form-control" value="{{ qrTitle }}" placeholder="e.g., Share this page">
+            </div>
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge indonesian">ID</span>
+                <span class="field-label">QR Section Title</span>
+              </div>
+              <input type="text" id="qr_title_id" class="form-control translation-input" value="{{ qrTitleTranslated }}" placeholder="Indonesian translation...">
+            </div>
+          </div>
+
+          <!-- QR Description -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge english">EN</span>
+                <span class="field-label">QR Description</span>
+              </div>
+              <input type="text" id="qr_description" name="qr_description" class="form-control" value="{{ qrDescription }}" placeholder="e.g., Scan the QR code to open on your phone">
+            </div>
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge indonesian">ID</span>
+                <span class="field-label">QR Description</span>
+              </div>
+              <input type="text" id="qr_description_id" class="form-control translation-input" value="{{ qrDescriptionTranslated }}" placeholder="Indonesian translation...">
+            </div>
+          </div>
+
+          <!-- QR Link Text -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge english">EN</span>
+                <span class="field-label">Link Text Below QR Code</span>
+              </div>
+              <input type="text" id="qr_link_text" name="qr_link_text" class="form-control" value="{{ qrLinkText }}" placeholder="e.g., Or go to www.readinggodsword.org.au">
+            </div>
+            <div class="field-side">
+              <div class="field-header">
+                <span class="lang-badge indonesian">ID</span>
+                <span class="field-label">Link Text Below QR Code</span>
+              </div>
+              <input type="text" id="qr_link_text_id" class="form-control translation-input" value="{{ qrLinkTextTranslated }}" placeholder="Indonesian translation...">
+            </div>
+          </div>
+
+          <!-- QR Link URL (no translation needed) -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="field-label">Link URL</span>
+              </div>
+              <input type="text" id="qr_link_url" name="qr_link_url" class="form-control" value="{{ qrLinkUrl }}" placeholder="e.g., https://www.readinggodsword.org.au">
+            </div>
+            <div class="field-side">
+              <div class="field-header">
+                <span class="field-label" style="color: #999;">No translation needed</span>
+              </div>
+              <input type="text" class="form-control" value="{{ qrLinkUrl }}" disabled style="background: #eee;">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success btn-small">Save QR Code Section</button>
         </form>
       </div>
     </div>
