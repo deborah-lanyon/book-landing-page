@@ -111,6 +111,23 @@ export default class HomeController {
     const formSubmitLabel =
       formSubmitLabelId || (await Setting.get('form_submit_label', 'Kirim Pesan'))
 
+    // Get Indonesian content for QR code section (stored in _id fields from settings page)
+    // Fall back to English content if Indonesian translation doesn't exist yet
+    const qrTitleId = await Setting.get('qr_title_id', '')
+    const qrTitle = qrTitleId || (await Setting.get('qr_title', 'Share this page'))
+
+    const qrDescriptionId = await Setting.get('qr_description_id', '')
+    const qrDescription =
+      qrDescriptionId ||
+      (await Setting.get('qr_description', 'Scan the QR code to open on your phone'))
+
+    const qrLinkTextId = await Setting.get('qr_link_text_id', '')
+    const qrLinkText =
+      qrLinkTextId ||
+      (await Setting.get('qr_link_text', 'Or go to www.readinggodsword.org.au'))
+
+    const qrLinkUrl = await Setting.get('qr_link_url', 'https://www.readinggodsword.org.au')
+
     // Build sections with Indonesian content (the original) and their comments
     const displaySections = sections.map((section) => ({
       id: section.id,
@@ -149,6 +166,11 @@ export default class HomeController {
       formQuestionLabel,
       formMessageLabel,
       formSubmitLabel,
+      // QR code section
+      qrTitle,
+      qrDescription,
+      qrLinkText,
+      qrLinkUrl,
       defaultLanguage: 'id',
       defaultLanguageName: 'Indonesian',
     })

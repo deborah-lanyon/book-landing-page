@@ -18,6 +18,14 @@ const DEFAULT_FORM_LABELS = {
   formSubmitLabel: 'Send Message',
 }
 
+// Default QR code section labels
+const DEFAULT_QR_LABELS = {
+  qrTitle: 'Share this page',
+  qrDescription: 'Scan the QR code to open on your phone',
+  qrLinkText: 'Or go to www.readinggodsword.org.au',
+  qrLinkUrl: 'https://www.readinggodsword.org.au',
+}
+
 export default class SettingsController {
   /**
    * Show settings editor with English content and Indonesian translations
@@ -74,6 +82,17 @@ export default class SettingsController {
     const aboutUsTitleId = await Setting.get('about_us_title_id', '')
     const aboutUsContentId = await Setting.get('about_us_content_id', '')
 
+    // Get English content for QR code section
+    const qrTitle = await Setting.get('qr_title', DEFAULT_QR_LABELS.qrTitle)
+    const qrDescription = await Setting.get('qr_description', DEFAULT_QR_LABELS.qrDescription)
+    const qrLinkText = await Setting.get('qr_link_text', DEFAULT_QR_LABELS.qrLinkText)
+    const qrLinkUrl = await Setting.get('qr_link_url', DEFAULT_QR_LABELS.qrLinkUrl)
+
+    // Get stored Indonesian translations for QR code section
+    const qrTitleId = await Setting.get('qr_title_id', '')
+    const qrDescriptionId = await Setting.get('qr_description_id', '')
+    const qrLinkTextId = await Setting.get('qr_link_text_id', '')
+
     // Get stored Indonesian translations for Form labels
     const formTitleId = await Setting.get('form_title_id', '')
     const formFirstNameLabelId = await Setting.get('form_first_name_label_id', '')
@@ -90,7 +109,7 @@ export default class SettingsController {
 
     // Check if we have stored Indonesian translations
     const hasStoredTranslations =
-      aboutUsTitleId || aboutUsContentId || formTitleId || formFirstNameLabelId
+      aboutUsTitleId || aboutUsContentId || formTitleId || formFirstNameLabelId || qrTitleId
 
     let translationMap: Record<string, string> = {}
     let translationError = ''
@@ -108,6 +127,20 @@ export default class SettingsController {
       if (aboutUsContent) {
         textsToTranslate.push(aboutUsContent)
         textKeys.push('aboutUsContent')
+      }
+
+      // QR code fields
+      if (qrTitle) {
+        textsToTranslate.push(qrTitle)
+        textKeys.push('qrTitle')
+      }
+      if (qrDescription) {
+        textsToTranslate.push(qrDescription)
+        textKeys.push('qrDescription')
+      }
+      if (qrLinkText) {
+        textsToTranslate.push(qrLinkText)
+        textKeys.push('qrLinkText')
       }
 
       // Form fields
@@ -177,6 +210,9 @@ export default class SettingsController {
       translationMap = {
         aboutUsTitle: aboutUsTitleId,
         aboutUsContent: aboutUsContentId,
+        qrTitle: qrTitleId,
+        qrDescription: qrDescriptionId,
+        qrLinkText: qrLinkTextId,
         formTitle: formTitleId,
         formFirstNameLabel: formFirstNameLabelId,
         formLastNameLabel: formLastNameLabelId,
@@ -196,6 +232,11 @@ export default class SettingsController {
       // English content (editable) - About Us
       aboutUsTitle,
       aboutUsContent,
+      // English content (editable) - QR code section
+      qrTitle,
+      qrDescription,
+      qrLinkText,
+      qrLinkUrl,
       // English content (editable) - Form labels
       formTitle,
       formFirstNameLabel,
@@ -212,6 +253,10 @@ export default class SettingsController {
       // Indonesian translations - About Us
       aboutUsTitleTranslated: translationMap.aboutUsTitle || '',
       aboutUsContentTranslated: translationMap.aboutUsContent || '',
+      // Indonesian translations - QR code section
+      qrTitleTranslated: translationMap.qrTitle || '',
+      qrDescriptionTranslated: translationMap.qrDescription || '',
+      qrLinkTextTranslated: translationMap.qrLinkText || '',
       // Indonesian translations - Form labels
       formTitleTranslated: translationMap.formTitle || '',
       formFirstNameLabelTranslated: translationMap.formFirstNameLabel || '',
@@ -237,6 +282,10 @@ export default class SettingsController {
     const data = request.only([
       'about_us_title',
       'about_us_content',
+      'qr_title',
+      'qr_description',
+      'qr_link_text',
+      'qr_link_url',
       'form_title',
       'form_first_name_label',
       'form_last_name_label',
@@ -254,6 +303,20 @@ export default class SettingsController {
     // Save English content - About Us
     await Setting.set('about_us_title', data.about_us_title || '')
     await Setting.set('about_us_content', data.about_us_content || '')
+
+    // Save English content - QR code section (only if provided)
+    if (data.qr_title !== undefined) {
+      await Setting.set('qr_title', data.qr_title || '')
+    }
+    if (data.qr_description !== undefined) {
+      await Setting.set('qr_description', data.qr_description || '')
+    }
+    if (data.qr_link_text !== undefined) {
+      await Setting.set('qr_link_text', data.qr_link_text || '')
+    }
+    if (data.qr_link_url !== undefined) {
+      await Setting.set('qr_link_url', data.qr_link_url || '')
+    }
 
     // Save English content - Form labels (only if provided)
     if (data.form_title !== undefined) {
@@ -305,6 +368,9 @@ export default class SettingsController {
     const data = request.only([
       'about_us_title_id',
       'about_us_content_id',
+      'qr_title_id',
+      'qr_description_id',
+      'qr_link_text_id',
       'form_title_id',
       'form_first_name_label_id',
       'form_last_name_label_id',
@@ -322,6 +388,11 @@ export default class SettingsController {
     // Save Indonesian translations - About Us
     await Setting.set('about_us_title_id', data.about_us_title_id || '')
     await Setting.set('about_us_content_id', data.about_us_content_id || '')
+
+    // Save Indonesian translations - QR code section
+    await Setting.set('qr_title_id', data.qr_title_id || '')
+    await Setting.set('qr_description_id', data.qr_description_id || '')
+    await Setting.set('qr_link_text_id', data.qr_link_text_id || '')
 
     // Save Indonesian translations - Form labels
     await Setting.set('form_title_id', data.form_title_id || '')
