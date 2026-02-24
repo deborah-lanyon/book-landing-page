@@ -409,6 +409,27 @@
             </div>
           </div>
 
+          <!-- Lesson Image -->
+          <div class="field-pair">
+            <div class="field-side">
+              <div class="field-header">
+                <span class="field-label">Lesson Image</span>
+              </div>
+              <p style="color: #666; font-size: 13px; margin-bottom: 10px;">This image appears beneath the lesson introduction on the public page.</p>
+              <input type="file" id="lessonImageUpload" accept="image/*" class="form-control" style="padding: 8px;">
+              <input type="hidden" id="lesson_image" name="lesson_image" value="{{ lessonImage }}">
+              <div id="lessonImagePreview" style="margin-top: 10px; {{ lessonImage ? '' : 'display: none;' }}">
+                <img id="lessonPreviewImg" src="{{ lessonImage }}" alt="" style="max-width: 300px; max-height: 200px; border-radius: 4px; border: 1px solid #ddd;">
+                <button type="button" id="removeLessonImage" class="btn btn-secondary btn-small" style="margin-left: 10px;">Remove</button>
+              </div>
+            </div>
+            <div class="field-side">
+              <div class="field-header">
+                <span class="field-label" style="color: #999;">No translation needed</span>
+              </div>
+            </div>
+          </div>
+
           <input type="hidden" name="lesson_published" value="{{ lessonPublished ? '1' : '0' }}">
           <div class="action-buttons">
             <button type="submit" class="btn btn-success btn-small">Save Lesson Overview</button>
@@ -733,6 +754,27 @@
     document.getElementById('lessonForm').addEventListener('submit', function() {
       document.getElementById('lesson_introduction_hidden').value = lessonIntroEditor.root.innerHTML;
       document.getElementById('welcome_subtitle_hidden_lesson').value = welcomeSubtitleEditor.root.innerHTML;
+    });
+
+    // Lesson image upload handler
+    document.getElementById('lessonImageUpload').addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('lesson_image').value = e.target.result;
+          document.getElementById('lessonPreviewImg').src = e.target.result;
+          document.getElementById('lessonImagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Remove lesson image
+    document.getElementById('removeLessonImage').addEventListener('click', function() {
+      document.getElementById('lesson_image').value = '';
+      document.getElementById('lessonImageUpload').value = '';
+      document.getElementById('lessonImagePreview').style.display = 'none';
     });
 
     // Sync section editors before submission

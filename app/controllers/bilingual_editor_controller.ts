@@ -19,6 +19,7 @@ export default class BilingualEditorController {
     const welcomePublished = (await Setting.get('welcome_published', '1')) === '1'
     const lessonTitle = await Setting.get('lesson_title', '')
     const lessonIntroduction = await Setting.get('lesson_introduction', '')
+    const lessonImage = await Setting.get('lesson_image', '')
     const lessonPublished = (await Setting.get('lesson_published', '1')) === '1'
 
     // Get stored English translations for settings
@@ -140,6 +141,7 @@ export default class BilingualEditorController {
       welcomePublished,
       lessonTitle,
       lessonIntroduction,
+      lessonImage,
       lessonPublished,
       sections: sectionsWithTranslations,
       // English translations
@@ -162,6 +164,7 @@ export default class BilingualEditorController {
       'welcome_published',
       'lesson_title',
       'lesson_introduction',
+      'lesson_image',
       'lesson_published',
     ])
 
@@ -170,6 +173,9 @@ export default class BilingualEditorController {
     await Setting.set('welcome_subtitle', data.welcome_subtitle || '')
     await Setting.set('lesson_title', data.lesson_title || '')
     await Setting.set('lesson_introduction', data.lesson_introduction || '')
+    if (data.lesson_image !== undefined) {
+      await Setting.set('lesson_image', data.lesson_image || '')
+    }
 
     // Save publish state if provided
     if (data.welcome_published !== undefined) {
