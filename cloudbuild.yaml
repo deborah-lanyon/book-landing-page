@@ -20,7 +20,7 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/book-landing-page:latest'
 
-  # Deploy to Cloud Run
+  # Deploy to Cloud Run as preview (no live traffic)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -34,6 +34,9 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      - '--no-traffic'
+      - '--tag'
+      - 'preview'
 
 # Store images in Container Registry
 images:
