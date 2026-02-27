@@ -183,13 +183,17 @@
               <td>
                 <div class="actions">
                   @if(user.id !== auth.user.id)
+                    <form method="POST" action="{{ route('admin.users.toggleRole', { id: user.id }) }}" style="display: inline;">
+                      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                      <button type="submit" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">Make {{ user.role === 'admin' ? 'Contributor' : 'Admin' }}</button>
+                    </form>
                     <form method="POST" action="{{ route('admin.users.destroy', { id: user.id }) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user?')">
                       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                       <input type="hidden" name="_method" value="DELETE">
                       <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 13px;">Delete</button>
                     </form>
                   @else
-                    <span style="color: #95a5a6; font-size: 13px;">Cannot delete self</span>
+                    <span style="color: #95a5a6; font-size: 13px;">(You)</span>
                   @end
                 </div>
               </td>

@@ -69,6 +69,7 @@ router
     router.get('/users', [AuthController, 'listUsers']).as('admin.users.index')
     router.get('/users/create', [AuthController, 'showCreateUser']).as('admin.users.create')
     router.post('/users', [AuthController, 'createUser']).as('admin.users.store')
+    router.post('/users/:id/toggle-role', [AuthController, 'toggleRole']).as('admin.users.toggleRole')
     router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy')
     router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate')
 
