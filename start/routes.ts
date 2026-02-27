@@ -44,9 +44,18 @@ router.post('/forgot-password', [AuthController, 'forgotPassword']).as('password
 router.get('/reset-password/:token', [AuthController, 'showResetPassword']).as('password.reset')
 router.post('/reset-password/:token', [AuthController, 'resetPassword']).as('password.reset.store')
 
-// Admin routes (protected by auth middleware)
+// Admin routes - accessible by all authenticated users (admin + contributor)
 router
   .group(() => {
+    // Content editor (main admin page)
+    router.get('/', [BilingualEditorController, 'index']).as('admin.bilingual.index')
+    router.put('/content/settings', [BilingualEditorController, 'updateSettings']).as('admin.bilingual.updateSettings')
+    router.post('/content/translations', [BilingualEditorController, 'saveTranslations']).as('admin.bilingual.saveTranslations')
+    router.put('/content/sections/:id', [BilingualEditorController, 'updateSection']).as('admin.bilingual.updateSection')
+    router.post('/content/sections', [BilingualEditorController, 'createSection']).as('admin.bilingual.createSection')
+    router.delete('/content/sections/:id', [BilingualEditorController, 'deleteSection']).as('admin.bilingual.deleteSection')
+
+    // Sections
     router.get('/sections', [SectionsController, 'index']).as('admin.sections.index')
     router.put('/sections/lesson', [SectionsController, 'updateLesson']).as('admin.sections.updateLesson')
     router.post('/sections/reorder', [SectionsController, 'reorder']).as('admin.sections.reorder')
@@ -56,39 +65,30 @@ router
     router.put('/sections/:id', [SectionsController, 'update']).as('admin.sections.update')
     router.delete('/sections/:id', [SectionsController, 'destroy']).as('admin.sections.destroy')
 
-    // Password change
-    router.get('/password', [AuthController, 'showChangePassword']).as('admin.password.edit')
-    router.put('/password', [AuthController, 'changePassword']).as('admin.password.update')
-
-    // Settings
-    router.get('/settings', [SettingsController, 'edit']).as('admin.settings.edit')
-    router.put('/settings', [SettingsController, 'update']).as('admin.settings.update')
-    router.post('/settings/translations', [SettingsController, 'saveTranslations']).as('admin.settings.saveTranslations')
-
-    // User management
-    router.get('/users', [AuthController, 'listUsers']).as('admin.users.index')
-    router.get('/users/create', [AuthController, 'showCreateUser']).as('admin.users.create')
-    router.post('/users', [AuthController, 'createUser']).as('admin.users.store')
-    router.post('/users/:id/toggle-role', [AuthController, 'toggleRole']).as('admin.users.toggleRole')
-    router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy')
-    router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate')
-
-    // Translation (admin)
-    router.post('/translate/section/:id', [TranslationController, 'translateSection']).as('admin.translate.section')
-    router.post('/translate/text', [TranslationController, 'translateText']).as('admin.translate.text')
-
     // Comments management
     router.get('/comments', [AdminCommentsController, 'index']).as('admin.comments.index')
     router.post('/comments/:id/approve', [AdminCommentsController, 'approve']).as('admin.comments.approve')
     router.delete('/comments/:id', [AdminCommentsController, 'destroy']).as('admin.comments.destroy')
 
-    // Content editor (main admin page)
-    router.get('/', [BilingualEditorController, 'index']).as('admin.bilingual.index')
-    router.put('/content/settings', [BilingualEditorController, 'updateSettings']).as('admin.bilingual.updateSettings')
-    router.post('/content/translations', [BilingualEditorController, 'saveTranslations']).as('admin.bilingual.saveTranslations')
-    router.put('/content/sections/:id', [BilingualEditorController, 'updateSection']).as('admin.bilingual.updateSection')
-    router.post('/content/sections', [BilingualEditorController, 'createSection']).as('admin.bilingual.createSection')
-    router.delete('/content/sections/:id', [BilingualEditorController, 'deleteSection']).as('admin.bilingual.deleteSection')
+    // Translation
+    router.post('/translate/section/:id', [TranslationController, 'translateSection']).as('admin.translate.section')
+    router.post('/translate/text', [TranslationController, 'translateText']).as('admin.translate.text')
+
+    // Password change
+    router.get('/password', [AuthController, 'showChangePassword']).as('admin.password.edit')
+    router.put('/password', [AuthController, 'changePassword']).as('admin.password.update')
+
+    // Admin-only routes (Settings, Users)
+    router.get('/settings', [SettingsController, 'edit']).as('admin.settings.edit').use(middleware.admin())
+    router.put('/settings', [SettingsController, 'update']).as('admin.settings.update').use(middleware.admin())
+    router.post('/settings/translations', [SettingsController, 'saveTranslations']).as('admin.settings.saveTranslations').use(middleware.admin())
+
+    router.get('/users', [AuthController, 'listUsers']).as('admin.users.index').use(middleware.admin())
+    router.get('/users/create', [AuthController, 'showCreateUser']).as('admin.users.create').use(middleware.admin())
+    router.post('/users', [AuthController, 'createUser']).as('admin.users.store').use(middleware.admin())
+    router.post('/users/:id/toggle-role', [AuthController, 'toggleRole']).as('admin.users.toggleRole').use(middleware.admin())
+    router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy').use(middleware.admin())
+    router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate').use(middleware.admin())
   })
   .prefix('/admin')
   .use(middleware.auth())

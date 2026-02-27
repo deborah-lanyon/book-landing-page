@@ -17,12 +17,14 @@
     </div>
     <div class="nav-group">
       <div class="nav-group-label">Settings</div>
-      <a href="{{ route('admin.settings.edit') }}" class="nav-item {{ activeMenu === 'settings' ? 'active' : '' }}">
-        <span class="nav-icon">&#9881;</span> Site Settings
-      </a>
-      <a href="{{ route('admin.users.index') }}" class="nav-item {{ activeMenu === 'users' ? 'active' : '' }}">
-        <span class="nav-icon">&#128101;</span> Users
-      </a>
+      @if(auth.user?.role === 'admin')
+        <a href="{{ route('admin.settings.edit') }}" class="nav-item {{ activeMenu === 'settings' ? 'active' : '' }}">
+          <span class="nav-icon">&#9881;</span> Site Settings
+        </a>
+        <a href="{{ route('admin.users.index') }}" class="nav-item {{ activeMenu === 'users' ? 'active' : '' }}">
+          <span class="nav-icon">&#128101;</span> Users
+        </a>
+      @end
       <a href="{{ route('admin.password.edit') }}" class="nav-item {{ activeMenu === 'password' ? 'active' : '' }}">
         <span class="nav-icon">&#128274;</span> Change Password
       </a>
