@@ -426,17 +426,11 @@ export default class AuthController {
   /**
    * Toggle user role between admin and contributor
    */
-  async toggleRole({ params, response, session, auth }: HttpContext) {
+  async toggleRole({ params, response, session }: HttpContext) {
     const user = await User.find(params.id)
 
     if (!user) {
       session.flash('error', 'User not found')
-      return response.redirect().toRoute('admin.users.index')
-    }
-
-    // Prevent changing your own role
-    if (user.id === auth.user!.id) {
-      session.flash('error', 'You cannot change your own role')
       return response.redirect().toRoute('admin.users.index')
     }
 
