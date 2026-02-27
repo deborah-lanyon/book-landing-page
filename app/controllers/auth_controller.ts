@@ -283,11 +283,12 @@ export default class AuthController {
    * Create a new admin user
    */
   async createUser({ request, response, session }: HttpContext) {
-    const { full_name, email, password, confirm_password } = request.only([
+    const { full_name, email, password, confirm_password, role } = request.only([
       'full_name',
       'email',
       'password',
       'confirm_password',
+      'role',
     ])
 
     if (!full_name || !email || !password) {
@@ -316,6 +317,7 @@ export default class AuthController {
       fullName: full_name,
       email: email,
       password: password,
+      role: role === 'admin' ? 'admin' : 'contributor',
     })
 
     session.flash('success', 'Admin user created successfully')
