@@ -133,10 +133,29 @@
       </div>
     @end
 
+    @if(flashMessages.has('inviteUrl'))
+      <div class="card" style="margin-bottom: 20px; border-left: 4px solid #27ae60;">
+        <h3 style="margin: 0 0 10px 0; color: #27ae60; font-size: 16px;">Invite Link Generated</h3>
+        <p style="margin: 0 0 10px 0; font-size: 14px; color: #555;">Share this link with the person you want to invite. It expires in 24 hours and can only be used once.</p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <input type="text" id="inviteUrl" value="{{ flashMessages.get('inviteUrl') }}" readonly
+            style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; background: #f8f9fa; font-family: monospace;">
+          <button onclick="navigator.clipboard.writeText(document.getElementById('inviteUrl').value).then(() => this.textContent = 'Copied!').catch(() => document.getElementById('inviteUrl').select())"
+            class="btn btn-success" style="white-space: nowrap;">Copy Link</button>
+        </div>
+      </div>
+    @end
+
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="margin: 0;">Admin Users</h2>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-success">Add New User</a>
+        <div style="display: flex; gap: 10px;">
+          <form method="POST" action="{{ route('admin.invites.generate') }}" style="margin: 0;">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            <button type="submit" class="btn btn-secondary">Generate Invite Link</button>
+          </form>
+          <a href="{{ route('admin.users.create') }}" class="btn btn-success">Add New User</a>
+        </div>
       </div>
 
       <table>

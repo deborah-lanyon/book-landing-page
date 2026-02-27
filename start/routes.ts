@@ -70,6 +70,7 @@ router
     router.get('/users/create', [AuthController, 'showCreateUser']).as('admin.users.create')
     router.post('/users', [AuthController, 'createUser']).as('admin.users.store')
     router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy')
+    router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate')
 
     // Translation (admin)
     router.post('/translate/section/:id', [TranslationController, 'translateSection']).as('admin.translate.section')
@@ -90,6 +91,10 @@ router
   })
   .prefix('/admin')
   .use(middleware.auth())
+
+// Registration via invite link (public)
+router.get('/register/:token', [AuthController, 'showRegister']).as('register')
+router.post('/register/:token', [AuthController, 'register']).as('register.store')
 
 // Public translation API
 router.get('/api/translate/languages', [TranslationController, 'languages']).as('api.translate.languages')

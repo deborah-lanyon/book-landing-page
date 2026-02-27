@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import Setting from '#models/setting'
 import hash from '@adonisjs/core/services/hash'
 import { DateTime } from 'luxon'
 import { randomBytes } from 'node:crypto'
@@ -319,6 +320,105 @@ export default class AuthController {
 
     session.flash('success', 'Admin user created successfully')
     return response.redirect().toRoute('admin.users.index')
+  }
+
+  /**
+   * Generate a one-time invite link (stored in Settings, expires in 24 hours)
+   */
+  async generateInvite({ response, session, request }: HttpContext) {
+    const token = randomBytes(32).toString('hex')
+    const expiresAt = DateTime.now().plus({ hours: 24 }).toISO()
+
+    await Setting.set('invite_token', token)
+    await Setting.set('invite_token_expires_at', expiresAt!)
+
+    const host = request.header('host')
+    const protocol = request.secure() ? 'https' : 'http'
+    const inviteUrl = `${protocol}://${host}/register/${token}`
+
+    session.flash('inviteUrl', inviteUrl)
+    return response.redirect().toRoute('admin.users.index')
+  }
+
+  /**
+   * Show registration form (validates invite token)
+   */
+  async showRegister({ view, params, response, session }: HttpContext) {
+    const { token } = params
+    const storedToken = await Setting.get('invite_token', '')
+    const expiresAtStr = await Setting.get('invite_token_expires_at', '')
+
+    if (!storedToken || token !== storedToken) {
+      session.flash('error', 'This invite link is invalid.')
+      return response.redirect().toRoute('login')
+    }
+
+    if (!expiresAtStr || DateTime.fromISO(expiresAtStr) < DateTime.now()) {
+      session.flash('error', 'This invite link has expired.')
+      return response.redirect().toRoute('login')
+    }
+
+    return view.render('auth/register', { token })
+  }
+
+  /**
+   * Handle registration via invite link
+   */
+  async register({ request, params, response, auth, session }: HttpContext) {
+    const { token } = params
+    const storedToken = await Setting.get('invite_token', '')
+    const expiresAtStr = await Setting.get('invite_token_expires_at', '')
+
+    if (!storedToken || token !== storedToken) {
+      session.flash('error', 'This invite link is invalid.')
+      return response.redirect().toRoute('login')
+    }
+
+    if (!expiresAtStr || DateTime.fromISO(expiresAtStr) < DateTime.now()) {
+      session.flash('error', 'This invite link has expired.')
+      return response.redirect().toRoute('login')
+    }
+
+    const { full_name, email, password, confirm_password } = request.only([
+      'full_name',
+      'email',
+      'password',
+      'confirm_password',
+    ])
+
+    if (!full_name || !email || !password) {
+      session.flash('error', 'All fields are required')
+      return response.redirect().back()
+    }
+
+    const existingUser = await User.findBy('email', email)
+    if (existingUser) {
+      session.flash('error', 'An account with this email already exists')
+      return response.redirect().back()
+    }
+
+    if (password !== confirm_password) {
+      session.flash('error', 'Passwords do not match')
+      return response.redirect().back()
+    }
+
+    if (password.length < 8) {
+      session.flash('error', 'Password must be at least 8 characters')
+      return response.redirect().back()
+    }
+
+    const user = await User.create({
+      fullName: full_name,
+      email: email,
+      password: password,
+    })
+
+    // Consume the invite token so it can't be reused
+    await Setting.set('invite_token', '')
+    await Setting.set('invite_token_expires_at', '')
+
+    await auth.use('web').login(user)
+    return response.redirect().toRoute('admin.bilingual.index')
   }
 
   /**
