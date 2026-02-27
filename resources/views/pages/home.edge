@@ -319,8 +319,18 @@
       }
     }
   </style>
+  @if(isAuthenticated)
+    @!component('partials/admin-sidebar-styles')
+  @end
 </head>
 <body>
+  @if(isAuthenticated)
+    <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+    <div class="sidebar-overlay" onclick="document.querySelector('.admin-sidebar').classList.remove('open');this.classList.remove('open');"></div>
+    <div class="admin-layout">
+      @!component('partials/admin-sidebar', { activeMenu: '' })
+      <div class="admin-main">
+  @end
   <!-- Language Selector -->
   <div class="language-selector">
     <button class="language-btn" id="languageBtn">
@@ -584,6 +594,11 @@
       </div>
     @end
   </div>
+
+  @if(isAuthenticated)
+      </div><!-- /.admin-main -->
+    </div><!-- /.admin-layout -->
+  @end
 
   <!-- QR Code Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>

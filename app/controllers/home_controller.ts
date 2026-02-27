@@ -27,7 +27,9 @@ export default class HomeController {
    * Display the public accordion landing page
    * Shows Indonesian content (the original) with option to translate to English and other languages
    */
-  async index({ view }: HttpContext) {
+  async index({ view, auth }: HttpContext) {
+    const isAuthenticated = await auth.check()
+
     const sections = await Section.query()
       .where('is_published', true)
       .orderBy('display_order', 'asc')
@@ -173,6 +175,7 @@ export default class HomeController {
       qrLinkUrl,
       defaultLanguage: 'id',
       defaultLanguageName: 'Indonesian',
+      isAuthenticated,
     })
   }
 
