@@ -83,10 +83,10 @@ router
     router.put('/settings', [SettingsController, 'update']).as('admin.settings.update').use(middleware.admin())
     router.post('/settings/translations', [SettingsController, 'saveTranslations']).as('admin.settings.saveTranslations').use(middleware.admin())
 
-    router.get('/users', [AuthController, 'listUsers']).as('admin.users.index')
+    router.get('/users', [AuthController, 'listUsers']).as('admin.users.index').use(middleware.admin())
     router.get('/users/create', [AuthController, 'showCreateUser']).as('admin.users.create').use(middleware.admin())
     router.post('/users', [AuthController, 'createUser']).as('admin.users.store').use(middleware.admin())
-    router.post('/users/:id/toggle-role', [AuthController, 'toggleRole']).as('admin.users.toggleRole')
+    router.post('/users/:id/toggle-role', [AuthController, 'toggleRole']).as('admin.users.toggleRole').use(middleware.admin())
     router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy').use(middleware.admin())
     router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate').use(middleware.admin())
   })
