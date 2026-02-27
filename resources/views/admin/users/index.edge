@@ -163,6 +163,7 @@
           <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Role</th>
             <th>Created</th>
             <th style="width: 150px;">Actions</th>
           </tr>
@@ -177,6 +178,7 @@
                 @end
               </td>
               <td>{{ user.email }}</td>
+              <td style="text-transform: capitalize;">{{ user.role || 'contributor' }}</td>
               <td>{{ user.createdAt.toFormat('MMM d, yyyy') }}</td>
               <td>
                 <div class="actions">
