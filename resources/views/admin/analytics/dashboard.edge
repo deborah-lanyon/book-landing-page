@@ -163,7 +163,17 @@
             <div class="chart-title">Most Clicked Sections</div>
             <div class="chart-body">
               @if(topSections.length > 0)
-                <canvas id="sectionsChart" height="250"></canvas>
+                <table class="table-list">
+                  <thead><tr><th>Section</th><th>Clicks</th></tr></thead>
+                  <tbody>
+                    @each(section in topSections)
+                      <tr>
+                        <td>{{ section.section_title || 'Unknown' }}</td>
+                        <td>{{ section.count }}</td>
+                      </tr>
+                    @end
+                  </tbody>
+                </table>
               @else
                 <div class="empty-note">No section clicks recorded yet</div>
               @end
@@ -234,10 +244,17 @@
     var dailyViews = {{{ dailyViews }}};
     var dailySubmissions = {{{ dailySubmissions }}};
 
+    function formatDate(d) {
+      var date = new Date(d);
+      return date.getDate() + '/' + (date.getMonth() + 1);
+    }
+
+    var integerTicks = { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } };
+
     new Chart(document.getElementById('visitorsChart'), {
       type: 'line',
       data: {
-        labels: dailyViews.map(function(d) { return d.date; }),
+        labels: dailyViews.map(function(d) { return formatDate(d.date); }),
         datasets: [{
           label: 'Page Views',
           data: dailyViews.map(function(d) { return Number(d.count); }),
@@ -247,13 +264,13 @@
           tension: 0.3
         }]
       },
-      options: { responsive: true, plugins: { legend: { display: false } } }
+      options: { responsive: true, scales: { y: integerTicks }, plugins: { legend: { display: false } } }
     });
 
     new Chart(document.getElementById('submissionsChart'), {
       type: 'line',
       data: {
-        labels: dailySubmissions.map(function(d) { return d.date; }),
+        labels: dailySubmissions.map(function(d) { return formatDate(d.date); }),
         datasets: [{
           label: 'Submissions',
           data: dailySubmissions.map(function(d) { return Number(d.count); }),
@@ -263,23 +280,9 @@
           tension: 0.3
         }]
       },
-      options: { responsive: true, plugins: { legend: { display: false } } }
+      options: { responsive: true, scales: { y: integerTicks }, plugins: { legend: { display: false } } }
     });
 
-    @if(topSections.length > 0)
-    new Chart(document.getElementById('sectionsChart'), {
-      type: 'bar',
-      data: {
-        labels: {{{ JSON.stringify(topSections.map(s => s.section_title || 'Unknown')) }}},
-        datasets: [{
-          label: 'Clicks',
-          data: {{{ JSON.stringify(topSections.map(s => Number(s.count))) }}},
-          backgroundColor: '#9b59b6'
-        }]
-      },
-      options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } } }
-    });
-    @end
 
     @if(topCountries.length > 0)
     new Chart(document.getElementById('countriesChart'), {

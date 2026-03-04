@@ -40,11 +40,15 @@ export default class AnalyticsController {
       return response.noContent()
     }
 
-    await AnalyticsEvent.create({
-      sessionId,
-      eventType,
-      eventData: eventData || null,
-    })
+    try {
+      await AnalyticsEvent.create({
+        sessionId,
+        eventType,
+        eventData: eventData ? JSON.parse(JSON.stringify(eventData)) : null,
+      })
+    } catch (error) {
+      console.error('trackEvent error:', error)
+    }
 
     return response.noContent()
   }

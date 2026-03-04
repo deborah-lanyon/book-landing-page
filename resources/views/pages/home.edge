@@ -321,6 +321,7 @@
   </style>
   @if(isAuthenticated)
     @!component('partials/admin-sidebar-styles')
+    <style>.language-selector { top: 66px !important; z-index: 90 !important; }</style>
   @end
 </head>
 <body>
@@ -897,9 +898,14 @@
       var loadTime = Date.now();
 
       function track(endpoint, data) {
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon(endpoint, new Blob([JSON.stringify(data)], { type: 'application/json' }));
-        }
+        var body = JSON.stringify(data);
+        try {
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(endpoint, new Blob([body], { type: 'application/json' }));
+          } else {
+            fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true });
+          }
+        } catch (e) { /* ignore */ }
       }
 
       track('/api/analytics/pageview', {
