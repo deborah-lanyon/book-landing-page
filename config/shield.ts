@@ -17,7 +17,12 @@ const shieldConfig = defineConfig({
    */
   csrf: {
     enabled: true,
-    exceptRoutes: ['/api/translate/page'],
+    exceptRoutes: [
+      '/api/translate/page',
+      '/api/analytics/pageview',
+      '/api/analytics/event',
+      '/api/analytics/time',
+    ],
     enableXsrfCookie: false,
     methods: ['POST', 'PUT', 'PATCH', 'DELETE'],
   },

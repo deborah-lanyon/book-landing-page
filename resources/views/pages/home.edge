@@ -890,6 +890,66 @@
         }
       }
     });
+
+    // ===== Analytics Tracking =====
+    (function() {
+      var sid = 'sess_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+      var loadTime = Date.now();
+
+      function track(endpoint, data) {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(endpoint, new Blob([JSON.stringify(data)], { type: 'application/json' }));
+        }
+      }
+
+      track('/api/analytics/pageview', {
+        sessionId: sid,
+        referrer: document.referrer || '',
+        pagePath: window.location.pathname
+      });
+
+      document.querySelectorAll('.accordion-item').forEach(function(item) {
+        var header = item.querySelector('.accordion-header');
+        if (header) {
+          header.addEventListener('click', function() {
+            var titleEl = item.querySelector('.accordion-title');
+            track('/api/analytics/event', {
+              sessionId: sid,
+              eventType: 'accordion_click',
+              eventData: {
+                section_id: item.getAttribute('data-section-id'),
+                section_title: titleEl ? titleEl.textContent.trim() : ''
+              }
+            });
+          });
+        }
+      });
+
+      var contactForm = document.querySelector('form[action="/contact"]');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function() {
+          track('/api/analytics/event', {
+            sessionId: sid,
+            eventType: 'contact_form_submit',
+            eventData: {}
+          });
+        });
+      }
+
+      var timeSent = false;
+      function sendTime() {
+        if (timeSent) return;
+        timeSent = true;
+        track('/api/analytics/time', {
+          sessionId: sid,
+          timeOnPage: Math.round((Date.now() - loadTime) / 1000)
+        });
+      }
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') sendTime();
+      });
+      window.addEventListener('beforeunload', sendTime);
+    })();
   </script>
 </body>
 </html>
