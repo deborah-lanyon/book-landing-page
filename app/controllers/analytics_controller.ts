@@ -75,10 +75,10 @@ export default class AnalyticsController {
     since.setDate(since.getDate() - days)
     const sinceStr = since.toISOString()
 
-    const dailyViews = await db
+    const dailyVisits = await db
       .from('page_views')
       .select(db.raw("DATE(created_at) as date"))
-      .count('* as count')
+      .countDistinct('ip_address as count')
       .where('created_at', '>=', sinceStr)
       .groupByRaw('DATE(created_at)')
       .orderBy('date', 'asc')
@@ -168,7 +168,7 @@ export default class AnalyticsController {
 
     return view.render('admin/analytics/dashboard', {
       days,
-      dailyViews: JSON.stringify(dailyViews),
+      dailyVisits: JSON.stringify(dailyVisits),
       uniqueVisitorCount,
       totalPageViewCount,
       topCountries,
