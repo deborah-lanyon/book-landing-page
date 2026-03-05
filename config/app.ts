@@ -20,6 +20,11 @@ export const http = defineConfig({
   allowMethodSpoofing: true,
 
   /**
+   * Trust the proxy's X-Forwarded-* headers (needed for Cloud Run)
+   */
+  trustProxy: () => true,
+
+  /**
    * Enabling async local storage will let you access HTTP context
    * from anywhere inside your application.
    */

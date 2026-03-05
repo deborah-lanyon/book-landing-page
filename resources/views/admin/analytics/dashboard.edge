@@ -280,7 +280,7 @@
           tension: 0.3
         }]
       },
-      options: { responsive: true, scales: { y: integerTicks }, plugins: { legend: { display: false } } }
+      options: { responsive: true, scales: { y: { beginAtZero: true, max: 10, ticks: { stepSize: 1, precision: 0 } } }, plugins: { legend: { display: false } } }
     });
 
 
