@@ -23,11 +23,40 @@
       margin: 0 auto;
     }
 
+    .site-nav {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .site-nav a {
+      display: block;
+      padding: 14px 18px;
+      color: #495057;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    .site-nav a:hover {
+      color: #667eea;
+    }
+
     .header {
       text-align: center;
-      color: white;
+      color: #2c3e50;
+      background: white;
+      border-radius: 12px;
       margin-bottom: 30px;
-      padding: 20px 0;
+      padding: 50px 30px;
     }
 
     .header h1 {
@@ -38,12 +67,12 @@
 
     .header p {
       font-size: 16px;
-      opacity: 0.9;
+      color: #495057;
     }
 
     .header .subtitle {
       font-size: 16px;
-      opacity: 0.9;
+      color: #495057;
     }
 
     .header .subtitle p {
@@ -51,7 +80,7 @@
     }
 
     .header .subtitle a {
-      color: white;
+      color: #667eea;
     }
 
     .accordion {
@@ -294,6 +323,20 @@
         padding: 15px;
       }
 
+      .site-nav {
+        justify-content: flex-start;
+        gap: 0;
+      }
+
+      .site-nav a {
+        padding: 12px 14px;
+        font-size: 13px;
+      }
+
+      .header {
+        padding: 30px 20px;
+      }
+
       .header h1 {
         font-size: 24px;
       }
@@ -321,7 +364,7 @@
   </style>
   @if(isAuthenticated)
     @!component('partials/admin-sidebar-styles')
-    <style>.language-selector { top: 66px !important; z-index: 90 !important; }</style>
+    <style>.language-selector { top: 66px !important; z-index: 140 !important; }</style>
   @end
 </head>
 <body>
@@ -390,6 +433,14 @@
   <div id="translateNotice" class="translate-notice" style="display: none;"></div>
 
   <div class="container">
+    <nav class="site-nav">
+      <a href="#">Link One</a>
+      <a href="#">Link Two</a>
+      <a href="#">Link Three</a>
+      <a href="#">Link Four</a>
+      <a href="#">Link Five</a>
+    </nav>
+
     <div class="header">
       <h1 id="welcomeTitle">{{ welcomeTitle }}</h1>
       <div id="welcomeSubtitle" class="subtitle">{{{ welcomeSubtitle }}}</div>

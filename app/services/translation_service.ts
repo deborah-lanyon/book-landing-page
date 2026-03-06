@@ -72,19 +72,45 @@ export async function translateMultiple(
     throw new Error('Google Cloud project ID not configured')
   }
 
-  const request = {
-    parent: `projects/${projectId}/locations/global`,
-    contents: texts,
-    mimeType: 'text/html',
-    sourceLanguageCode: source,
-    targetLanguageCode: targetLanguage,
+  const parent = `projects/${projectId}/locations/global`
+
+  // Split texts into chunks to stay under the API's ~30k character limit
+  const MAX_CHARS = 25000
+  const chunks: string[][] = []
+  let currentChunk: string[] = []
+  let currentSize = 0
+
+  for (const text of texts) {
+    const textLen = text.length
+    if (currentChunk.length > 0 && currentSize + textLen > MAX_CHARS) {
+      chunks.push(currentChunk)
+      currentChunk = []
+      currentSize = 0
+    }
+    currentChunk.push(text)
+    currentSize += textLen
+  }
+  if (currentChunk.length > 0) {
+    chunks.push(currentChunk)
   }
 
-  const [response] = await translationClient.translateText(request)
+  // Translate each chunk and combine results
+  const allTranslations: string[] = []
+  for (const chunk of chunks) {
+    const [response] = await translationClient.translateText({
+      parent,
+      contents: chunk,
+      mimeType: 'text/html',
+      sourceLanguageCode: source,
+      targetLanguageCode: targetLanguage,
+    })
 
-  if (!response.translations) {
-    throw new Error('No translations returned')
+    if (!response.translations) {
+      throw new Error('No translations returned')
+    }
+
+    allTranslations.push(...response.translations.map((t) => t.translatedText || ''))
   }
 
-  return response.translations.map((t) => t.translatedText || '')
+  return allTranslations
 }
