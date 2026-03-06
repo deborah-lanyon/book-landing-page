@@ -1,21 +1,27 @@
 <div class="admin-topbar">
   <div class="topbar-upper">
     <div class="topbar-left">
-      <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+      @if(auth.isAuthenticated)
+        <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+      @end
       <span class="topbar-title">Mendalami Firman Allah</span>
     </div>
     <div class="topbar-right">
-      <div class="topbar-user">
-        <div class="topbar-user-icon">{{ auth.user?.fullName ? auth.user.fullName.charAt(0).toUpperCase() : '?' }}</div>
-        <div>
-          <div>{{ auth.user?.fullName || 'User' }}</div>
-          <div class="topbar-role">{{ auth.user?.role || 'contributor' }}</div>
+      @if(auth.isAuthenticated)
+        <div class="topbar-user">
+          <div class="topbar-user-icon">{{ auth.user?.fullName ? auth.user.fullName.charAt(0).toUpperCase() : '?' }}</div>
+          <div>
+            <div>{{ auth.user?.fullName || 'User' }}</div>
+            <div class="topbar-role">{{ auth.user?.role || 'contributor' }}</div>
+          </div>
         </div>
-      </div>
-      <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-        {{ csrfField() }}
-        <button type="submit" class="topbar-logout">Logout</button>
-      </form>
+        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+          {{ csrfField() }}
+          <button type="submit" class="topbar-logout">Logout</button>
+        </form>
+      @else
+        <a href="{{ route('login') }}" class="topbar-logout" style="text-decoration: none; display: inline-block;">Login</a>
+      @end
     </div>
   </div>
   <div class="topbar-nav">

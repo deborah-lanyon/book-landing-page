@@ -16,6 +16,7 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       padding: 20px;
+      padding-top: 118px;
     }
 
     .container {
@@ -325,14 +326,12 @@
       }
     }
   </style>
-  @if(isAuthenticated)
-    @!component('partials/admin-sidebar-styles')
-    <style>.language-selector { top: 130px !important; z-index: 140 !important; }</style>
-  @end
+  @!component('partials/admin-sidebar-styles')
+  <style>.language-selector { top: 130px !important; z-index: 140 !important; }</style>
 </head>
 <body>
+  @!component('partials/admin-topbar')
   @if(isAuthenticated)
-    @!component('partials/admin-topbar')
     <div class="sidebar-overlay" onclick="document.querySelector('.admin-sidebar').classList.remove('open');this.classList.remove('open');"></div>
     <div class="admin-layout">
       @!component('partials/admin-sidebar', { activeMenu: '' })
