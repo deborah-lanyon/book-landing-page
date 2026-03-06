@@ -5,15 +5,40 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 56px;
-    background: #2c3e50;
-    color: white;
+    background: white;
+    color: #2c3e50;
+    z-index: 150;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .topbar-upper {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
-    z-index: 150;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    height: 56px;
+    border-bottom: 1px solid #e9ecef;
+  }
+  .topbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 20px;
+    height: 42px;
+    overflow-x: auto;
+  }
+  .topbar-nav a {
+    padding: 8px 16px;
+    color: #495057;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  .topbar-nav a:hover {
+    background: #f0f0f0;
+    color: #2c3e50;
   }
   .topbar-left {
     display: flex;
@@ -23,7 +48,7 @@
   .topbar-title {
     font-size: 18px;
     font-weight: 700;
-    color: white;
+    color: #2c3e50;
   }
   .topbar-right {
     display: flex;
@@ -34,7 +59,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #bdc3c7;
+    color: #495057;
     font-size: 14px;
   }
   .topbar-user-icon {
@@ -51,13 +76,13 @@
   }
   .topbar-role {
     font-size: 12px;
-    color: #95a5a6;
+    color: #7f8c8d;
     text-transform: capitalize;
   }
   .topbar-logout {
     background: none;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #bdc3c7;
+    border: 1px solid #dee2e6;
+    color: #495057;
     padding: 6px 14px;
     border-radius: 4px;
     font-size: 13px;
@@ -66,7 +91,7 @@
     transition: background 0.15s, color 0.15s;
   }
   .topbar-logout:hover {
-    background: rgba(231,76,60,0.2);
+    background: rgba(231,76,60,0.1);
     color: #e74c3c;
     border-color: #e74c3c;
   }
@@ -75,7 +100,7 @@
   .admin-layout {
     display: flex;
     min-height: 100vh;
-    padding-top: 56px;
+    padding-top: 98px;
   }
   .admin-sidebar {
     width: 240px;
@@ -84,7 +109,7 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 56px;
+    top: 98px;
     left: 0;
     bottom: 0;
     z-index: 100;
@@ -163,7 +188,7 @@
   .sidebar-overlay {
     display: none;
     position: fixed;
-    top: 56px;
+    top: 98px;
     left: 0;
     right: 0;
     bottom: 0;

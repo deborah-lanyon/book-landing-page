@@ -1,19 +1,28 @@
 <div class="admin-topbar">
-  <div class="topbar-left">
-    <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
-    <span class="topbar-title">Mendalami Firman Allah</span>
-  </div>
-  <div class="topbar-right">
-    <div class="topbar-user">
-      <div class="topbar-user-icon">{{ auth.user?.fullName ? auth.user.fullName.charAt(0).toUpperCase() : '?' }}</div>
-      <div>
-        <div>{{ auth.user?.fullName || 'User' }}</div>
-        <div class="topbar-role">{{ auth.user?.role || 'contributor' }}</div>
-      </div>
+  <div class="topbar-upper">
+    <div class="topbar-left">
+      <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+      <span class="topbar-title">Mendalami Firman Allah</span>
     </div>
-    <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-      {{ csrfField() }}
-      <button type="submit" class="topbar-logout">Logout</button>
-    </form>
+    <div class="topbar-right">
+      <div class="topbar-user">
+        <div class="topbar-user-icon">{{ auth.user?.fullName ? auth.user.fullName.charAt(0).toUpperCase() : '?' }}</div>
+        <div>
+          <div>{{ auth.user?.fullName || 'User' }}</div>
+          <div class="topbar-role">{{ auth.user?.role || 'contributor' }}</div>
+        </div>
+      </div>
+      <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+        {{ csrfField() }}
+        <button type="submit" class="topbar-logout">Logout</button>
+      </form>
+    </div>
+  </div>
+  <div class="topbar-nav">
+    <a href="#">Link One</a>
+    <a href="#">Link Two</a>
+    <a href="#">Link Three</a>
+    <a href="#">Link Four</a>
+    <a href="#">Link Five</a>
   </div>
 </div>
