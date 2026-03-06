@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.469.0/font/lucide.min.css">
 <style>
   /* Admin Top Bar */
   .admin-topbar {
@@ -5,10 +6,10 @@
     top: 0;
     left: 0;
     right: 0;
-    background: white;
-    color: #2c3e50;
+    background: #3d5a80;
+    color: white;
     z-index: 150;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   .topbar-upper {
     display: flex;
@@ -16,7 +17,7 @@
     justify-content: space-between;
     padding: 0 20px;
     height: 56px;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
   }
   .topbar-nav {
     display: flex;
@@ -24,7 +25,7 @@
     justify-content: center;
     gap: 4px;
     padding: 0 20px;
-    height: 42px;
+    height: 60px;
     overflow-x: auto;
     background: #6E7EE6;
   }
@@ -50,7 +51,7 @@
   .topbar-title {
     font-size: 18px;
     font-weight: 700;
-    color: #2c3e50;
+    color: white;
   }
   .topbar-right {
     display: flex;
@@ -61,14 +62,14 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #495057;
+    color: rgba(255,255,255,0.9);
     font-size: 14px;
   }
   .topbar-user-icon {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #3498db;
+    background: rgba(255,255,255,0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,13 +79,13 @@
   }
   .topbar-role {
     font-size: 12px;
-    color: #7f8c8d;
+    color: rgba(255,255,255,0.6);
     text-transform: capitalize;
   }
   .topbar-logout {
-    background: none;
-    border: 1px solid #dee2e6;
-    color: #495057;
+    background: #E0FBFC;
+    border: 1px solid #E0FBFC;
+    color: #3d5a80;
     padding: 6px 14px;
     border-radius: 4px;
     font-size: 13px;
@@ -102,7 +103,7 @@
   .admin-layout {
     display: flex;
     min-height: 100vh;
-    padding-top: 98px;
+    padding-top: 126px;
   }
   .admin-sidebar {
     width: 240px;
@@ -111,7 +112,7 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 115px;
+    top: 116px;
     left: 0;
     bottom: 0;
     z-index: 100;
@@ -161,6 +162,13 @@
     text-align: center;
     margin-right: 12px;
     font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-icon i {
+    font-size: 18px;
+    line-height: 1;
   }
   .nav-badge {
     margin-left: auto;
@@ -181,7 +189,7 @@
   .sidebar-toggle {
     display: none;
     background: none;
-    color: #2c3e50;
+    color: white;
     border: none;
     padding: 8px;
     font-size: 22px;
@@ -190,7 +198,7 @@
   .sidebar-overlay {
     display: none;
     position: fixed;
-    top: 115px;
+    top: 116px;
     left: 0;
     right: 0;
     bottom: 0;

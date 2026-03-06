@@ -4,11 +4,9 @@ export default class extends BaseSchema {
   protected tableName = 'users'
 
   async up() {
-    this.schema.alterTable(this.tableName, (table) => {
-      // Add role column with default 'contributor' for existing users
-      // New admins can be set explicitly
-      table.string('role', 20).notNullable().defaultTo('contributor')
-    })
+    this.schema.raw(`
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) NOT NULL DEFAULT 'contributor'
+    `)
   }
 
   async down() {

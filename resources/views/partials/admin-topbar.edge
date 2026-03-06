@@ -2,14 +2,14 @@
   <div class="topbar-upper">
     <div class="topbar-left">
       @if(auth.isAuthenticated)
-        <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');">&#9776;</button>
+        <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');"><i class="icon-menu"></i></button>
       @end
       <span class="topbar-title">Mendalami Firman Allah</span>
     </div>
     <div class="topbar-right">
       @if(auth.isAuthenticated)
         <div class="topbar-user">
-          <div class="topbar-user-icon">{{ auth.user?.fullName ? auth.user.fullName.charAt(0).toUpperCase() : '?' }}</div>
+          <div class="topbar-user-icon"><i class="icon-user" style="font-size: 16px;"></i></div>
           <div>
             <div>{{ auth.user?.fullName || 'User' }}</div>
             <div class="topbar-role">{{ auth.user?.role || 'contributor' }}</div>
@@ -17,10 +17,10 @@
         </div>
         <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
           {{ csrfField() }}
-          <button type="submit" class="topbar-logout">Logout</button>
+          <button type="submit" class="topbar-logout"><i class="icon-log-out" style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></i>Logout</button>
         </form>
       @else
-        <a href="{{ route('login') }}" class="topbar-logout" style="text-decoration: none; display: inline-block;">Login</a>
+        <a href="{{ route('login') }}" class="topbar-logout" style="text-decoration: none; display: inline-block;"><i class="icon-log-in" style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></i>Login</a>
       @end
     </div>
   </div>
