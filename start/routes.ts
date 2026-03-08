@@ -19,7 +19,6 @@ const TranslationController = () => import('#controllers/translation_controller'
 const BilingualEditorController = () => import('#controllers/bilingual_editor_controller')
 const CommentsController = () => import('#controllers/comments_controller')
 const AdminCommentsController = () => import('#controllers/admin_comments_controller')
-const AnalyticsController = () => import('#controllers/analytics_controller')
 
 // Public landing page
 router.get('/', [HomeController, 'index'])
@@ -91,8 +90,10 @@ router
     router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy').use(middleware.admin())
     router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate').use(middleware.admin())
 
-    // Analytics dashboard (admin-only)
-    router.get('/analytics', [AnalyticsController, 'dashboard']).as('admin.analytics.dashboard').use(middleware.admin())
+    // Analytics - redirect to Google Analytics
+    router.get('/analytics', async ({ response }) => {
+      return response.redirect('https://analytics.google.com/analytics/web/#/p/G-DHFYLWJED4')
+    }).as('admin.analytics.dashboard').use(middleware.admin())
   })
   .prefix('/admin')
   .use(middleware.auth())
@@ -101,10 +102,6 @@ router
 router.get('/register/:token', [AuthController, 'showRegister']).as('register')
 router.post('/register/:token', [AuthController, 'register']).as('register.store')
 
-// Public analytics tracking (no auth, CSRF-exempt)
-router.post('/api/analytics/pageview', [AnalyticsController, 'trackPageView'])
-router.post('/api/analytics/event', [AnalyticsController, 'trackEvent'])
-router.post('/api/analytics/time', [AnalyticsController, 'trackTime'])
 
 // Public translation API
 router.get('/api/translate/languages', [TranslationController, 'languages']).as('api.translate.languages')
