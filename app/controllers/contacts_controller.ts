@@ -6,6 +6,25 @@ import { errors } from '@vinejs/vine'
 export default class ContactsController {
   async store({ request, response, session }: HttpContext) {
     try {
+      // Verify reCAPTCHA
+      const recaptchaResponse = request.input('g-recaptcha-response')
+      if (!recaptchaResponse) {
+        session.flash('contactErrors', [{ message: 'Please complete the reCAPTCHA.' }])
+        return response.redirect().back()
+      }
+
+      const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=6LfdeoYsAAAAAEz1Agse9HqZhwfLfOSg60T3qP2I&response=${recaptchaResponse}`,
+      })
+      const verifyData = await verifyRes.json() as { success: boolean }
+
+      if (!verifyData.success) {
+        session.flash('contactErrors', [{ message: 'reCAPTCHA verification failed. Please try again.' }])
+        return response.redirect().back()
+      }
+
       const data = await request.validateUsing(contactValidator)
 
       await ContactSubmission.create({

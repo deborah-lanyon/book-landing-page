@@ -90,9 +90,27 @@ router
     router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy').use(middleware.admin())
     router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate').use(middleware.admin())
 
-    // Analytics - redirect to Google Analytics
-    router.get('/analytics', async ({ response }) => {
-      return response.redirect('https://analytics.google.com/analytics/web/#/p/G-DHFYLWJED4')
+    // Analytics dashboard
+    router.get('/analytics', async ({ view }) => {
+      const db = (await import('@adonisjs/lucid/services/db')).default
+      const sectionClicks = await db
+        .from('analytics_events')
+        .select(db.raw("event_data->>'section_title' as section_title"))
+        .count('* as count')
+        .where('event_type', 'section_click')
+        .groupByRaw("event_data->>'section_title'")
+        .orderBy('count', 'desc')
+        .limit(15)
+      const sectionTimes = await db
+        .from('analytics_events')
+        .select(db.raw("event_data->>'section_title' as section_title"))
+        .avg(db.raw("(event_data->>'time_spent')::int as avg_time"))
+        .count('* as readings')
+        .where('event_type', 'section_time')
+        .groupByRaw("event_data->>'section_title'")
+        .orderByRaw("avg(((event_data->>'time_spent')::int)) desc")
+        .limit(15)
+      return view.render('admin/analytics/dashboard', { sectionClicks, sectionTimes })
     }).as('admin.analytics.dashboard').use(middleware.admin())
   })
   .prefix('/admin')
@@ -102,6 +120,31 @@ router
 router.get('/register/:token', [AuthController, 'showRegister']).as('register')
 router.post('/register/:token', [AuthController, 'register']).as('register.store')
 
+
+// Section analytics tracking (no auth, CSRF-exempt)
+router.post('/api/analytics/section-click', async ({ request, response }) => {
+  const { sectionId, sectionTitle } = request.only(['sectionId', 'sectionTitle'])
+  if (!sectionTitle) return response.noContent()
+  const { default: AnalyticsEvent } = await import('#models/analytics_event')
+  await AnalyticsEvent.create({
+    sessionId: 'anon',
+    eventType: 'section_click',
+    eventData: { section_id: sectionId, section_title: sectionTitle },
+  })
+  return response.noContent()
+})
+
+router.post('/api/analytics/section-time', async ({ request, response }) => {
+  const { sectionId, sectionTitle, timeSpent } = request.only(['sectionId', 'sectionTitle', 'timeSpent'])
+  if (!sectionTitle || !timeSpent) return response.noContent()
+  const { default: AnalyticsEvent } = await import('#models/analytics_event')
+  await AnalyticsEvent.create({
+    sessionId: 'anon',
+    eventType: 'section_time',
+    eventData: { section_id: sectionId, section_title: sectionTitle, time_spent: Math.round(timeSpent) },
+  })
+  return response.noContent()
+})
 
 // Public translation API
 router.get('/api/translate/languages', [TranslationController, 'languages']).as('api.translate.languages')

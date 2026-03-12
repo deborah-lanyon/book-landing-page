@@ -12,6 +12,7 @@
     gtag('js', new Date());
     gtag('config', 'G-DHFYLWJED4');
   </script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     * {
       margin: 0;
@@ -593,6 +594,8 @@
             <textarea id="message" name="message" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
           </div>
 
+          <div class="g-recaptcha" data-sitekey="6LfdeoYsAAAAANiqIoTMwAGgTIk9jUnBl0OuHg33" style="margin-bottom: 15px;"></div>
+
           <button type="submit" class="translatable" data-key="formSubmitLabel" style="display: inline-block; padding: 12px 30px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: 600;">
             {{ formSubmitLabel }}
           </button>
@@ -621,10 +624,39 @@
     document.addEventListener('DOMContentLoaded', function() {
       const accordionItems = document.querySelectorAll('.accordion-item');
 
+      var openedSection = null;
+      var openedTime = null;
+
+      function sendSectionTime() {
+        if (openedSection && openedTime) {
+          var elapsed = Math.round((Date.now() - openedTime) / 1000);
+          if (elapsed > 0) {
+            var titleEl = openedSection.querySelector('.accordion-title');
+            var sectionTitle = titleEl ? titleEl.textContent.trim() : '';
+            var sectionId = openedSection.getAttribute('data-section-id');
+            if (typeof gtag === 'function') {
+              gtag('event', 'section_time_spent', { section_id: sectionId, section_title: sectionTitle, value: elapsed });
+            }
+            navigator.sendBeacon('/api/analytics/section-time', new Blob([JSON.stringify({ sectionId: sectionId, sectionTitle: sectionTitle, timeSpent: elapsed })], { type: 'application/json' }));
+          }
+        }
+        openedSection = null;
+        openedTime = null;
+      }
+
+      // Send time for open section when leaving the page
+      window.addEventListener('beforeunload', sendSectionTime);
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') sendSectionTime();
+      });
+
       accordionItems.forEach(item => {
         const header = item.querySelector('.accordion-header');
 
         header.addEventListener('click', function() {
+          // Track time spent on previously open section
+          sendSectionTime();
+
           // Close all other items
           accordionItems.forEach(otherItem => {
             if (otherItem !== item && otherItem.classList.contains('active')) {
@@ -634,6 +666,19 @@
 
           // Toggle current item
           item.classList.toggle('active');
+
+          // Track section click and start timing
+          if (item.classList.contains('active')) {
+            var titleEl = item.querySelector('.accordion-title');
+            var sectionTitle = titleEl ? titleEl.textContent.trim() : '';
+            var sectionId = item.getAttribute('data-section-id');
+            if (typeof gtag === 'function') {
+              gtag('event', 'section_click', { section_id: sectionId, section_title: sectionTitle });
+            }
+            navigator.sendBeacon('/api/analytics/section-click', new Blob([JSON.stringify({ sectionId: sectionId, sectionTitle: sectionTitle })], { type: 'application/json' }));
+            openedSection = item;
+            openedTime = Date.now();
+          }
         });
       });
 

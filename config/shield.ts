@@ -19,9 +19,8 @@ const shieldConfig = defineConfig({
     enabled: true,
     exceptRoutes: [
       '/api/translate/page',
-      '/api/analytics/pageview',
-      '/api/analytics/event',
-      '/api/analytics/time',
+      '/api/analytics/section-click',
+      '/api/analytics/section-time',
     ],
     enableXsrfCookie: false,
     methods: ['POST', 'PUT', 'PATCH', 'DELETE'],
