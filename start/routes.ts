@@ -103,12 +103,14 @@ router
         .limit(15)
       const sectionTimes = await db
         .from('analytics_events')
-        .select(db.raw("event_data->>'section_title' as section_title"))
-        .avg(db.raw("(event_data->>'time_spent')::int as avg_time"))
-        .count('* as readings')
+        .select(
+          db.raw("event_data->>'section_title' as section_title"),
+          db.raw("avg((event_data->>'time_spent')::int) as avg_time"),
+          db.raw("count(*) as readings")
+        )
         .where('event_type', 'section_time')
         .groupByRaw("event_data->>'section_title'")
-        .orderByRaw("avg(((event_data->>'time_spent')::int)) desc")
+        .orderByRaw("avg((event_data->>'time_spent')::int) desc")
         .limit(15)
       return view.render('admin/analytics/dashboard', { sectionClicks, sectionTimes })
     }).as('admin.analytics.dashboard').use(middleware.admin())
