@@ -6,10 +6,10 @@ import { errors } from '@vinejs/vine'
 export default class ContactsController {
   async store({ request, response, session }: HttpContext) {
     try {
-      // Verify reCAPTCHA
+      // Verify reCAPTCHA v3
       const recaptchaResponse = request.input('g-recaptcha-response')
       if (!recaptchaResponse) {
-        session.flash('contactErrors', [{ message: 'Please complete the reCAPTCHA.' }])
+        session.flash('contactErrors', [{ message: 'reCAPTCHA verification failed. Please try again.' }])
         return response.redirect().back()
       }
 
@@ -18,9 +18,9 @@ export default class ContactsController {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `secret=6LfdeoYsAAAAAEz1Agse9HqZhwfLfOSg60T3qP2I&response=${recaptchaResponse}`,
       })
-      const verifyData = await verifyRes.json() as { success: boolean }
+      const verifyData = await verifyRes.json() as { success: boolean; score?: number }
 
-      if (!verifyData.success) {
+      if (!verifyData.success || (verifyData.score !== undefined && verifyData.score < 0.5)) {
         session.flash('contactErrors', [{ message: 'reCAPTCHA verification failed. Please try again.' }])
         return response.redirect().back()
       }

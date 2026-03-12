@@ -12,7 +12,7 @@
     gtag('js', new Date());
     gtag('config', 'G-DHFYLWJED4');
   </script>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LfdeoYsAAAAANiqIoTMwAGgTIk9jUnBl0OuHg33"></script>
   <style>
     * {
       margin: 0;
@@ -542,8 +542,9 @@
           </div>
         @end
 
-        <form method="POST" action="/contact">
+        <form method="POST" action="/contact" id="contactForm">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="g-recaptcha-response" id="recaptchaToken">
 
           <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
             <div>
@@ -593,8 +594,6 @@
             <label for="message" class="translatable" data-key="formMessageLabel" style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 14px;">{{ formMessageLabel }}</label>
             <textarea id="message" name="message" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
           </div>
-
-          <div class="g-recaptcha" data-sitekey="6LfdeoYsAAAAANiqIoTMwAGgTIk9jUnBl0OuHg33" style="margin-bottom: 15px;"></div>
 
           <button type="submit" class="translatable" data-key="formSubmitLabel" style="display: inline-block; padding: 12px 30px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: 600;">
             {{ formSubmitLabel }}
@@ -949,6 +948,20 @@
         }
       }
     });
+
+    // reCAPTCHA v3 - get token on form submit
+    var contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        grecaptcha.ready(function() {
+          grecaptcha.execute('6LfdeoYsAAAAANiqIoTMwAGgTIk9jUnBl0OuHg33', { action: 'contact' }).then(function(token) {
+            document.getElementById('recaptchaToken').value = token;
+            contactForm.submit();
+          });
+        });
+      });
+    }
 
   </script>
 </body>
