@@ -91,28 +91,38 @@ router
     router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate').use(middleware.admin())
 
     // Analytics dashboard
-    router.get('/analytics', async ({ view }) => {
+    router.get('/analytics', async ({ request, view }) => {
+      const days = Number(request.input('days', 30))
+      const { getGA4Report } = await import('#services/ga4_service')
       const db = (await import('@adonisjs/lucid/services/db')).default
-      const sectionClicks = await db
-        .from('analytics_events')
-        .select(db.raw("event_data->>'section_title' as section_title"))
-        .count('* as count')
-        .where('event_type', 'section_click')
-        .groupByRaw("event_data->>'section_title'")
-        .orderBy('count', 'desc')
-        .limit(15)
-      const sectionTimes = await db
-        .from('analytics_events')
-        .select(
-          db.raw("event_data->>'section_title' as section_title"),
-          db.raw("avg((event_data->>'time_spent')::int) as avg_time"),
-          db.raw("count(*) as readings")
-        )
-        .where('event_type', 'section_time')
-        .groupByRaw("event_data->>'section_title'")
-        .orderByRaw("avg((event_data->>'time_spent')::int) desc")
-        .limit(15)
-      return view.render('admin/analytics/dashboard', { sectionClicks, sectionTimes })
+
+      const [ga, sectionClicks, sectionTimes] = await Promise.all([
+        getGA4Report(days),
+        db.from('analytics_events')
+          .select(db.raw("event_data->>'section_title' as section_title"))
+          .count('* as count')
+          .where('event_type', 'section_click')
+          .groupByRaw("event_data->>'section_title'")
+          .orderBy('count', 'desc')
+          .limit(15),
+        db.from('analytics_events')
+          .select(
+            db.raw("event_data->>'section_title' as section_title"),
+            db.raw("avg((event_data->>'time_spent')::int) as avg_time"),
+            db.raw("count(*) as readings")
+          )
+          .where('event_type', 'section_time')
+          .groupByRaw("event_data->>'section_title'")
+          .orderByRaw("avg((event_data->>'time_spent')::int) desc")
+          .limit(15),
+      ])
+
+      return view.render('admin/analytics/dashboard', {
+        days,
+        ga,
+        sectionClicks,
+        sectionTimes,
+      })
     }).as('admin.analytics.dashboard').use(middleware.admin())
   })
   .prefix('/admin')
