@@ -25,7 +25,7 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       padding: 20px;
-      padding-top: 136px;
+      padding-top: 120px;
     }
 
     .container {
@@ -215,7 +215,7 @@
 
     .language-selector {
       position: fixed;
-      top: 20px;
+      top: 124px;
       right: 20px;
       z-index: 1000;
     }
@@ -340,12 +340,6 @@
 </head>
 <body>
   @!component('partials/admin-topbar')
-  @if(isAuthenticated)
-    <div class="sidebar-overlay" onclick="document.querySelector('.admin-sidebar').classList.remove('open');this.classList.remove('open');"></div>
-    <div class="admin-layout">
-      @!component('partials/admin-sidebar', { activeMenu: '' })
-      <div class="admin-main">
-  @end
   <!-- Language Selector -->
   <div class="language-selector">
     <button class="language-btn" id="languageBtn">
@@ -611,10 +605,6 @@
     @end
   </div>
 
-  @if(isAuthenticated)
-      </div><!-- /.admin-main -->
-    </div><!-- /.admin-layout -->
-  @end
 
   <!-- QR Code Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>

@@ -4,7 +4,7 @@
       @if(auth.isAuthenticated)
         <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');"><i class="icon-menu"></i></button>
       @end
-      <span class="topbar-title">Mendalami Firman Allah</span>
+      <a href="/" class="topbar-title" style="text-decoration: none; color: inherit;">Mendalami Firman Allah</a>
     </div>
     <div class="topbar-right">
       @if(auth.isAuthenticated)
