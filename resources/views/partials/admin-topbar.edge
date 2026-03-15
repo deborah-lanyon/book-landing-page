@@ -3,6 +3,7 @@
     {{-- Public page: show only the nav links bar --}}
     @if(navLinks.length > 0)
     <div class="topbar-nav">
+      <a href="/" class="topbar-title" style="text-decoration: none; font-weight: 700; margin-right: auto;">Mendalami Firman Allah</a>
       @each(link in navLinks)
         <a href="{{ link.url }}"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
       @end
