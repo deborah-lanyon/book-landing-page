@@ -19,16 +19,13 @@
           {{ csrfField() }}
           <button type="submit" class="topbar-logout"><i class="icon-log-out" style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></i>Logout</button>
         </form>
-      @else
-        <a href="{{ route('login') }}" class="topbar-logout" style="text-decoration: none; display: inline-block;"><i class="icon-log-in" style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></i>Login</a>
       @end
     </div>
   </div>
+  @if(!auth.isAuthenticated)
   <div class="topbar-nav">
-    <a href="#">Link One</a>
-    <a href="#">Link Two</a>
-    <a href="#">Link Three</a>
-    <a href="#">Link Four</a>
-    <a href="/admin">Admin</a>
+    <a href="https://albata.info" target="_blank" rel="noopener">Albata</a>
+    <a href="https://waha.app/eng/app" target="_blank" rel="noopener">Waha App</a>
   </div>
+  @end
 </div>
