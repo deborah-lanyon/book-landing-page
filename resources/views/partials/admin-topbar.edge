@@ -1,32 +1,37 @@
 <div class="admin-topbar">
-  <div class="topbar-upper">
-    <div class="topbar-left">
-      @if(auth.isAuthenticated)
-        <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');"><i class="icon-menu"></i></button>
-      @end
-      <a href="/" class="topbar-title" style="text-decoration: none; color: inherit;">Mendalami Firman Allah</a>
-    </div>
-    <div class="topbar-right">
-      @if(auth.isAuthenticated)
-        <div class="topbar-user">
-          <div class="topbar-user-icon"><i class="icon-user" style="font-size: 16px;"></i></div>
-          <div>
-            <div>{{ auth.user?.fullName || 'User' }}</div>
-            <div class="topbar-role">{{ auth.user?.role || 'contributor' }}</div>
-          </div>
-        </div>
-        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-          {{ csrfField() }}
-          <button type="submit" class="topbar-logout"><i class="icon-log-out" style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></i>Logout</button>
-        </form>
+  @if(typeof navLinks !== 'undefined')
+    {{-- Public page: show only the nav links bar --}}
+    @if(navLinks.length > 0)
+    <div class="topbar-nav">
+      @each(link in navLinks)
+        <a href="{{ link.url }}"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
       @end
     </div>
-  </div>
-  @if(typeof navLinks !== 'undefined' && navLinks.length > 0)
-  <div class="topbar-nav">
-    @each(link in navLinks)
-      <a href="{{ link.url }}"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
     @end
-  </div>
+  @else
+    {{-- Admin pages: show the full topbar with user info --}}
+    <div class="topbar-upper">
+      <div class="topbar-left">
+        @if(auth.isAuthenticated)
+          <button class="sidebar-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('open');"><i class="icon-menu"></i></button>
+        @end
+        <a href="/" class="topbar-title" style="text-decoration: none; color: inherit;">Mendalami Firman Allah</a>
+      </div>
+      <div class="topbar-right">
+        @if(auth.isAuthenticated)
+          <div class="topbar-user">
+            <div class="topbar-user-icon"><i class="icon-user" style="font-size: 16px;"></i></div>
+            <div>
+              <div>{{ auth.user?.fullName || 'User' }}</div>
+              <div class="topbar-role">{{ auth.user?.role || 'contributor' }}</div>
+            </div>
+          </div>
+          <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+            {{ csrfField() }}
+            <button type="submit" class="topbar-logout"><i class="icon-log-out" style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></i>Logout</button>
+          </form>
+        @end
+      </div>
+    </div>
   @end
 </div>
