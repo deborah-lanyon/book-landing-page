@@ -22,10 +22,11 @@
       @end
     </div>
   </div>
-  @if(!auth.isAuthenticated)
+  @if(!auth.isAuthenticated && typeof navLinks !== 'undefined' && navLinks.length > 0)
   <div class="topbar-nav">
-    <a href="https://albata.info" target="_blank" rel="noopener">Albata</a>
-    <a href="https://waha.app/eng/app" target="_blank" rel="noopener">Waha App</a>
+    @each(link in navLinks)
+      <a href="{{ link.url }}"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
+    @end
   </div>
   @end
 </div>

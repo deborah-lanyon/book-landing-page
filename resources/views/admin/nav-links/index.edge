@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Links - Admin Panel</title>
+  @!component('partials/admin-sidebar-styles')
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: #34495e;
+      color: white;
+      padding: 14px 24px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .card-body { padding: 24px; }
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .link-row:last-child { border-bottom: none; }
+    .link-handle {
+      cursor: grab;
+      color: #999;
+      font-size: 18px;
+      user-select: none;
+    }
+    .link-info { flex: 1; }
+    .link-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #2c3e50;
+    }
+    .link-url {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .link-badge {
+      font-size: 11px;
+      background: #eee;
+      padding: 2px 8px;
+      border-radius: 3px;
+      color: #666;
+    }
+    .link-actions { display: flex; gap: 6px; }
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn:hover { background: #2980b9; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-danger { background: #e74c3c; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-outline {
+      background: white;
+      color: #3498db;
+      border: 1px solid #3498db;
+    }
+    .btn-outline:hover { background: #f0f7ff; }
+    .form-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-group.flex-1 { flex: 1; min-width: 120px; }
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #7f8c8d;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="url"] {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #555;
+      padding-bottom: 8px;
+    }
+    .empty-note {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+      font-size: 14px;
+    }
+    .alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .alert-success { background: #d4edda; color: #155724; }
+    .alert-error { background: #f8d7da; color: #721c24; }
+
+    /* Inline edit form */
+    .edit-form { display: none; }
+    .edit-form.active { display: block; }
+    .edit-form .form-row { padding: 12px 0; }
+
+    /* Drag and drop */
+    .link-list { min-height: 20px; }
+    .link-row.dragging { opacity: 0.4; }
+    .link-row.drag-over { border-top: 2px solid #3498db; }
+  </style>
+</head>
+<body>
+  @!component('partials/admin-topbar')
+  <div class="sidebar-overlay" onclick="document.querySelector('.admin-sidebar').classList.remove('open');this.classList.remove('open');"></div>
+  <div class="admin-layout">
+    @!component('partials/admin-sidebar', { activeMenu: 'navlinks' })
+    <div class="admin-main">
+      <div class="container">
+        <h1 style="font-size: 24px; color: #2c3e50; margin: 0 0 5px 0;">Menu Links</h1>
+        <p style="color: #666; margin: 0 0 20px 0; font-size: 14px;">Manage the navigation links shown on the public page.</p>
+
+        @if(flashMessages.has('success'))
+          <div class="alert alert-success">{{ flashMessages.get('success') }}</div>
+        @end
+        @if(flashMessages.has('error'))
+          <div class="alert alert-error">{{ flashMessages.get('error') }}</div>
+        @end
+
+        <div class="card">
+          <div class="card-header">Current Links</div>
+          <div class="card-body">
+            @if(links.length > 0)
+              <div class="link-list" id="linkList">
+                @each(link in links)
+                  <div class="link-row" data-id="{{ link.id }}" draggable="true">
+                    <span class="link-handle" title="Drag to reorder">&#9776;</span>
+                    <div class="link-info">
+                      <div class="link-label">{{ link.label }}</div>
+                      <div class="link-url">{{ link.url }}</div>
+                    </div>
+                    @if(link.openInNewTab)
+                      <span class="link-badge">New tab</span>
+                    @end
+                    <div class="link-actions">
+                      <button class="btn btn-sm btn-outline" onclick="toggleEdit({{ link.id }})">Edit</button>
+                      <form method="POST" action="{{ route('admin.navlinks.destroy', { id: link.id }) }}" style="margin:0;" onsubmit="return confirm('Remove this link?')">
+                        {{ csrfField() }}
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="edit-form" id="edit-{{ link.id }}">
+                    <form method="POST" action="{{ route('admin.navlinks.update', { id: link.id }) }}">
+                      {{ csrfField() }}
+                      <input type="hidden" name="_method" value="PUT">
+                      <div class="form-row">
+                        <div class="form-group flex-1">
+                          <label>Label</label>
+                          <input type="text" name="label" value="{{ link.label }}" required>
+                        </div>
+                        <div class="form-group flex-1">
+                          <label>URL</label>
+                          <input type="url" name="url" value="{{ link.url }}" required>
+                        </div>
+                        <div class="form-group">
+                          <label class="checkbox-label">
+                            <input type="checkbox" name="openInNewTab" {{ link.openInNewTab ? 'checked' : '' }}>
+                            New tab
+                          </label>
+                        </div>
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-sm">Save</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                @end
+              </div>
+            @else
+              <div class="empty-note">No menu links yet. Add one below.</div>
+            @end
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Add New Link</div>
+          <div class="card-body">
+            <form method="POST" action="{{ route('admin.navlinks.store') }}">
+              {{ csrfField() }}
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label>Label</label>
+                  <input type="text" name="label" placeholder="e.g. Albata" required>
+                </div>
+                <div class="form-group flex-1">
+                  <label>URL</label>
+                  <input type="url" name="url" placeholder="https://example.com" required>
+                </div>
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="openInNewTab" checked>
+                    New tab
+                  </label>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn">Add Link</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleEdit(id) {
+      var el = document.getElementById('edit-' + id);
+      el.classList.toggle('active');
+    }
+
+    // Drag and drop reordering
+    var list = document.getElementById('linkList');
+    if (list) {
+      var dragEl = null;
+      list.querySelectorAll('.link-row').forEach(function(row) {
+        row.addEventListener('dragstart', function(e) {
+          dragEl = this;
+          this.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        row.addEventListener('dragend', function() {
+          this.classList.remove('dragging');
+          list.querySelectorAll('.link-row').forEach(function(r) { r.classList.remove('drag-over'); });
+        });
+        row.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          if (this !== dragEl) {
+            this.classList.add('drag-over');
+          }
+        });
+        row.addEventListener('dragleave', function() {
+          this.classList.remove('drag-over');
+        });
+        row.addEventListener('drop', function(e) {
+          e.preventDefault();
+          this.classList.remove('drag-over');
+          if (dragEl !== this) {
+            list.insertBefore(dragEl, this);
+            saveOrder();
+          }
+        });
+      });
+    }
+
+    function saveOrder() {
+      var rows = document.querySelectorAll('#linkList .link-row');
+      var ids = [];
+      rows.forEach(function(r) { ids.push(Number(r.dataset.id)); });
+      fetch('{{ route("admin.navlinks.reorder") }}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrfToken }}'
+        },
+        body: JSON.stringify({ ids: ids })
+      });
+    }
+  </script>
+</body>
+</html>

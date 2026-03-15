@@ -19,6 +19,7 @@ const TranslationController = () => import('#controllers/translation_controller'
 const BilingualEditorController = () => import('#controllers/bilingual_editor_controller')
 const CommentsController = () => import('#controllers/comments_controller')
 const AdminCommentsController = () => import('#controllers/admin_comments_controller')
+const NavLinksController = () => import('#controllers/nav_links_controller')
 
 // Public landing page
 router.get('/', [HomeController, 'index'])
@@ -89,6 +90,13 @@ router
     router.post('/users/:id/toggle-role', [AuthController, 'toggleRole']).as('admin.users.toggleRole').use(middleware.admin())
     router.delete('/users/:id', [AuthController, 'deleteUser']).as('admin.users.destroy').use(middleware.admin())
     router.post('/invites', [AuthController, 'generateInvite']).as('admin.invites.generate').use(middleware.admin())
+
+    // Menu links management
+    router.get('/nav-links', [NavLinksController, 'index']).as('admin.navlinks.index').use(middleware.admin())
+    router.post('/nav-links', [NavLinksController, 'store']).as('admin.navlinks.store').use(middleware.admin())
+    router.put('/nav-links/:id', [NavLinksController, 'update']).as('admin.navlinks.update').use(middleware.admin())
+    router.delete('/nav-links/:id', [NavLinksController, 'destroy']).as('admin.navlinks.destroy').use(middleware.admin())
+    router.post('/nav-links/reorder', [NavLinksController, 'reorder']).as('admin.navlinks.reorder').use(middleware.admin())
 
     // Analytics dashboard
     router.get('/analytics', async ({ request, view }) => {

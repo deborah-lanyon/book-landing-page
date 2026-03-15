@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Section from '#models/section'
 import Setting from '#models/setting'
+import NavLink from '#models/nav_link'
 import Comment from '#models/comment'
 import { translateMultiple } from '#services/translation_service'
 
@@ -29,6 +30,8 @@ export default class HomeController {
    */
   async index({ view, auth }: HttpContext) {
     const isAuthenticated = await auth.check()
+
+    const navLinks = await NavLink.query().orderBy('sort_order', 'asc')
 
     const sections = await Section.query()
       .where('is_published', true)
@@ -176,6 +179,7 @@ export default class HomeController {
       defaultLanguage: 'id',
       defaultLanguageName: 'Indonesian',
       isAuthenticated,
+      navLinks,
     })
   }
 
