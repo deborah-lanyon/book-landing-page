@@ -31,7 +31,12 @@ export default class HomeController {
   async index({ view, auth }: HttpContext) {
     const isAuthenticated = await auth.check()
 
-    const navLinks = await NavLink.query().orderBy('sort_order', 'asc')
+    let navLinks: NavLink[] = []
+    try {
+      navLinks = await NavLink.query().orderBy('sort_order', 'asc')
+    } catch {
+      // Table may not exist yet if migration hasn't run
+    }
 
     const sections = await Section.query()
       .where('is_published', true)
