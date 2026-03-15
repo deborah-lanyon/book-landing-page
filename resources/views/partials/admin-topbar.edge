@@ -22,7 +22,7 @@
       @end
     </div>
   </div>
-  @if(!auth.isAuthenticated && typeof navLinks !== 'undefined' && navLinks.length > 0)
+  @if(typeof navLinks !== 'undefined' && navLinks.length > 0)
   <div class="topbar-nav">
     @each(link in navLinks)
       <a href="{{ link.url }}"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
