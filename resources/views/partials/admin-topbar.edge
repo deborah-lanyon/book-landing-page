@@ -3,7 +3,7 @@
     {{-- Public page: show only the nav links bar --}}
     @if(navLinks.length > 0)
     <div class="topbar-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;">
-      <a href="/" class="topbar-title" style="text-decoration: none; font-weight: 700; justify-self: start;">Mendalami Firman Allah</a>
+      <a href="/" class="topbar-title" style="text-decoration: none; font-weight: 700; justify-self: start;">Home</a>
       <div style="display: flex; gap: 4px; align-items: center;">
         @each(link in navLinks)
           <a href="{{ link.url }}"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
