@@ -1,17 +1,41 @@
 <div class="admin-topbar">
   @if(typeof navLinks !== 'undefined')
-    {{-- Public page: show only the nav links bar --}}
-    @if(navLinks.length > 0)
-    <div class="topbar-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;">
-      <a href="/" class="topbar-title" style="text-decoration: none; font-weight: 700; justify-self: start;">Home</a>
-      <div style="display: flex; gap: 4px; align-items: center;">
-        @each(link in navLinks)
-          <a href="{{ link.url }}"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
+    {{-- Public page: show nav bar with mobile hamburger menu --}}
+    <div class="topbar-nav" style="display: grid; grid-template-columns: auto 1fr auto; align-items: center; padding: 0 20px;">
+      {{-- Hamburger button (mobile only) --}}
+      <button class="mobile-menu-toggle" onclick="document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('mobileOverlay').classList.toggle('open');" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      {{-- Site title --}}
+      <a href="/" class="topbar-title" style="text-decoration: none; font-weight: 700;">Home</a>
+      {{-- Desktop nav links (hidden on mobile) --}}
+      <div class="topbar-links-desktop">
+        @if(navLinks.length > 0)
+          @each(link in navLinks)
+            <a href="{{ link.url }}"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
+          @end
         @end
       </div>
-      <div></div>
+      {{-- Language selector slot (mobile only, filled by JS) --}}
+      <div class="topbar-lang-mobile" id="topbarLangSlot"></div>
     </div>
-    @end
+
+    {{-- Mobile slide-out menu --}}
+    <div class="mobile-overlay" id="mobileOverlay" onclick="this.classList.remove('open');document.getElementById('mobileMenu').classList.remove('open');"></div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-header">
+        <span>Menu</span>
+        <button onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');" aria-label="Close menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <a href="/" class="mobile-menu-item">Home</a>
+      @if(navLinks.length > 0)
+        @each(link in navLinks)
+          <a href="{{ link.url }}" class="mobile-menu-item"{{ link.openInNewTab ? ' target="_blank" rel="noopener"' : '' }}>{{ link.label }}</a>
+        @end
+      @end
+    </nav>
   @else
     {{-- Admin pages: show the full topbar with user info --}}
     <div class="topbar-upper">
