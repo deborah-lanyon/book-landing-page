@@ -305,6 +305,23 @@
     @media (max-width: 600px) {
       body {
         padding: 15px;
+        padding-top: 75px;
+      }
+
+      .admin-topbar .topbar-nav {
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        height: auto;
+        padding: 10px 15px;
+      }
+
+      .admin-topbar .topbar-nav .topbar-title {
+        width: 100%;
+        text-align: center;
+        margin-right: 0 !important;
+        font-size: 16px;
       }
 
       .header {
@@ -333,6 +350,13 @@
 
       .form-grid {
         grid-template-columns: 1fr !important;
+      }
+
+      .language-selector {
+        top: auto !important;
+        position: relative !important;
+        text-align: right;
+        margin-bottom: 10px;
       }
     }
   </style>
@@ -405,7 +429,7 @@
     </div>
 
     @if(lessonTitle)
-      <div id="lessonOverview" style="margin-bottom: 30px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
+      <div id="lessonOverview" style="margin-bottom: 30px; padding: 40px clamp(20px, 5vw, 50px); background: white; border-radius: 12px; box-shadow: none;">
         <h2 id="lessonTitle" style="color: #2c3e50; margin: 0 0 15px 0; font-size: 22px;">{{ lessonTitle }}</h2>
         @if(lessonIntroduction)
           <div id="lessonIntro" style="color: #495057; line-height: 1.6; font-size: 15px;">{{{ lessonIntroduction }}}</div>
@@ -489,7 +513,7 @@
                       <input type="text" name="website" tabindex="-1" autocomplete="off">
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                       <input type="text" name="authorName" placeholder="Your Name *" required
                         style="padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
                       <input type="email" name="authorEmail" placeholder="Your Email *" required
@@ -511,13 +535,13 @@
       </div>
 
       <!-- About Us Section -->
-      <div style="margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
+      <div style="margin-top: 40px; padding: 40px clamp(20px, 5vw, 50px); background: white; border-radius: 12px; box-shadow: none;">
         <h3 id="aboutUsTitle" style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ aboutUsTitle }}</h3>
         <div id="aboutUsContent" style="color: #495057; font-size: 15px; line-height: 1.6;">{{{ aboutUsContent }}}</div>
       </div>
 
       <!-- Get In Touch Section -->
-      <div style="margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
+      <div style="margin-top: 40px; padding: 40px clamp(20px, 5vw, 50px); background: white; border-radius: 12px; box-shadow: none;">
         <h3 class="translatable" data-key="formTitle" style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ formTitle }}</h3>
 
         @if(flashMessages.has('contactSuccess'))
@@ -597,7 +621,7 @@
       </div>
 
       <!-- QR Code Section -->
-      <div style="text-align: center; margin-top: 40px; padding: 40px 50px; background: white; border-radius: 12px; box-shadow: none;">
+      <div style="text-align: center; margin-top: 40px; padding: 40px clamp(20px, 5vw, 50px); background: white; border-radius: 12px; box-shadow: none;">
         <h3 data-translate style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ qrTitle }}</h3>
         <p data-translate style="color: #666; margin-bottom: 20px; font-size: 14px;">{{ qrDescription }}</p>
         <div id="qrcode" style="display: inline-block;"></div>
