@@ -26,6 +26,7 @@
       min-height: 100vh;
       padding: 20px;
       padding-top: 80px;
+      overflow-x: hidden;
     }
 
     .container {
@@ -73,6 +74,8 @@
       overflow: hidden;
       box-shadow: none;
       padding: 40px 30px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .accordion-item {
@@ -408,27 +411,41 @@
       }
 
       .header {
-        padding: 30px 20px;
+        padding: 20px 15px;
       }
 
       .header h1 {
-        font-size: 24px;
+        font-size: 22px;
       }
 
       .header p {
         font-size: 14px;
       }
 
+      .accordion {
+        padding: 15px 10px;
+      }
+
       .accordion-title {
-        font-size: 16px;
+        font-size: 15px;
       }
 
       .accordion-header {
-        padding: 16px;
+        padding: 14px 10px;
       }
 
       .accordion-item.active .accordion-content {
-        padding: 16px;
+        padding: 14px 10px;
+      }
+
+      .accordion-body {
+        font-size: 14px;
+      }
+
+      .section-comments input,
+      .section-comments textarea {
+        max-width: 100%;
+        box-sizing: border-box;
       }
 
       .form-grid {
@@ -596,9 +613,9 @@
 
                     <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                       <input type="text" name="authorName" placeholder="Your Name *" required
-                        style="padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                        style="padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; width: 100%; box-sizing: border-box;">
                       <input type="email" name="authorEmail" placeholder="Your Email *" required
-                        style="padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                        style="padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; width: 100%; box-sizing: border-box;">
                     </div>
 
                     <textarea name="content" placeholder="Your comment *" required rows="3"
