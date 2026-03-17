@@ -123,6 +123,7 @@
     }
     .field-side {
       min-width: 0;
+      overflow: hidden;
     }
     .field-header {
       display: flex;
@@ -261,6 +262,17 @@
     @media (max-width: 900px) {
       .field-pair {
         grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      .section-body {
+        padding: 15px;
+      }
+      .accordion-body {
+        padding: 15px;
+      }
+      .quill-container .ql-container,
+      .quill-container .ql-editor {
+        min-height: 80px;
       }
     }
   </style>
