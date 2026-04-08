@@ -7,6 +7,8 @@ import Section from '#models/section'
  * Service for sending email notifications
  */
 export default class NotificationService {
+  static readonly PROJECT_EMAIL = 'readinggodsword.comments@gmail.com'
+
   /**
    * Send notification to all admin users about a new comment
    */
@@ -14,17 +16,15 @@ export default class NotificationService {
     // Get all admin users
     const admins = await User.query().where('role', 'admin')
 
-    if (admins.length === 0) {
-      console.log('No admin users found to notify about new comment')
-      return
-    }
-
     // Get the section title
     const section = await Section.find(comment.sectionId)
     const sectionTitle = section?.title || 'Unknown Section'
 
-    // Build admin emails list
+    // Build admin emails list + always include project email
     const adminEmails = admins.map((admin) => admin.email)
+    if (!adminEmails.includes(this.PROJECT_EMAIL)) {
+      adminEmails.push(this.PROJECT_EMAIL)
+    }
 
     try {
       // Send email to each admin
