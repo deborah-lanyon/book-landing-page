@@ -580,6 +580,23 @@
                       </div>
                       <p style="margin: 0; color: #495057; font-size: 14px; line-height: 1.5;">{{ comment.content }}</p>
                     </div>
+                    {{-- Threaded replies --}}
+                    @if(comment.replies && comment.replies.length > 0)
+                      @each(reply in comment.replies)
+                        <div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; margin-left: 25px; border: 1px solid #e0e0e0; {{ reply.isAdminReply ? 'border-left: 3px solid #27ae60;' : '' }}">
+                          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center;">
+                            <div>
+                              <strong style="color: #2c3e50; font-size: 13px;">{{ reply.authorName }}</strong>
+                              @if(reply.isAdminReply)
+                                <span style="background: #27ae60; color: white; padding: 1px 6px; border-radius: 3px; font-size: 10px; margin-left: 6px; vertical-align: middle;">Admin</span>
+                              @end
+                            </div>
+                            <span style="color: #999; font-size: 12px;">{{ reply.createdAt.toFormat('dd MMM yyyy') }}</span>
+                          </div>
+                          <p style="margin: 0; color: #495057; font-size: 14px; line-height: 1.5;">{{ reply.content }}</p>
+                        </div>
+                      @end
+                    @end
                   @end
                 @end
 

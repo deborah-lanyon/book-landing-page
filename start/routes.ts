@@ -69,6 +69,8 @@ router
     // Comments management
     router.get('/comments', [AdminCommentsController, 'index']).as('admin.comments.index')
     router.post('/comments/:id/approve', [AdminCommentsController, 'approve']).as('admin.comments.approve')
+    router.post('/comments/:id/reply', [AdminCommentsController, 'reply']).as('admin.comments.reply')
+    router.put('/comments/:id', [AdminCommentsController, 'update']).as('admin.comments.update')
     router.delete('/comments/:id', [AdminCommentsController, 'destroy']).as('admin.comments.destroy')
 
     // Translation

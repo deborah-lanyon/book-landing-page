@@ -42,11 +42,15 @@ export default class HomeController {
       .where('is_published', true)
       .orderBy('display_order', 'asc')
 
-    // Get approved comments (with fallback to empty array if query fails)
+    // Get approved top-level comments with their replies
     let comments: Comment[] = []
     try {
       comments = await Comment.query()
         .where('is_approved', true)
+        .whereNull('parent_id')
+        .preload('replies', (query) => {
+          query.where('is_approved', true).orderBy('created_at', 'asc')
+        })
         .orderBy('created_at', 'asc')
     } catch (error) {
       console.error('Failed to fetch comments:', error)

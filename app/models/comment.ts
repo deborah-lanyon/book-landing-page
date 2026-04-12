@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Section from '#models/section'
 
 export default class Comment extends BaseModel {
@@ -9,6 +9,9 @@ export default class Comment extends BaseModel {
 
   @column()
   declare sectionId: number
+
+  @column()
+  declare parentId: number | null
 
   @column()
   declare authorName: string
@@ -22,6 +25,9 @@ export default class Comment extends BaseModel {
   @column()
   declare isApproved: boolean
 
+  @column()
+  declare isAdminReply: boolean
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -30,4 +36,10 @@ export default class Comment extends BaseModel {
 
   @belongsTo(() => Section)
   declare section: BelongsTo<typeof Section>
+
+  @belongsTo(() => Comment, { foreignKey: 'parentId' })
+  declare parent: BelongsTo<typeof Comment>
+
+  @hasMany(() => Comment, { foreignKey: 'parentId' })
+  declare replies: HasMany<typeof Comment>
 }
