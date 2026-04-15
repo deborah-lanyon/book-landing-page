@@ -37,6 +37,8 @@ steps:
       - '--no-traffic'
       - '--tag'
       - 'preview'
+      - '--update-env-vars'
+      - 'DB_DATABASE=book_landing_page_staging'
 
 # Store images in Container Registry
 images:
