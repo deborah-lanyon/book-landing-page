@@ -33,7 +33,12 @@ export default class HomeController {
 
     let navLinks: NavLink[] = []
     try {
-      navLinks = await NavLink.query().orderBy('sort_order', 'asc')
+      navLinks = await NavLink.query()
+        .whereNull('parent_id')
+        .orderBy('sort_order', 'asc')
+        .preload('children', (query) => {
+          query.orderBy('sort_order', 'asc')
+        })
     } catch {
       // Table may not exist yet if migration hasn't run
     }

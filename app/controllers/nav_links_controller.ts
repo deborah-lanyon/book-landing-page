@@ -3,19 +3,30 @@ import NavLink from '#models/nav_link'
 
 export default class NavLinksController {
   async index({ view }: HttpContext) {
-    const links = await NavLink.query().orderBy('sort_order', 'asc')
+    const links = await NavLink.query()
+      .whereNull('parent_id')
+      .orderBy('sort_order', 'asc')
+      .preload('children', (query) => {
+        query.orderBy('sort_order', 'asc')
+      })
+
     return view.render('admin/nav-links/index', { links })
   }
 
   async store({ request, response, session }: HttpContext) {
-    const { label, url, openInNewTab } = request.only(['label', 'url', 'openInNewTab'])
+    const { label, url, openInNewTab, parentId } = request.only(['label', 'url', 'openInNewTab', 'parentId'])
 
     if (!label || !url) {
       session.flash('error', 'Label and URL are required.')
       return response.redirect().back()
     }
 
-    const maxOrder = await NavLink.query().max('sort_order as max').first()
+    const parent = parentId ? Number(parentId) : null
+    const maxOrder = await NavLink.query()
+      .if(parent, (q) => q.where('parent_id', parent!))
+      .if(!parent, (q) => q.whereNull('parent_id'))
+      .max('sort_order as max')
+      .first()
     const nextOrder = (maxOrder?.$extras?.max ?? 0) + 1
 
     await NavLink.create({
@@ -23,6 +34,7 @@ export default class NavLinksController {
       url,
       openInNewTab: openInNewTab === 'on' || openInNewTab === true,
       sortOrder: nextOrder,
+      parentId: parent,
     })
 
     session.flash('success', 'Link added.')

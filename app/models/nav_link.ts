@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 
 export default class NavLink extends BaseModel {
   @column({ isPrimary: true })
@@ -17,9 +18,15 @@ export default class NavLink extends BaseModel {
   @column()
   declare sortOrder: number
 
+  @column()
+  declare parentId: number | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @hasMany(() => NavLink, { foreignKey: 'parentId' })
+  declare children: HasMany<typeof NavLink>
 }
