@@ -737,10 +737,10 @@
 
       <!-- QR Code Section -->
       <div style="text-align: center; margin-top: 40px; padding: 40px clamp(20px, 5vw, 50px); background: white; border-radius: 12px; box-shadow: none;">
-        <h3 data-translate style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ qrTitle }}</h3>
-        <p data-translate style="color: #666; margin-bottom: 20px; font-size: 14px;">{{ qrDescription }}</p>
+        <h3 id="qrTitle" style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">{{ qrTitle }}</h3>
+        <p id="qrDescription" style="color: #666; margin-bottom: 20px; font-size: 14px;">{{ qrDescription }}</p>
         <div id="qrcode" style="display: inline-block;"></div>
-        <p style="color: #555; margin-top: 15px; font-size: 14px;"><a href="{{ qrLinkUrl }}" style="color: #3498db;" data-translate>{{ qrLinkText }}</a></p>
+        <p style="color: #555; margin-top: 15px; font-size: 14px;"><a href="{{ qrLinkUrl }}" style="color: #3498db;" id="qrLinkText">{{ qrLinkText }}</a></p>
       </div>
     @end
   </div>
@@ -927,6 +927,9 @@
           lessonIntro: document.getElementById('lessonIntro')?.innerHTML,
           aboutUsTitle: document.getElementById('aboutUsTitle')?.innerHTML,
           aboutUsContent: document.getElementById('aboutUsContent')?.innerHTML,
+          qrTitle: document.getElementById('qrTitle')?.innerHTML,
+          qrDescription: document.getElementById('qrDescription')?.innerHTML,
+          qrLinkText: document.getElementById('qrLinkText')?.innerHTML,
           formLabels: {},
           sections: []
         };
@@ -976,6 +979,14 @@
         if (aboutUsContentEl && originalContent.aboutUsContent) {
           aboutUsContentEl.innerHTML = originalContent.aboutUsContent;
         }
+
+        // Restore QR section
+        var qrTitleEl = document.getElementById('qrTitle');
+        var qrDescEl = document.getElementById('qrDescription');
+        var qrLinkEl = document.getElementById('qrLinkText');
+        if (qrTitleEl && originalContent.qrTitle) qrTitleEl.innerHTML = originalContent.qrTitle;
+        if (qrDescEl && originalContent.qrDescription) qrDescEl.innerHTML = originalContent.qrDescription;
+        if (qrLinkEl && originalContent.qrLinkText) qrLinkEl.innerHTML = originalContent.qrLinkText;
 
         // Restore form labels
         if (originalContent.formLabels) {
@@ -1034,6 +1045,20 @@
         if (data.aboutUsContent) {
           const aboutUsContentEl = document.getElementById('aboutUsContent');
           if (aboutUsContentEl) aboutUsContentEl.innerHTML = data.aboutUsContent;
+        }
+
+        // Apply QR section translations
+        if (data.qrTitle) {
+          const qrTitleEl = document.getElementById('qrTitle');
+          if (qrTitleEl) qrTitleEl.innerHTML = data.qrTitle;
+        }
+        if (data.qrDescription) {
+          const qrDescEl = document.getElementById('qrDescription');
+          if (qrDescEl) qrDescEl.innerHTML = data.qrDescription;
+        }
+        if (data.qrLinkText) {
+          const qrLinkEl = document.getElementById('qrLinkText');
+          if (qrLinkEl) qrLinkEl.innerHTML = data.qrLinkText;
         }
 
         // Apply Form label translations
