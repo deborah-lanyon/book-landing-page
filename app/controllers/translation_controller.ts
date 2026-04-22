@@ -108,6 +108,14 @@ export default class TranslationController {
       const formSubmitLabelId = await Setting.get('form_submit_label_id', '')
       const formSubmitLabel = formSubmitLabelId || (await Setting.get('form_submit_label', 'Kirim Pesan'))
 
+      // Get QR section settings
+      const qrTitleId = await Setting.get('qr_title_id', '')
+      const qrTitle = qrTitleId || (await Setting.get('qr_title', 'Share this page'))
+      const qrDescriptionId = await Setting.get('qr_description_id', '')
+      const qrDescription = qrDescriptionId || (await Setting.get('qr_description', 'Scan the QR code to open on your phone'))
+      const qrLinkTextId = await Setting.get('qr_link_text_id', '')
+      const qrLinkText = qrLinkTextId || (await Setting.get('qr_link_text', 'Or go to www.readinggodsword.org.au'))
+
       // Get all published sections
       const sections = await Section.query()
         .where('is_published', true)
@@ -120,6 +128,9 @@ export default class TranslationController {
         lessonIntroduction?: string
         aboutUsTitle?: string
         aboutUsContent?: string
+        qrTitle?: string
+        qrDescription?: string
+        qrLinkText?: string
         formTitle?: string
         formFirstNameLabel?: string
         formLastNameLabel?: string
@@ -158,6 +169,11 @@ export default class TranslationController {
       // Add About Us
       result.aboutUsTitle = aboutUsTitle
       result.aboutUsContent = aboutUsContent
+
+      // Add QR section
+      result.qrTitle = qrTitle
+      result.qrDescription = qrDescription
+      result.qrLinkText = qrLinkText
 
       // Add Form labels
       result.formTitle = formTitle
@@ -205,6 +221,14 @@ export default class TranslationController {
       const aboutUsContentId = await Setting.get('about_us_content_id', '')
       const aboutUsTitle = aboutUsTitleId || (await Setting.get('about_us_title', 'Tentang Kami'))
       const aboutUsContent = aboutUsContentId || (await Setting.get('about_us_content', ''))
+
+      // Get QR section settings
+      const qrTitleId2 = await Setting.get('qr_title_id', '')
+      const qrTitle = qrTitleId2 || (await Setting.get('qr_title', 'Share this page'))
+      const qrDescriptionId2 = await Setting.get('qr_description_id', '')
+      const qrDescription = qrDescriptionId2 || (await Setting.get('qr_description', 'Scan the QR code to open on your phone'))
+      const qrLinkTextId2 = await Setting.get('qr_link_text_id', '')
+      const qrLinkText = qrLinkTextId2 || (await Setting.get('qr_link_text', 'Or go to www.readinggodsword.org.au'))
 
       // Get Form labels (Indonesian stored in _id fields)
       const formTitleId = await Setting.get('form_title_id', '')
@@ -255,6 +279,11 @@ export default class TranslationController {
       textsToTranslate.push(aboutUsTitle)
       textsToTranslate.push(aboutUsContent)
 
+      // Add QR section texts
+      textsToTranslate.push(qrTitle)
+      textsToTranslate.push(qrDescription)
+      textsToTranslate.push(qrLinkText)
+
       // Add Form labels
       textsToTranslate.push(formTitle)
       textsToTranslate.push(formFirstNameLabel)
@@ -296,6 +325,9 @@ export default class TranslationController {
         lessonIntroduction?: string
         aboutUsTitle?: string
         aboutUsContent?: string
+        qrTitle?: string
+        qrDescription?: string
+        qrLinkText?: string
         formTitle?: string
         formFirstNameLabel?: string
         formLastNameLabel?: string
@@ -334,6 +366,11 @@ export default class TranslationController {
       // Map About Us translations
       result.aboutUsTitle = translations[index++]
       result.aboutUsContent = translations[index++]
+
+      // Map QR section translations
+      result.qrTitle = translations[index++]
+      result.qrDescription = translations[index++]
+      result.qrLinkText = translations[index++]
 
       // Map Form label translations
       result.formTitle = translations[index++]
