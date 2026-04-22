@@ -35,6 +35,18 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
 
+  # Route all traffic to the new revision
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'services'
+      - 'update-traffic'
+      - 'book-landing-page'
+      - '--region'
+      - '${_REGION}'
+      - '--to-latest'
+
 # Store images in Container Registry
 images:
   - 'gcr.io/$PROJECT_ID/book-landing-page:$COMMIT_SHA'
