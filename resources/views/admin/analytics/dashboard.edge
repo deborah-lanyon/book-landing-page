@@ -266,19 +266,38 @@
             <div class="analytics-card-body">
               @if(sectionClicks && sectionClicks.length > 0)
                 <table class="table-list">
-                  <thead><tr><th>Section</th><th>Total Clicks</th><th>Last Clicked</th></tr></thead>
+                  <thead><tr><th>Section</th><th>Total Clicks</th></tr></thead>
                   <tbody>
                     @each(s in sectionClicks)
                       <tr>
                         <td>{{ s.section_title || 'Unknown' }}</td>
                         <td>{{ s.total_clicks }}</td>
-                        <td>{{ s.last_clicked ? new Date(s.last_clicked).toLocaleString('en-AU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '' }}</td>
                       </tr>
                     @end
                   </tbody>
                 </table>
               @else
                 <div class="empty-note">No section click data recorded yet</div>
+              @end
+            </div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-header">Recent Section Activity</div>
+            <div class="analytics-card-body">
+              @if(recentClicks && recentClicks.length > 0)
+                <table class="table-list">
+                  <thead><tr><th>Section</th><th>Time</th></tr></thead>
+                  <tbody>
+                    @each(s in recentClicks)
+                      <tr>
+                        <td>{{ s.section_title || 'Unknown' }}</td>
+                        <td>{{ s.created_at ? new Date(s.created_at).toLocaleString('en-AU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '' }}</td>
+                      </tr>
+                    @end
+                  </tbody>
+                </table>
+              @else
+                <div class="empty-note">No recent activity</div>
               @end
             </div>
           </div>

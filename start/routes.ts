@@ -106,18 +106,25 @@ router
       const { getGA4Report } = await import('#services/ga4_service')
       const db = (await import('@adonisjs/lucid/services/db')).default
 
-      const [ga, sectionClicks, sectionTimes] = await Promise.all([
+      const [ga, sectionClicks, recentClicks, sectionTimes] = await Promise.all([
         getGA4Report(days),
         db.from('analytics_events')
           .select(
             db.raw("event_data->>'section_title' as section_title"),
-            db.raw("count(*) as total_clicks"),
-            db.raw("max(created_at) as last_clicked")
+            db.raw("count(*) as total_clicks")
           )
           .where('event_type', 'section_click')
           .groupByRaw("event_data->>'section_title'")
           .orderBy('total_clicks', 'desc')
           .limit(15),
+        db.from('analytics_events')
+          .select(
+            db.raw("event_data->>'section_title' as section_title"),
+            'created_at'
+          )
+          .where('event_type', 'section_click')
+          .orderBy('created_at', 'desc')
+          .limit(20),
         db.from('analytics_events')
           .select(
             db.raw("event_data->>'section_title' as section_title"),
@@ -134,6 +141,7 @@ router
         days,
         ga,
         sectionClicks,
+        recentClicks,
         sectionTimes,
       })
     }).as('admin.analytics.dashboard').use(middleware.admin())
