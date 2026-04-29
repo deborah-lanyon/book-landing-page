@@ -266,12 +266,12 @@
             <div class="analytics-card-body">
               @if(sectionClicks && sectionClicks.length > 0)
                 <table class="table-list">
-                  <thead><tr><th>Section</th><th>Clicks</th></tr></thead>
+                  <thead><tr><th>Section</th><th>Time</th></tr></thead>
                   <tbody>
                     @each(s in sectionClicks)
                       <tr>
                         <td>{{ s.section_title || 'Unknown' }}</td>
-                        <td>{{ s.count }}</td>
+                        <td>{{ s.created_at ? new Date(s.created_at).toLocaleString('en-AU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '' }}</td>
                       </tr>
                     @end
                   </tbody>

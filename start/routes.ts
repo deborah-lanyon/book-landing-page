@@ -109,12 +109,13 @@ router
       const [ga, sectionClicks, sectionTimes] = await Promise.all([
         getGA4Report(days),
         db.from('analytics_events')
-          .select(db.raw("event_data->>'section_title' as section_title"))
-          .count('* as count')
+          .select(
+            db.raw("event_data->>'section_title' as section_title"),
+            'created_at'
+          )
           .where('event_type', 'section_click')
-          .groupByRaw("event_data->>'section_title'")
-          .orderBy('count', 'desc')
-          .limit(15),
+          .orderBy('created_at', 'desc')
+          .limit(50),
         db.from('analytics_events')
           .select(
             db.raw("event_data->>'section_title' as section_title"),
