@@ -111,7 +111,8 @@ router
         db.from('analytics_events')
           .select(
             db.raw("event_data->>'section_title' as section_title"),
-            'created_at'
+            'created_at',
+            db.raw("count(*) over (partition by event_data->>'section_title') as total_clicks")
           )
           .where('event_type', 'section_click')
           .orderBy('created_at', 'desc')
