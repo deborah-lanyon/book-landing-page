@@ -111,12 +111,13 @@ router
         db.from('analytics_events')
           .select(
             db.raw("event_data->>'section_title' as section_title"),
-            'created_at',
-            db.raw("count(*) over (partition by event_data->>'section_title') as total_clicks")
+            db.raw("count(*) as total_clicks"),
+            db.raw("max(created_at) as last_clicked")
           )
           .where('event_type', 'section_click')
-          .orderBy('created_at', 'desc')
-          .limit(50),
+          .groupByRaw("event_data->>'section_title'")
+          .orderBy('total_clicks', 'desc')
+          .limit(15),
         db.from('analytics_events')
           .select(
             db.raw("event_data->>'section_title' as section_title"),

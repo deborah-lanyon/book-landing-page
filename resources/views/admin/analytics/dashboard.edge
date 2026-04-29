@@ -272,7 +272,7 @@
                       <tr>
                         <td>{{ s.section_title || 'Unknown' }}</td>
                         <td>{{ s.total_clicks }}</td>
-                        <td>{{ s.created_at ? new Date(s.created_at).toLocaleString('en-AU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '' }}</td>
+                        <td>{{ s.last_clicked ? new Date(s.last_clicked).toLocaleString('en-AU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '' }}</td>
                       </tr>
                     @end
                   </tbody>
